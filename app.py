@@ -644,22 +644,22 @@ async function loadData() {
   // Monthly Quantity Sold
   const qtyVals = months.map((_,i) => M[i].qty);
   Plotly.newPlot('qtyChart', [{type:'bar', x:months, y:qtyVals,
-    marker:{color:'#5a8a5e'}, text:qtyVals.map(v => v.toLocaleString()), textposition:'outside', textfont:{size:20,color:'#ffffff'}, cliponaxis:false}],
-    {margin:{t:30,b:45,l:65,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-     font:{size:14,color:'#a0b4c8'}, yaxis:{rangemode:'tozero',gridcolor:'rgba(255,255,255,0.04)'},
-     height:320, hovermode:'x unified', showlegend:false},
+    marker:{color:'#5a8a5e'}, text:qtyVals.map(v => v.toLocaleString()), textposition:'outside', textfont:{size:22,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}],
+    {margin:{t:45,b:45,l:65,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+     font:{size:14,color:'#a0b4c8'}, yaxis:{rangemode:'tozero',gridcolor:'rgba(255,255,255,0.04)',automargin:true},
+     height:380, hovermode:'x unified', showlegend:false},
     {responsive:true, displayModeBar:false});
 
   // Monthly Net Sales vs COGS
   const ncogsV = months.map((_,i) => M[i].cogs * c.rate);
   const nnsV = months.map((_,i) => M[i].ns * c.rate);
   Plotly.newPlot('cogsChart', [
-    {type:'bar', name:'Net Sales', x:months, y:nnsV, marker:{color:'#b08d57'}, text:nnsV.map(v=>fmtNoSymbol(v)+' '+c.symbol), textposition:'outside', textfont:{size:16,color:'#ffffff'}, cliponaxis:false},
-    {type:'bar', name:'COGS', x:months, y:ncogsV, marker:{color:'#a07830'}, text:ncogsV.map(v=>fmtNoSymbol(v)+' '+c.symbol), textposition:'outside', textfont:{size:16,color:'#ffffff'}, cliponaxis:false}
-  ], {margin:{t:30,b:45,l:65,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:14,color:'#a0b4c8'}, barmode:'group', height:330, hovermode:'x unified',
+    {type:'bar', name:'Net Sales', x:months, y:nnsV, marker:{color:'#b08d57'}, text:nnsV.map(v=>fmtNoSymbol(v)+' '+c.symbol), textposition:'outside', textfont:{size:18,color:'#ffffff',family:'Arial Black'}, cliponaxis:false},
+    {type:'bar', name:'COGS', x:months, y:ncogsV, marker:{color:'#a07830'}, text:ncogsV.map(v=>fmtNoSymbol(v)+' '+c.symbol), textposition:'outside', textfont:{size:18,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}
+  ], {margin:{t:45,b:45,l:65,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+      font:{size:14,color:'#a0b4c8'}, barmode:'group', height:380, hovermode:'x unified',
       legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:14,color:'#a0b4c8'}},
-      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'}}, {responsive:true, displayModeBar:false});
+      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)',automargin:true}}, {responsive:true, displayModeBar:false});
   renderCurrencyChart();
   setTimeout(updatePlotlyBlur, 100);
 }
