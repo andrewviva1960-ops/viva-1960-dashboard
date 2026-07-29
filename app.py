@@ -231,6 +231,9 @@ body:not(.blur-mode) .main .js-plotly-plot svg text{filter:blur(0);transition:fi
   </div>
   <div class="kpi-grid" id="kpiGrid"></div>
   <div class="chart-grid">
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-exchange-alt" style="color:var(--accent);margin-right:6px"></i>Currency Rates vs EGP</h5><span style="font-size:11px;color:var(--text-secondary)" id="rateTimestamp"></span></div><div class="chart-body" id="currencyRateChart" style="min-height:280px"></div></div>
+  </div>
+  <div class="chart-grid">
     <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:#8a6d3b;margin-right:6px"></i>Monthly Gross Sales</h5></div><div class="chart-body" id="salesChart"></div></div>
     <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-receipt" style="color:#c0392b;margin-right:6px"></i>Monthly Expenses</h5></div><div class="chart-body" id="expChart"></div></div>
   </div>
@@ -405,8 +408,8 @@ body:not(.blur-mode) .main .js-plotly-plot svg text{filter:blur(0);transition:fi
 </div>
 
 <script>
-// Currency rates (base: EGP)
-const CURRENCIES = {
+// Currency rates (base: EGP) - loaded live from CBE/exchange API
+let CURRENCIES = {
   EGP: {rate: 1, symbol: 'EGP', locale: 'en-US'},
   USD: {rate: 0.020051, symbol: '$', locale: 'en-US'},
   EUR: {rate: 0.017482, symbol: '€', locale: 'de-DE'},
@@ -418,6 +421,19 @@ const CURRENCIES = {
   JOD: {rate: 0.014216, symbol: 'JOD', locale: 'ar-JO'},
   SAR: {rate: 0.075262, symbol: 'SAR', locale: 'ar-SA'}
 };
+async function loadRates() {
+  try {
+    const r = await authFetch('/api/rates');
+    if (r.ok) {
+      const rates = await r.json();
+      for (const [cur, rate] of Object.entries(rates)) {
+        if (CURRENCIES[cur]) CURRENCIES[cur].rate = rate;
+      }
+      renderCurrencyChart();
+    }
+  } catch(e) {}
+}
+loadRates();
 let currentCurrency = 'EGP';
 let _data = null;
 let topSlicer = 'customers';
@@ -479,6 +495,7 @@ function changeCurrency(curr) {
   currentCurrency = curr;
   const select = document.getElementById('currencySelect');
   if (select) select.value = curr;
+  renderCurrencyChart();
   loadData();
   window._pnlLoaded = false;
   window._salesLoaded = false;
@@ -488,6 +505,30 @@ function changeCurrency(curr) {
     var id = active.id.replace('tab-', '');
     if (id !== 'dashboard') switchTab(id);
   }
+}
+
+function renderCurrencyChart() {
+  const allCurs = ['USD','EUR','GBP','CHF','KWD','BHD','OMR','JOD','SAR','AED'];
+  const sel = currentCurrency;
+  const vals = allCurs.map(n => {
+    const rate = CURRENCIES[n] ? CURRENCIES[n].rate : 0;
+    return rate > 0 ? (1 / rate) : 0;
+  });
+  const barColors = allCurs.map(n => n === sel ? '#b08d57' : '#333');
+  Plotly.newPlot('currencyRateChart', [{
+    type: 'bar', x: allCurs, y: vals,
+    marker: {color: barColors, line: {color: '#b08d57', width: allCurs.map(n => n === sel ? 2 : 0)}},
+    text: vals.map(v => v.toFixed(2) + ' EGP'),
+    textposition: 'outside', textfont: {size: 14, color: '#ffffff'}, cliponaxis: false
+  }], {
+    margin: {t: 30, b: 45, l: 70, r: 25},
+    paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+    font: {size: 14, color: '#a0b4c8'},
+    yaxis: {title: 'EGP per 1 unit', gridcolor: 'rgba(255,255,255,0.04)', rangemode: 'tozero'},
+    height: 280, hovermode: 'x unified', showlegend: false
+  }, {responsive: true, displayModeBar: false});
+  const ts = document.getElementById('rateTimestamp');
+  if (ts) ts.textContent = 'Last updated: ' + new Date().toLocaleString();
 }
 
 function renderTopChart(d, c) {
@@ -626,6 +667,7 @@ async function loadData() {
       font:{size:14,color:'#a0b4c8'}, barmode:'group', height:330, hovermode:'x unified',
       legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:14,color:'#a0b4c8'}},
       yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'}}, {responsive:true, displayModeBar:false});
+  renderCurrencyChart();
   setTimeout(updatePlotlyBlur, 100);
 }
 
@@ -1788,6 +1830,39 @@ def serve_static(filename):
 def index():
     return render_template_string(HTML_TEMPLATE)
 
+_rates_cache = {"data": None, "ts": 0}
+
+@app.route("/api/rates")
+@auth.login_required
+def api_rates():
+    import urllib.request as _urllib
+    now = time.time()
+    if _rates_cache["data"] and (now - _rates_cache["ts"]) < 3600:
+        return jsonify(_rates_cache["data"])
+    try:
+        req = _urllib.Request("https://api.exchangerate-api.com/v4/latest/EGP", headers={"User-Agent": "Mozilla/5.0"})
+        resp = _urllib.urlopen(req, timeout=10)
+        data = json.loads(resp.read().decode())
+        rates = data.get("rates", {})
+        result = {
+            "EGP": 1,
+            "USD": rates.get("USD", 0.02),
+            "EUR": rates.get("EUR", 0.017),
+            "GBP": rates.get("GBP", 0.015),
+            "CHF": rates.get("CHF", 0.016),
+            "KWD": rates.get("KWD", 0.006),
+            "BHD": rates.get("BHD", 0.007),
+            "OMR": rates.get("OMR", 0.007),
+            "JOD": rates.get("JOD", 0.014),
+            "SAR": rates.get("SAR", 0.075),
+            "AED": rates.get("AED", 0.073),
+        }
+        _rates_cache["data"] = result
+        _rates_cache["ts"] = now
+        return jsonify(result)
+    except:
+        return jsonify({"EGP": 1, "USD": 0.02, "EUR": 0.017, "GBP": 0.015, "CHF": 0.016, "KWD": 0.006, "BHD": 0.007, "OMR": 0.007, "JOD": 0.014, "SAR": 0.075, "AED": 0.073})
+
 @app.route("/api/data")
 @auth.login_required
 def api_data():
@@ -2121,6 +2196,12 @@ def upload_excel():
 
 PORT = int(os.environ.get("PORT", 8765))
 ON_RENDER = os.environ.get("RENDER", "").lower() == "true"
+
+try:
+    get_data_cached()
+    get_pnl_cached()
+    get_sales_cached()
+except: pass
 
 if __name__ == "__main__":
     from waitress import serve
