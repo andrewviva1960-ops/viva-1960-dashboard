@@ -85,6 +85,12 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0a0a0
 .kpi-card.kpi-exp{border-left-color:var(--red)}.kpi-card.kpi-exp .kpi-icon{background:var(--red)}
 .kpi-card.kpi-ni{border-left-color:var(--teal)}.kpi-card.kpi-ni .kpi-icon{background:var(--teal)}
 .kpi-card .kpi-value.green{color:var(--green)}.kpi-card .kpi-value.red{color:var(--red)}
+#pnlKpiGrid{gap:8px!important;margin-bottom:12px!important}
+#pnlKpiGrid .kpi-card{padding:6px 8px!important;gap:6px!important;min-height:52px!important}
+#pnlKpiGrid .kpi-icon{width:26px!important;height:26px!important;min-width:26px!important;font-size:11px!important;border-radius:5px!important}
+#pnlKpiGrid .kpi-card .kpi-label{font-size:8px!important;margin-bottom:0!important}
+#pnlKpiGrid .kpi-card .kpi-value{font-size:13px!important;line-height:1.1!important}
+#pnlKpiGrid .kpi-card .kpi-sub{font-size:8px!important;margin-top:0!important}
 .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
 .chart-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
 @media(max-width:1100px){.chart-grid-3{grid-template-columns:1fr 1fr}}
