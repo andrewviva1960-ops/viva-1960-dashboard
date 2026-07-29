@@ -1225,12 +1225,12 @@ async function loadPnlData() {
     const isPos = varAmt >= 0;
     const isNegKpi = (k.label === 'COGS' || k.label === 'Expenses');
     const good = isNegKpi ? !isPos : isPos;
-    return '<div class="kpi-card kpi-' + k.cls + '" style="padding:10px 8px">' +
-      '<div class="kpi-icon" style="width:32px;height:32px;min-width:32px;font-size:14px;border-radius:6px"><i class="fas fa-' + k.icon + '"></i></div>' +
-      '<div><div class="kpi-label">' + k.label + '</div>' +
-      '<div class="kpi-value" style="font-size:17px">' + pnlFmt(a) + '</div>' +
-      '<div class="kpi-sub" style="font-size:9px">F: ' + pnlFmt(f) + ' | <span style="font-weight:600;color:' + (good ? 'var(--green)' : 'var(--red)') + '">' +
-      (isPos ? '+' : '') + pnlFmtShort(varAmt) + ' (' + (varPct !== 'N/A' ? (isPos ? '+' : '') + varPct + '%' : 'N/A') + ')</span></div></div></div>';
+    return '<div class="kpi-card kpi-' + k.cls + '" style="padding:8px 6px;gap:6px">' +
+      '<div class="kpi-icon" style="width:28px;height:28px;min-width:28px;font-size:12px;border-radius:6px"><i class="fas fa-' + k.icon + '"></i></div>' +
+      '<div style="min-width:0"><div style="font-size:9px;text-transform:uppercase;color:#7a7a7a;letter-spacing:.3px">' + k.label + '</div>' +
+      '<div style="font-size:15px;font-weight:700;color:#f1f5f9;line-height:1.2">' + pnlFmt(a) + '</div>' +
+      '<div style="font-size:8px;color:#7a7a7a">F:' + pnlFmt(f) + ' <span style="font-weight:600;color:' + (good ? '#4caf50' : '#e74c3c') + '">' +
+      (isPos ? '+' : '') + pnlFmtShort(varAmt) + '</span></div></div></div>';
   }).join('');
 
   const colAct = '#b08d57';
@@ -1266,9 +1266,9 @@ async function loadPnlData() {
   Plotly.newPlot('pnlMarginChart', [
     {type:'scatter', mode:'lines+markers', name:'Actual Margin', x:pnlMonths, y:gpMarginAct, line:{color:'#6a9b6e', width:3}, marker:{size:8, color:'#6a9b6e'}},
     {type:'scatter', mode:'lines+markers', name:'Forecast Margin', x:pnlMonths, y:gpMarginFct, line:{color:'#94a3b8', width:3, dash:'dot'}, marker:{size:8, color:'#94a3b8'}}
-  ], {margin:{t:20,b:40,l:55,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#a0b4c8',size:13},
-      yaxis:{ticksuffix:'%', gridcolor:'rgba(255,255,255,0.04)', rangemode:'tozero'}, height:300,
-      hovermode:'x unified', legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:12,color:'#a0b4c8'}}},
+  ], {margin:{t:15,b:35,l:50,r:15}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#a0b4c8',size:12},
+      yaxis:{ticksuffix:'%', gridcolor:'rgba(255,255,255,0.04)', rangemode:'tozero'}, height:260,
+      hovermode:'x unified', legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#a0b4c8'}}},
     {responsive:true, displayModeBar:false});
 
   // 5. Department Expenses
@@ -1298,9 +1298,9 @@ async function loadPnlData() {
      connector:{line:{color:'rgba(255,255,255,0.1)', width:1}},
      text:pnlFctVals.map(v => pnlFmtShort(v)), textposition:'outside', textfont:{size:11,color:'#94a3b8'},
      opacity:0.7}
-  ], {margin:{t:80,b:50,l:60,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#a0b4c8',size:13},
-      height:350, hovermode:'x unified',
-      legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:12,color:'#a0b4c8'}},
+  ], {margin:{t:50,b:40,l:55,r:15}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#a0b4c8',size:12},
+      height:280, hovermode:'x unified',
+      legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#a0b4c8'}},
       yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(255,255,255,0.04)'}}, {responsive:true, displayModeBar:false});
 
   // 7. P&L Summary Table
@@ -1340,9 +1340,9 @@ function buildGroupedBar(divId, labels, series, title) {
     text:s.y.map(v=>pnlFmtShort(v)), textposition:'outside', textfont:{size:12, color:'#e2e8f0'}, cliponaxis:false
   }));
   Plotly.newPlot(divId, traces, {
-    margin:{t:60,b:40,l:60,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-    font:{color:'#a0b4c8',size:13}, barmode:'group', height:360, hovermode:'x unified',
-    legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:12,color:'#a0b4c8'}},
+    margin:{t:50,b:35,l:55,r:15}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+    font:{color:'#a0b4c8',size:12}, barmode:'group', height:280, hovermode:'x unified',
+    legend:{orientation:'h',y:1.12,x:.5,xanchor:'center',font:{size:11,color:'#a0b4c8'}},
     yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)',automargin:true}
   }, {responsive:true, displayModeBar:false});
 }
