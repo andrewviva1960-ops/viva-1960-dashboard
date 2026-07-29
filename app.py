@@ -231,7 +231,7 @@ body:not(.blur-mode) .main .js-plotly-plot svg text{filter:blur(0);transition:fi
   </div>
   <div class="kpi-grid" id="kpiGrid"></div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-exchange-alt" style="color:var(--accent);margin-right:6px"></i>Currency Rates vs EGP</h5><span style="font-size:11px;color:var(--text-secondary)" id="rateTimestamp"></span></div><div class="chart-body" id="currencyRateChart" style="min-height:280px"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-university" style="color:var(--accent);margin-right:6px"></i>CBE Official Exchange Rates</h5><span style="font-size:11px;color:var(--text-secondary)">Base: EGP</span></div><div class="chart-body" id="currencyRateChart" style="min-height:280px"></div></div>
   </div>
   <div class="chart-grid">
     <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:#8a6d3b;margin-right:6px"></i>Monthly Gross Sales</h5></div><div class="chart-body" id="salesChart"></div></div>
@@ -421,19 +421,6 @@ let CURRENCIES = {
   JOD: {rate: 0.014216, symbol: 'JOD', locale: 'ar-JO'},
   SAR: {rate: 0.075262, symbol: 'SAR', locale: 'ar-SA'}
 };
-async function loadRates() {
-  try {
-    const r = await authFetch('/api/rates');
-    if (r.ok) {
-      const rates = await r.json();
-      for (const [cur, rate] of Object.entries(rates)) {
-        if (CURRENCIES[cur]) CURRENCIES[cur].rate = rate;
-      }
-      renderCurrencyChart();
-    }
-  } catch(e) {}
-}
-loadRates();
 let currentCurrency = 'EGP';
 let _data = null;
 let topSlicer = 'customers';
