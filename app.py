@@ -85,7 +85,11 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0a0a0
 .kpi-card.kpi-exp{border-left-color:var(--red)}.kpi-card.kpi-exp .kpi-icon{background:var(--red)}
 .kpi-card.kpi-ni{border-left-color:var(--teal)}.kpi-card.kpi-ni .kpi-icon{background:var(--teal)}
 .kpi-card .kpi-value.green{color:var(--green)}.kpi-card .kpi-value.red{color:var(--red)}
-#pnlKpiGrid{grid-template-columns:repeat(5,1fr)!important;gap:10px!important;margin-bottom:14px!important}
+#pnlKpiGrid{grid-template-columns:repeat(5,1fr)!important;gap:8px!important;margin-bottom:14px!important}
+#pnlKpiGrid .kpi-card{padding:8px 8px!important}
+#pnlKpiGrid .kpi-icon{width:30px!important;height:30px!important;min-width:30px!important;font-size:13px!important}
+#pnlKpiGrid .kpi-card .kpi-value{font-size:16px!important}
+#pnlKpiGrid .kpi-card .kpi-sub{font-size:9px!important}
 .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
 .chart-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
 @media(max-width:1100px){.chart-grid-3{grid-template-columns:1fr 1fr}}
