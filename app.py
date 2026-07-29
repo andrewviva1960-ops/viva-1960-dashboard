@@ -256,7 +256,7 @@ body:not(.blur-mode) .main .js-plotly-plot svg text{filter:blur(0);transition:fi
 
 <div id="tab-pnl" class="tab-content">
   <div class="page-title"><i class="fas fa-file-invoice-dollar" style="color:var(--accent);margin-right:8px"></i>P&amp;L Actuals vs Forecast</div>
-  <div class="kpi-grid" id="pnlKpiGrid"></div>
+  <div class="kpi-grid" id="pnlKpiGrid" style="grid-template-columns:repeat(5,1fr)"></div>
   <div class="chart-grid">
     <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:#8a6d3b;margin-right:6px"></i>Monthly Net Sales — Actual vs Forecast</h5></div><div class="chart-body" id="pnlSalesChart"></div></div>
   </div>
@@ -1225,13 +1225,12 @@ async function loadPnlData() {
     const isPos = varAmt >= 0;
     const isNegKpi = (k.label === 'COGS' || k.label === 'Expenses');
     const good = isNegKpi ? !isPos : isPos;
-    return '<div class="kpi-card kpi-' + k.cls + '">' +
-      '<div class="kpi-icon"><i class="fas fa-' + k.icon + '"></i></div>' +
-      '<div class="kpi-label">' + k.label + '</div>' +
-      '<div class="kpi-value">' + pnlFmt(a) + '</div>' +
-      '<div class="kpi-sub">Forecast: ' + pnlFmt(f) + '</div>' +
-      '<div class="kpi-sub" style="font-weight:600;color:' + (good ? 'var(--green)' : 'var(--red)') + '">' +
-      (isPos ? '+' : '') + pnlFmtShort(varAmt) + ' (' + (varPct !== 'N/A' ? (isPos ? '+' : '') + varPct + '%' : 'N/A') + ')</div></div>';
+    return '<div class="kpi-card kpi-' + k.cls + '" style="padding:10px 8px">' +
+      '<div class="kpi-icon" style="width:32px;height:32px;min-width:32px;font-size:14px;border-radius:6px"><i class="fas fa-' + k.icon + '"></i></div>' +
+      '<div><div class="kpi-label">' + k.label + '</div>' +
+      '<div class="kpi-value" style="font-size:17px">' + pnlFmt(a) + '</div>' +
+      '<div class="kpi-sub" style="font-size:9px">F: ' + pnlFmt(f) + ' | <span style="font-weight:600;color:' + (good ? 'var(--green)' : 'var(--red)') + '">' +
+      (isPos ? '+' : '') + pnlFmtShort(varAmt) + ' (' + (varPct !== 'N/A' ? (isPos ? '+' : '') + varPct + '%' : 'N/A') + ')</span></div></div></div>';
   }).join('');
 
   const colAct = '#b08d57';
