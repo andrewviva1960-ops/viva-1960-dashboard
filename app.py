@@ -1341,10 +1341,10 @@ function buildGroupedBar(divId, labels, series, title) {
     text:s.y.map(v=>pnlFmtShort(v)), textposition:'outside', textfont:{size:12, color:'#e2e8f0'}, cliponaxis:false
   }));
   Plotly.newPlot(divId, traces, {
-    margin:{t:50,b:40,l:60,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-    font:{color:'#a0b4c8',size:13}, barmode:'group', height:300, hovermode:'x unified',
-    legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:12,color:'#a0b4c8'}},
-    yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'}
+    margin:{t:60,b:40,l:60,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+    font:{color:'#a0b4c8',size:13}, barmode:'group', height:360, hovermode:'x unified',
+    legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:12,color:'#a0b4c8'}},
+    yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)',automargin:true}
   }, {responsive:true, displayModeBar:false});
 }
 
