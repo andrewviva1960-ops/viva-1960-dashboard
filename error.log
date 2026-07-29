@@ -1,0 +1,4 @@
+C:\Users\Andro\Downloads\VIVA 1960 Dashboard\VIVA 1960 Dashboard.py:684: SyntaxWarning: invalid escape sequence '\s'
+  t = t.replace(/\s+(EGP|CHF|KWD|BHD|OMR|JOD|SAR|EUR|GBP|AED|USD|\$|€|£)$/, '');
+t=2026-07-16T15:19:28+0300 lvl=warn msg="can't bind default web address, trying alternatives" obj=web addr=127.0.0.1:4040
+t=2026-07-16T15:19:29+0300 lvl=warn msg="failed to start tunnel" pg=/api/tunnels id=db1760ae94484f10 err="failed to start tunnel: The endpoint 'https://ambulance-reacquire-buggy.ngrok-free.dev' is already online. Either\n1. stop your existing endpoint first, or\n2. start both endpoints with `--pooling-enabled` to load balance between them.\r\n\r\nERR_NGROK_334\r\n"

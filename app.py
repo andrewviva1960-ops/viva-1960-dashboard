@@ -408,18 +408,19 @@ body:not(.blur-mode) .main .js-plotly-plot svg text{filter:blur(0);transition:fi
 </div>
 
 <script>
-// Currency rates (base: EGP) - loaded live from CBE/exchange API
+// Currency rates (base: EGP) - CBE Official Rates (28 Jul 2026)
 let CURRENCIES = {
   EGP: {rate: 1, symbol: 'EGP', locale: 'en-US'},
-  USD: {rate: 0.020051, symbol: '$', locale: 'en-US'},
-  EUR: {rate: 0.017482, symbol: '€', locale: 'de-DE'},
-  GBP: {rate: 0.015151, symbol: '£', locale: 'en-GB'},
-  CHF: {rate: 0.016182, symbol: 'CHF', locale: 'de-CH'},
-  KWD: {rate: 0.006167, symbol: 'KWD', locale: 'ar-KW'},
-  BHD: {rate: 0.007559, symbol: 'BHD', locale: 'ar-BH'},
-  OMR: {rate: 0.007709, symbol: 'OMR', locale: 'ar-OM'},
-  JOD: {rate: 0.014216, symbol: 'JOD', locale: 'ar-JO'},
-  SAR: {rate: 0.075262, symbol: 'SAR', locale: 'ar-SA'}
+  USD: {rate: 0.019809, symbol: '$', locale: 'en-US'},
+  EUR: {rate: 0.017434, symbol: '\u20AC', locale: 'de-DE'},
+  GBP: {rate: 0.014919, symbol: '\u00A3', locale: 'en-GB'},
+  CHF: {rate: 0.016243, symbol: 'CHF', locale: 'de-CH'},
+  KWD: {rate: 0.006101, symbol: 'KWD', locale: 'ar-KW'},
+  BHD: {rate: 0.007439, symbol: 'BHD', locale: 'ar-BH'},
+  OMR: {rate: 0.007673, symbol: 'OMR', locale: 'ar-OM'},
+  JOD: {rate: 0.014085, symbol: 'JOD', locale: 'ar-JO'},
+  SAR: {rate: 0.074372, symbol: 'SAR', locale: 'ar-SA'},
+  AED: {rate: 0.072762, symbol: 'AED', locale: 'ar-AE'}
 };
 let currentCurrency = 'EGP';
 let _data = null;
