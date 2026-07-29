@@ -85,12 +85,13 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0a0a0
 .kpi-card.kpi-exp{border-left-color:var(--red)}.kpi-card.kpi-exp .kpi-icon{background:var(--red)}
 .kpi-card.kpi-ni{border-left-color:var(--teal)}.kpi-card.kpi-ni .kpi-icon{background:var(--teal)}
 .kpi-card .kpi-value.green{color:var(--green)}.kpi-card .kpi-value.red{color:var(--red)}
-#pnlKpiGrid{gap:8px!important;margin-bottom:12px!important}
-#pnlKpiGrid .kpi-card{padding:6px 8px!important;gap:6px!important;min-height:52px!important}
-#pnlKpiGrid .kpi-icon{width:26px!important;height:26px!important;min-width:26px!important;font-size:11px!important;border-radius:5px!important}
-#pnlKpiGrid .kpi-card .kpi-label{font-size:8px!important;margin-bottom:0!important}
-#pnlKpiGrid .kpi-card .kpi-value{font-size:13px!important;line-height:1.1!important}
-#pnlKpiGrid .kpi-card .kpi-sub{font-size:8px!important;margin-top:0!important}
+#pnlKpiGrid{grid-template-columns:repeat(5,1fr)!important;gap:6px!important;margin-bottom:10px!important}
+#pnlKpiGrid .kpi-card{padding:4px 6px!important;gap:4px!important;flex-direction:row!important;align-items:center!important;border-left-width:2px!important;overflow:hidden}
+#pnlKpiGrid .kpi-icon{width:24px!important;height:24px!important;min-width:24px!important;font-size:11px!important;border-radius:4px!important;display:none!important}
+#pnlKpiGrid .kpi-card .kpi-label{font-size:8px!important;margin-bottom:0!important;text-transform:uppercase;letter-spacing:.3px}
+#pnlKpiGrid .kpi-card .kpi-value{font-size:14px!important;font-weight:700!important;line-height:1!important}
+#pnlKpiGrid .kpi-card .kpi-sub{font-size:8px!important;margin-top:0!important;line-height:1.1!important}
+#pnlKpiGrid .kpi-card>*{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
 .chart-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
 @media(max-width:1100px){.chart-grid-3{grid-template-columns:1fr 1fr}}
@@ -1231,12 +1232,12 @@ async function loadPnlData() {
     const isPos = varAmt >= 0;
     const isNegKpi = (k.label === 'COGS' || k.label === 'Expenses');
     const good = isNegKpi ? !isPos : isPos;
-    return '<div class="kpi-card kpi-' + k.cls + '" style="padding:8px 6px;gap:6px">' +
-      '<div class="kpi-icon" style="width:28px;height:28px;min-width:28px;font-size:12px;border-radius:6px"><i class="fas fa-' + k.icon + '"></i></div>' +
-      '<div style="min-width:0"><div style="font-size:9px;text-transform:uppercase;color:#7a7a7a;letter-spacing:.3px">' + k.label + '</div>' +
-      '<div style="font-size:15px;font-weight:700;color:#f1f5f9;line-height:1.2">' + pnlFmt(a) + '</div>' +
-      '<div style="font-size:8px;color:#7a7a7a">F:' + pnlFmt(f) + ' <span style="font-weight:600;color:' + (good ? '#4caf50' : '#e74c3c') + '">' +
-      (isPos ? '+' : '') + pnlFmtShort(varAmt) + '</span></div></div></div>';
+    return '<div class="kpi-card kpi-' + k.cls + '">' +
+      '<div class="kpi-icon"><i class="fas fa-' + k.icon + '"></i></div>' +
+      '<div class="kpi-label">' + k.label + '</div>' +
+      '<div class="kpi-value">' + pnlFmt(a) + '</div>' +
+      '<div class="kpi-sub">F: ' + pnlFmt(f) + ' <span style="color:' + (good ? '#4caf50' : '#e74c3c') + '">' +
+      (isPos ? '+' : '') + pnlFmtShort(varAmt) + '</span></div></div>';
   }).join('');
 
   const colAct = '#b08d57';
