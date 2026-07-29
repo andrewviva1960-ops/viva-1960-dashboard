@@ -85,13 +85,7 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0a0a0
 .kpi-card.kpi-exp{border-left-color:var(--red)}.kpi-card.kpi-exp .kpi-icon{background:var(--red)}
 .kpi-card.kpi-ni{border-left-color:var(--teal)}.kpi-card.kpi-ni .kpi-icon{background:var(--teal)}
 .kpi-card .kpi-value.green{color:var(--green)}.kpi-card .kpi-value.red{color:var(--red)}
-#pnlKpiGrid{grid-template-columns:repeat(5,1fr)!important;gap:6px!important;margin-bottom:10px!important}
-#pnlKpiGrid .kpi-card{padding:4px 6px!important;gap:4px!important;flex-direction:row!important;align-items:center!important;border-left-width:2px!important;overflow:hidden}
-#pnlKpiGrid .kpi-icon{width:24px!important;height:24px!important;min-width:24px!important;font-size:11px!important;border-radius:4px!important;display:none!important}
-#pnlKpiGrid .kpi-card .kpi-label{font-size:8px!important;margin-bottom:0!important;text-transform:uppercase;letter-spacing:.3px}
-#pnlKpiGrid .kpi-card .kpi-value{font-size:14px!important;font-weight:700!important;line-height:1!important}
-#pnlKpiGrid .kpi-card .kpi-sub{font-size:8px!important;margin-top:0!important;line-height:1.1!important}
-#pnlKpiGrid .kpi-card>*{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#pnlKpiGrid{grid-template-columns:repeat(5,1fr)!important;gap:10px!important;margin-bottom:14px!important}
 .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
 .chart-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
 @media(max-width:1100px){.chart-grid-3{grid-template-columns:1fr 1fr}}
@@ -1236,8 +1230,9 @@ async function loadPnlData() {
       '<div class="kpi-icon"><i class="fas fa-' + k.icon + '"></i></div>' +
       '<div class="kpi-label">' + k.label + '</div>' +
       '<div class="kpi-value">' + pnlFmt(a) + '</div>' +
-      '<div class="kpi-sub">F: ' + pnlFmt(f) + ' <span style="color:' + (good ? '#4caf50' : '#e74c3c') + '">' +
-      (isPos ? '+' : '') + pnlFmtShort(varAmt) + '</span></div></div>';
+      '<div class="kpi-sub">F: ' + pnlFmt(f) + '</div>' +
+      '<div class="kpi-sub" style="font-weight:600;color:' + (good ? '#4caf50' : '#e74c3c') + '">' +
+      (isPos ? '+' : '') + pnlFmtShort(varAmt) + ' (' + varPct + '%)</div></div>';
   }).join('');
 
   const colAct = '#b08d57';
