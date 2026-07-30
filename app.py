@@ -252,10 +252,14 @@ body:not(.blur-mode) .main .js-plotly-plot svg text{filter:blur(0);transition:fi
   <div class="chart-grid">
     <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-trophy" style="color:#a07830;margin-right:6px"></i>Top 5 <span id="topSlicerLabel">Customers</span> by Sales</h5><div class="slicer-selector" style="display:flex;align-items:center;gap:6px"><label style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary)">View</label><select id="topSlicer" onchange="changeTopSlicer(this.value)" style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:6px;padding:4px 28px 4px 10px;color:#f1f5f9;font-size:12px;font-weight:500;cursor:pointer;appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238899aa' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 8px center"><option value="customers">Customers</option><option value="types">Types</option><option value="fabrics">Fabrics</option></select></div></div><div class="chart-body" id="topCustomersChart"></div></div>
   </div>
-  <div class="chart-grid-3">
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-pie-chart" style="color:#8a6d3b;margin-right:6px"></i>BU Sales %</h5></div><div class="chart-body" id="buSalesChart"></div></div>
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-cubes" style="color:#5a8a5e;margin-right:6px"></i>Monthly Quantity Sold</h5></div><div class="chart-body" id="qtyChart"></div></div>
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-balance-scale" style="color:#a07830;margin-right:6px"></i>Monthly Net Sales vs COGS</h5></div><div class="chart-body" id="cogsChart"></div></div>
+  <div class="chart-grid">
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-cubes" style="color:#5a8a5e;margin-right:6px"></i>Monthly Quantity Sold</h5></div><div class="chart-body" id="qtyChart"></div></div>
+  </div>
+  <div class="chart-grid">
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-balance-scale" style="color:#a07830;margin-right:6px"></i>Monthly Net Sales vs COGS</h5></div><div class="chart-body" id="cogsChart"></div></div>
+  </div>
+  <div class="chart-grid">
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-pie-chart" style="color:#8a6d3b;margin-right:6px"></i>BU Sales %</h5></div><div class="chart-body" id="buSalesChart"></div></div>
   </div>
 </div>
 
