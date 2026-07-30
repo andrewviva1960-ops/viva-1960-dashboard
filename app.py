@@ -539,7 +539,7 @@ function renderTopChart(d, c) {
   const vals = items.map(x => x.sales * c.rate);
   Plotly.newPlot('topCustomersChart', [{type:'bar', x:names, y:vals,
     marker:{color:['#b08d57','#c4a265','#d4b87a','#e0c88f','#ecdaa3']},
-    text:vals.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:14,color:'#ffffff'}, cliponaxis:false}],
+    text:vals.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}],
     {margin:{t:50,b:55,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
      font:{size:14,color:'#a0b4c8'}, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'}, height:340,
      hovermode:'x unified', showlegend:false}, {responsive:true, displayModeBar:false});
@@ -577,14 +577,14 @@ async function loadData() {
 
   const c = getCurrency();
   const gsV = months.map((_,i) => M[i].gs * c.rate);
-  Plotly.newPlot('salesChart', [{type:'bar', x:months, y:gsV, marker:{color:'#b08d57'}, text:gsV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:14,color:'#ffffff'}, cliponaxis:false}],
+  Plotly.newPlot('salesChart', [{type:'bar', x:months, y:gsV, marker:{color:'#b08d57'}, text:gsV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}],
     {margin:{t:40,b:45,l:65,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
      font:{size:14,color:'#a0b4c8'}, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'},
      height:320, hovermode:'x unified', showlegend:false},
     {responsive:true, displayModeBar:false});
 
   const expV = months.map((_,i) => M[i].exp * c.rate);
-  Plotly.newPlot('expChart', [{type:'bar', x:months, y:expV, marker:{color:'#c0392b'},     text:expV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:14,color:'#ffffff'}, cliponaxis:false}],
+  Plotly.newPlot('expChart', [{type:'bar', x:months, y:expV, marker:{color:'#c0392b'},     text:expV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}],
     {margin:{t:40,b:45,l:65,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
      font:{size:14,color:'#a0b4c8'}, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'},
      height:320, hovermode:'x unified', showlegend:false},
@@ -592,8 +592,8 @@ async function loadData() {
 
   const nsV = months.map((_,i) => M[i].ns * c.rate);
   Plotly.newPlot('monthlyChart', [
-    {type:'bar', name:'Net Sales', x:months, y:nsV, marker:{color:'#b08d57'}, text:nsV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:13,color:'#ffffff'}, cliponaxis:false},
-    {type:'bar', name:'Expenses', x:months, y:expV, marker:{color:'#c0392b'}, text:expV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:13,color:'#ffffff'}, cliponaxis:false}
+    {type:'bar', name:'Net Sales', x:months, y:nsV, marker:{color:'#b08d57'}, text:nsV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false},
+    {type:'bar', name:'Expenses', x:months, y:expV, marker:{color:'#c0392b'}, text:expV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}
   ], {margin:{t:50,b:45,l:65,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:14,color:'#a0b4c8'}, barmode:'group', height:330, hovermode:'x unified',
       legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:14,color:'#a0b4c8'}},
@@ -602,7 +602,7 @@ async function loadData() {
   const depts = Object.keys(d.depts);
   const dVals = Object.values(d.depts).map(v => v * c.rate);
   Plotly.newPlot('deptChart', [{type:'bar', orientation:'h', x:dVals, y:depts,
-    marker:{color:'#8a7fb8'}, text:dVals.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:13,color:'#ffffff'}, cliponaxis:false}],
+    marker:{color:'#8a7fb8'}, text:dVals.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}],
     {margin:{t:15,b:25,l:160,r:150}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
      font:{size:14,color:'#a0b4c8'}, height:Math.max(300, depts.length*45), hovermode:'y unified', showlegend:false,
      xaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'}}, {responsive:true, displayModeBar:false});
@@ -638,7 +638,7 @@ async function loadData() {
   const buSalesPct = busUnits.map(x => x.sales_pct);
   Plotly.newPlot('buSalesChart', [{
     type:'pie', labels:buNames, values:buSalesPct,
-    text:buSalesPct.map(v => v.toFixed(1) + '%'), textinfo:'label+percent', textfont:{size:20,color:'#ffffff'},
+    text:buSalesPct.map(v => v.toFixed(1) + '%'), textinfo:'label+percent', textfont:{size:16,color:'#ffffff',family:'Arial Black'},
     marker:{colors:buColors.slice(0,buNames.length),line:{color:'#fff',width:3}},
     hovertemplate:'%{label}<br>%{value:.1f}%<extra></extra>'}],
     {margin:{t:5,b:5,l:5,r:5}, paper_bgcolor:'rgba(0,0,0,0)', height:320, showlegend:true,
@@ -648,7 +648,7 @@ async function loadData() {
   // Monthly Quantity Sold
   const qtyVals = months.map((_,i) => M[i].qty);
   Plotly.newPlot('qtyChart', [{type:'bar', x:months, y:qtyVals,
-    marker:{color:'#5a8a5e'}, text:qtyVals.map(v => v > 0 ? v.toLocaleString() : ''), textposition:'outside', textfont:{size:22,color:'#ffffff',family:'Arial'}, cliponaxis:false}],
+    marker:{color:'#5a8a5e'}, text:qtyVals.map(v => v > 0 ? v.toLocaleString() : ''), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}],
     {margin:{t:50,b:50,l:80,r:30}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
      font:{size:15,color:'#a0b4c8'}, yaxis:{rangemode:'tozero',gridcolor:'rgba(255,255,255,0.04)',automargin:true},
      height:420, hovermode:'x unified', showlegend:false, bargap:0.3},
@@ -661,8 +661,8 @@ async function loadData() {
   const nsLabels = nnsV.map(v => v > 0 ? fmtBig(v)+' '+c.symbol : '');
   const cogsLabels = ncogsV.map(v => v > 0 ? fmtBig(v)+' '+c.symbol : '');
   Plotly.newPlot('cogsChart', [
-    {type:'bar', name:'Net Sales', x:months, y:nnsV, marker:{color:'#b08d57'}, text:nsLabels, textposition:'outside', textfont:{size:24,color:'#ffffff',family:'Arial Black'}, cliponaxis:false},
-    {type:'bar', name:'COGS', x:months, y:ncogsV, marker:{color:'#a07830'}, text:cogsLabels, textposition:'outside', textfont:{size:24,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}
+    {type:'bar', name:'Net Sales', x:months, y:nnsV, marker:{color:'#b08d57'}, text:nsLabels, textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false},
+    {type:'bar', name:'COGS', x:months, y:ncogsV, marker:{color:'#a07830'}, text:cogsLabels, textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}
   ], {margin:{t:60,b:50,l:80,r:30}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:15,color:'#a0b4c8'}, barmode:'group', height:450, hovermode:'x unified', bargap:0.25, bargroupgap:0.1,
       legend:{orientation:'h',y:1.12,x:.5,xanchor:'center',font:{size:15,color:'#a0b4c8'}},
@@ -712,7 +712,7 @@ async function loadStyleAnalysis() {
       increasing:{marker:{color:'#6a9b6e'}},
       totals:{marker:{color:'#b08d57'}},
       text: wfVals.map(v => fmtS(v*c.rate)),
-      textposition:'outside', textfont:{size:13,color:'#ffffff'}, cliponaxis:false
+      textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false
     }], {
       margin:{t:40,b:70,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:12,color:'#a0b4c8'}, height:400, showlegend:false,
@@ -723,7 +723,7 @@ async function loadStyleAnalysis() {
     const npColors = npVals.map(v => v >= 0 ? '#6a9b6e' : '#c0392b');
     Plotly.newPlot('styleNpChart', [{
       type:'bar', x:po, y:npVals, marker:{color:npColors},
-      text:npVals.map(v=>fmtS(v)+' '+c.symbol), textposition:'outside', textfont:{size:13,color:'#ffffff'}, cliponaxis:false
+      text:npVals.map(v=>fmtS(v)+' '+c.symbol), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false
     }], {
       margin:{t:40,b:45,l:65,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:12,color:'#a0b4c8'}, height:350, showlegend:false, xaxis:{tickangle:-30},
@@ -733,7 +733,7 @@ async function loadStyleAnalysis() {
     Plotly.newPlot('styleCogsPie', [{
       type:'pie', labels:po, values:cb.total_cogs.values,
       text:cb.total_cogs.values.map(v=>fmtS(v*c.rate)), textinfo:'label+percent',
-      textfont:{size:14,color:'#ffffff'},
+      textfont:{size:16,color:'#ffffff',family:'Arial Black'},
       marker:{colors:['#b08d57','#c9a96e','#6a9b6e','#8a7fb8','#c0392b'],line:{color:'#fff',width:2}},
       hovertemplate:'%{label}<br>'+c.symbol+': %{text}<br>%{percent}<extra></extra>'
     }], {
@@ -771,8 +771,8 @@ async function loadStyleAnalysis() {
     const gpMargins = cb.gross_profit_margin.values.map(v => v * 100);
     const npMargins = pf.net_profit_margin.values.map(v => v * 100);
     Plotly.newPlot('styleMarginChart', [
-      {type:'scatter', mode:'lines+markers', name:'GP Margin', x:po, y:gpMargins, line:{color:'#8a7fb8',width:3}, marker:{size:10,color:'#8a7fb8'}, text:gpMargins.map(v=>v.toFixed(1)+'%'), textposition:'top center', textfont:{size:13,color:'#8a7fb8'}},
-      {type:'scatter', mode:'lines+markers', name:'NP Margin', x:po, y:npMargins, line:{color:'#6a9b6e',width:3}, marker:{size:10,color:'#6a9b6e'}, text:npMargins.map(v=>v.toFixed(1)+'%'), textposition:'top center', textfont:{size:13,color:'#6a9b6e'}}
+      {type:'scatter', mode:'lines+markers', name:'GP Margin', x:po, y:gpMargins, line:{color:'#8a7fb8',width:3}, marker:{size:10,color:'#8a7fb8'}, text:gpMargins.map(v=>v.toFixed(1)+'%'), textposition:'top center', textfont:{size:16,color:'#ffffff',family:'Arial Black'}},
+      {type:'scatter', mode:'lines+markers', name:'NP Margin', x:po, y:npMargins, line:{color:'#6a9b6e',width:3}, marker:{size:10,color:'#6a9b6e'}, text:npMargins.map(v=>v.toFixed(1)+'%'), textposition:'top center', textfont:{size:16,color:'#ffffff',family:'Arial Black'}}
     ], {
       margin:{t:50,b:50,l:60,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:12,color:'#a0b4c8'}, height:350, showlegend:true, xaxis:{tickangle:-30},
@@ -843,7 +843,7 @@ async function loadInvestmentData() {
         y:metrics.map(m => data[m].y2025*100),
         marker:{color:colors[asset],opacity:0.9},
         text:metrics.map(m => pct(data[m].y2025)),
-        textposition:'outside', textfont:{size:11,color:'#ffffff'}, cliponaxis:false,
+        textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false,
         offset: ai * 0.25
       });
     });
@@ -881,7 +881,7 @@ async function loadInvestmentData() {
         y:riskKeys.map(k => Math.abs(data[k].y2026a)*100),
         marker:{color:colors[asset]},
         text:riskKeys.map(k => pct(Math.abs(data[k].y2026a))),
-        textposition:'outside', textfont:{size:11,color:'#ffffff'}, cliponaxis:false
+        textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false
       });
     });
     Plotly.newPlot('invRiskMetrics', traces_rm, {
@@ -899,7 +899,7 @@ async function loadInvestmentData() {
     const corrText = corrMatrix.map(row => row.map(v => v.toFixed(3)));
     Plotly.newPlot('invCorrChart', [{
       type:'heatmap', z:corrMatrix, x:corrLabels, y:corrLabels,
-      text:corrText, texttemplate:'%{text}', textfont:{size:16,color:'#ffffff'},
+      text:corrText, texttemplate:'%{text}', textfont:{size:16,color:'#ffffff',family:'Arial Black'},
       colorscale:[[0,'#c0392b'],[0.5,'#1e293b'],[1,'#6a9b6e']],
       zmin:-1, zmax:1,
       hovertemplate:'%{x} vs %{y}<br>Correlation: %{z:.3f}<extra></extra>'
@@ -913,7 +913,7 @@ async function loadInvestmentData() {
       type:'pie', labels:['Gold','Silver','Swiss Frank'],
       values:[pw.gold*100,pw.silver*100,pw.swiss*100],
       text:[(pw.gold*100).toFixed(0)+'%',(pw.silver*100).toFixed(0)+'%',(pw.swiss*100).toFixed(0)+'%'],
-      textinfo:'label+percent', textfont:{size:18,color:'#ffffff'},
+      textinfo:'label+percent', textfont:{size:16,color:'#ffffff',family:'Arial Black'},
       marker:{colors:['#c9a96e','#94a3b8','#b08d57'],line:{color:'#fff',width:3}},
       hovertemplate:'%{label}<br>%{value:.0f}%<extra></extra>'
     }], {
@@ -925,9 +925,9 @@ async function loadInvestmentData() {
     const perfForecast = [inv.annual_return.forecast, inv.return_after_loss.forecast, inv.pv.forecast];
     Plotly.newPlot('invPerfChart', [
       {type:'bar', name:'2026 Actual', x:perfLabels, y:perfActual, marker:{color:'#b08d57'},
-       text:perfActual.map(v=>fmtM(v*c.rate)+' '+c.symbol), textposition:'outside', textfont:{size:13,color:'#ffffff'}, cliponaxis:false},
+       text:perfActual.map(v=>fmtM(v*c.rate)+' '+c.symbol), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false},
       {type:'bar', name:'2026 Forecast', x:perfLabels, y:perfForecast, marker:{color:'#c9a96e'},
-       text:perfForecast.map(v=>fmtM(v*c.rate)+' '+c.symbol), textposition:'outside', textfont:{size:13,color:'#ffffff'}, cliponaxis:false}
+       text:perfForecast.map(v=>fmtM(v*c.rate)+' '+c.symbol), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}
     ], {
       margin:{t:50,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:12,color:'#a0b4c8'}, barmode:'group', height:380,
@@ -969,8 +969,8 @@ async function loadCashflowData() {
     const outVals = months.map(m => -s.monthly_spending[m] * c.rate);
     const netVals = months.map(m => s.monthly_net[m] * c.rate);
     Plotly.newPlot('cfMonthlyChart', [
-      {type:'bar', name:'Collections', x:months.map(m=>monthNames[m]), y:inVals, marker:{color:'#6a9b6e'}, text:inVals.map(v=>fmtFull(v/c.rate)), textposition:'outside', textfont:{size:11,color:'#ffffff'}, cliponaxis:false},
-      {type:'bar', name:'Spending', x:months.map(m=>monthNames[m]), y:outVals, marker:{color:'#c0392b'}, text:outVals.map(v=>'(-'+fmtFull(-v/c.rate)+')'), textposition:'outside', textfont:{size:11,color:'#ffffff'}, cliponaxis:false},
+      {type:'bar', name:'Collections', x:months.map(m=>monthNames[m]), y:inVals, marker:{color:'#6a9b6e'}, text:inVals.map(v=>fmtFull(v/c.rate)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false},
+      {type:'bar', name:'Spending', x:months.map(m=>monthNames[m]), y:outVals, marker:{color:'#c0392b'}, text:outVals.map(v=>'(-'+fmtFull(-v/c.rate)+')'), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false},
       {type:'scatter', mode:'lines+markers', name:'Net Cash Flow', x:months.map(m=>monthNames[m]), y:netVals, line:{color:'#b08d57',width:3}, marker:{size:10}}
     ], {
       margin:{t:50,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
@@ -982,7 +982,7 @@ async function loadCashflowData() {
     const buKeys = Object.keys(s.bu_collections_actual).filter(k=>k!=='TOTAL');
     Plotly.newPlot('cfBuChart', [{
       type:'pie', labels:buKeys, values:buKeys.map(k=>s.bu_collections_actual[k]*c.rate),
-      textinfo:'label+percent', textfont:{size:14,color:'#ffffff'},
+      textinfo:'label+percent', textfont:{size:16,color:'#ffffff',family:'Arial Black'},
       marker:{colors:['#b08d57','#8a7fb8','#6a9b6e','#c9a96e'],line:{color:'#fff',width:3}},
       hovertemplate:'%{label}<br>'+c.symbol+' %{value:,.0f}<br>%{percent}<extra></extra>'
     }], {
@@ -994,7 +994,7 @@ async function loadCashflowData() {
     const payColors = {'Bank Transfer':'#b08d57','Cash':'#6a9b6e','Cheque':'#c9a96e'};
     Plotly.newPlot('cfPayChart', [{
       type:'doughnut', labels:payKeys, values:payKeys.map(k=>s.payment_status[k]*c.rate),
-      textinfo:'label+percent', textfont:{size:14,color:'#ffffff'},
+      textinfo:'label+percent', textfont:{size:16,color:'#ffffff',family:'Arial Black'},
       marker:{colors:payKeys.map(k=>payColors[k]||'#8a7fb8'),line:{color:'#fff',width:3}},
       hole:0.5, hovertemplate:'%{label}<br>'+c.symbol+' %{value:,.0f}<br>%{percent}<extra></extra>'
     }], {
@@ -1008,7 +1008,7 @@ async function loadCashflowData() {
       type:'bar', x:deptKeys, y:deptKeys.map(k=>s.dept_spending_actual[k]*c.rate),
       marker:{color:deptKeys.map(k=>deptColors[k]||'#6a9b6e')},
       text:deptKeys.map(k=>fmtFull(s.dept_spending_actual[k])),
-      textposition:'outside', textfont:{size:12,color:'#ffffff'}, cliponaxis:false
+      textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false
     }], {
       margin:{t:30,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:12,color:'#a0b4c8'}, height:350,
@@ -1020,7 +1020,7 @@ async function loadCashflowData() {
       type:'bar', y:catKeys, x:catKeys.map(k=>s.category_spending[k]*c.rate),
       orientation:'h', marker:{color:'#c0392b'},
       text:catKeys.map(k=>fmtFull(s.category_spending[k])),
-      textposition:'outside', textfont:{size:11,color:'#ffffff'}, cliponaxis:false
+      textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false
     }], {
       margin:{t:10,b:40,l:120,r:60}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:12,color:'#a0b4c8'}, height:380,
@@ -1061,7 +1061,7 @@ async function loadCashflowData() {
         type:'bar', x:agingKeys, y:agingKeys.map(k=>s.aging[k].amount*c.rate),
         marker:{color:agingKeys.map((_,i)=>['#6a9b6e','#c9a96e','#c0392b'][i]||'#666')},
         text:agingKeys.map(k=>s.aging[k].aging+'<br>'+fmtFull(s.aging[k].amount)),
-        textposition:'outside', textfont:{size:12,color:'#ffffff'}, cliponaxis:false
+        textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false
       }], {
         margin:{t:30,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
         font:{size:12,color:'#a0b4c8'}, height:350,
@@ -1074,7 +1074,7 @@ async function loadCashflowData() {
       type:'bar', y:custKeys, x:custKeys.map(k=>s.customer_collections[k]*c.rate),
       orientation:'h', marker:{color:'#6a9b6e'},
       text:custKeys.map(k=>fmtFull(s.customer_collections[k])),
-      textposition:'outside', textfont:{size:11,color:'#ffffff'}, cliponaxis:false
+      textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false
     }], {
       margin:{t:10,b:40,l:120,r:60}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:12,color:'#a0b4c8'}, height:400,
@@ -1086,7 +1086,7 @@ async function loadCashflowData() {
       type:'bar', x:catKeysBar, y:catKeysBar.map(k=>s.category_spending[k]*c.rate),
       marker:{color:'#8a7fb8'},
       text:catKeysBar.map(k=>fmtFull(s.category_spending[k])),
-      textposition:'outside', textfont:{size:11,color:'#ffffff'}, cliponaxis:false
+      textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false
     }], {
       margin:{t:30,b:80,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:12,color:'#a0b4c8'}, height:400,
@@ -1096,9 +1096,9 @@ async function loadCashflowData() {
     const cfBUs = Object.keys(s.bu_collections_forecast).filter(k=>k!=='TOTAL');
     Plotly.newPlot('cfCollForecastChart', [
       {type:'bar', name:'Actual', x:cfBUs, y:cfBUs.map(bu=>(s.bu_collections_actual[bu]||0)*c.rate),
-       marker:{color:'#b08d57'}, text:cfBUs.map(bu=>fmtFull(s.bu_collections_actual[bu]||0)), textposition:'outside', textfont:{size:12,color:'#ffffff'}, cliponaxis:false},
+       marker:{color:'#b08d57'}, text:cfBUs.map(bu=>fmtFull(s.bu_collections_actual[bu]||0)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false},
       {type:'bar', name:'Forecast', x:cfBUs, y:cfBUs.map(bu=>s.bu_collections_forecast[bu]*c.rate),
-       marker:{color:'#c9a96e'}, text:cfBUs.map(bu=>fmtFull(s.bu_collections_forecast[bu])), textposition:'outside', textfont:{size:12,color:'#ffffff'}, cliponaxis:false}
+       marker:{color:'#c9a96e'}, text:cfBUs.map(bu=>fmtFull(s.bu_collections_forecast[bu])), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}
     ], {
       margin:{t:50,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:12,color:'#a0b4c8'}, barmode:'group', height:380,
@@ -1109,9 +1109,9 @@ async function loadCashflowData() {
     const cfDepts = Object.keys(s.dept_spending_forecast).filter(k=>k!=='TOTAL');
     Plotly.newPlot('cfSpendForecastChart', [
       {type:'bar', name:'Actual', x:cfDepts, y:cfDepts.map(d=>(s.dept_spending_actual[d]||0)*c.rate),
-       marker:{color:'#c0392b'}, text:cfDepts.map(d=>fmtFull(s.dept_spending_actual[d]||0)), textposition:'outside', textfont:{size:12,color:'#ffffff'}, cliponaxis:false},
+       marker:{color:'#c0392b'}, text:cfDepts.map(d=>fmtFull(s.dept_spending_actual[d]||0)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false},
       {type:'bar', name:'Forecast', x:cfDepts, y:cfDepts.map(d=>s.dept_spending_forecast[d]*c.rate),
-       marker:{color:'#c9a96e'}, text:cfDepts.map(d=>fmtFull(s.dept_spending_forecast[d])), textposition:'outside', textfont:{size:12,color:'#ffffff'}, cliponaxis:false}
+       marker:{color:'#c9a96e'}, text:cfDepts.map(d=>fmtFull(s.dept_spending_forecast[d])), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}
     ], {
       margin:{t:50,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:12,color:'#a0b4c8'}, barmode:'group', height:380,
@@ -1289,8 +1289,8 @@ async function loadPnlData() {
   const deptAct = depts.map(k => d.dept_expenses[k].actual * cr.rate);
   const deptFct = depts.map(k => d.dept_expenses[k].forecast * cr.rate);
   Plotly.newPlot('pnlDeptChart', [
-    {type:'bar', orientation:'h', name:'Actual', x:deptAct, y:depts, marker:{color:'#8a7fb8'}, text:deptAct.map(v=>pnlFmtShort(v)), textposition:'outside', textfont:{size:13,color:'#e2e8f0'}},
-    {type:'bar', orientation:'h', name:'Forecast', x:deptFct, y:depts, marker:{color:'#c4b5fd'}, text:deptFct.map(v=>pnlFmtShort(v)), textposition:'outside', textfont:{size:13,color:'#94a3b8'}}
+    {type:'bar', orientation:'h', name:'Actual', x:deptAct, y:depts, marker:{color:'#8a7fb8'}, text:deptAct.map(v=>pnlFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}},
+    {type:'bar', orientation:'h', name:'Forecast', x:deptFct, y:depts, marker:{color:'#c4b5fd'}, text:deptFct.map(v=>pnlFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}}
   ], {margin:{t:15,b:25,l:160,r:150}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#a0b4c8',size:13},
       barmode:'group', height:Math.max(250, depts.length*50), hovermode:'y unified',
       legend:{orientation:'h',y:1.05,x:.5,xanchor:'center',font:{size:12,color:'#a0b4c8'}},
@@ -1305,11 +1305,11 @@ async function loadPnlData() {
     {type:'waterfall', name:'Actual', x:pnlLabels, y:pnlActVals, measure:waterfallMeasures,
      decreasing:{marker:{color:'#c0392b'}}, increasing:{marker:{color:'#6a9b6e'}}, totals:{marker:{color:'#b08d57'}},
      connector:{line:{color:'rgba(255,255,255,0.2)', width:2}},
-     text:pnlActVals.map(v => pnlFmtShort(v)), textposition:'outside', textfont:{size:11,color:'#e2e8f0'}},
+     text:pnlActVals.map(v => pnlFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}},
     {type:'waterfall', name:'Forecast', x:pnlLabels, y:pnlFctVals, measure:waterfallMeasures,
      decreasing:{marker:{color:'#fca5a5'}}, increasing:{marker:{color:'#86efac'}}, totals:{marker:{color:'#d4b87a'}},
      connector:{line:{color:'rgba(255,255,255,0.1)', width:1}},
-     text:pnlFctVals.map(v => pnlFmtShort(v)), textposition:'outside', textfont:{size:11,color:'#94a3b8'},
+     text:pnlFctVals.map(v => pnlFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'},
      opacity:0.7}
   ], {margin:{t:50,b:40,l:55,r:15}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#a0b4c8',size:12},
       height:280, hovermode:'x unified',
@@ -1350,7 +1350,7 @@ function buildGroupedBar(divId, labels, series, title) {
   const c = getCurrency();
   const traces = series.map(s => ({
     type:'bar', name:s.name, x:labels, y:s.y, marker:{color:s.color},
-    text:s.y.map(v=>pnlFmtShort(v)), textposition:'outside', textfont:{size:12, color:'#e2e8f0'}, cliponaxis:false
+    text:s.y.map(v=>pnlFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false
   }));
   Plotly.newPlot(divId, traces, {
     margin:{t:50,b:35,l:55,r:15}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
@@ -1400,8 +1400,8 @@ async function loadSalesData() {
   const retVals = sf.monthly.map(m=>m.returns * cr.rate);
   const discVals = sf.monthly.map(m=>m.discounts * cr.rate);
   Plotly.newPlot('salesDedChart', [
-    {type:'bar', name:'Returns', x:actMonths, y:retVals, marker:{color:'#c0392b'}, text:retVals.map(v=>salesFmtShort(v)), textposition:'outside', textfont:{size:12,color:'#e2e8f0'}},
-    {type:'bar', name:'Discounts', x:actMonths, y:discVals, marker:{color:'#c9a96e'}, text:discVals.map(v=>salesFmtShort(v)), textposition:'outside', textfont:{size:12,color:'#e2e8f0'}}
+    {type:'bar', name:'Returns', x:actMonths, y:retVals, marker:{color:'#c0392b'}, text:retVals.map(v=>salesFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}},
+    {type:'bar', name:'Discounts', x:actMonths, y:discVals, marker:{color:'#c9a96e'}, text:discVals.map(v=>salesFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}}
   ], {margin:{t:45,b:40,l:60,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#a0b4c8',size:13},
       barmode:'group', height:300, hovermode:'x unified',
       legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:12,color:'#a0b4c8'}},
@@ -1409,7 +1409,7 @@ async function loadSalesData() {
 
   // 3. Quantity Sold
   const qtyV = actMonths.map((_,i)=>M[i].qty);
-  Plotly.newPlot('salesQtyChart', [{type:'bar', x:actMonths, y:qtyV, marker:{color:'#a07830'}, text:qtyV.map(v=>v.toLocaleString()), textposition:'outside', textfont:{size:13,color:'#e2e8f0'}, cliponaxis:false}],
+  Plotly.newPlot('salesQtyChart', [{type:'bar', x:actMonths, y:qtyV, marker:{color:'#a07830'}, text:qtyV.map(v=>v.toLocaleString()), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}],
     {margin:{t:45,b:40,l:60,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#a0b4c8',size:13},
      yaxis:{rangemode:'tozero',gridcolor:'rgba(255,255,255,0.04)'}, height:300, hovermode:'x unified', showlegend:false},
     {responsive:true, displayModeBar:false});
@@ -1419,7 +1419,7 @@ async function loadSalesData() {
   const buColors = ['#8a6d3b','#5a8a5e','#a07830','#7a6faa'];
   Plotly.newPlot('salesBUChart', [{
     type:'pie', labels:bu.map(x=>x.name), values:bu.map(x=>x.sales_pct),
-    text:bu.map(x=>x.sales_pct.toFixed(1)+'%'), textinfo:'label+percent', textfont:{size:15,color:'#ffffff'},
+    text:bu.map(x=>x.sales_pct.toFixed(1)+'%'), textinfo:'label+percent', textfont:{size:16,color:'#ffffff',family:'Arial Black'},
     marker:{colors:buColors.slice(0,bu.length),line:{color:'#fff',width:2}},
     hovertemplate:'%{label}<br>%{value:.1f}%<extra></extra>'}],
     {margin:{t:5,b:5,l:5,r:5}, paper_bgcolor:'rgba(0,0,0,0)', height:290, showlegend:true,
@@ -1430,7 +1430,7 @@ async function loadSalesData() {
   const tc = d.top_customers;
   Plotly.newPlot('salesTopChart', [{type:'bar', orientation:'h', x:tc.map(x=>x.sales*cr.rate), y:tc.map(x=>x.name),
     marker:{color:['#b08d57','#c4a265','#d4b87a','#e0c88f','#ecdaa3']},
-    text:tc.map(x=>salesFmtShort(x.sales*cr.rate)), textposition:'outside', textfont:{size:13,color:'#e2e8f0'}}],
+    text:tc.map(x=>salesFmtShort(x.sales*cr.rate)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}}],
     {margin:{t:10,b:20,l:100,r:150}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#a0b4c8',size:13},
      height:Math.max(200, tc.length*40), hovermode:'y unified', showlegend:false,
      xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(255,255,255,0.04)'}}, {responsive:true, displayModeBar:false});
@@ -1438,7 +1438,7 @@ async function loadSalesData() {
   // 6. Top Types
   const tt = d.top_types;
   Plotly.newPlot('salesTypeChart', [{type:'bar', orientation:'h', x:tt.map(x=>x.sales*cr.rate), y:tt.map(x=>x.name),
-    marker:{color:'#b08d57'}, text:tt.map(x=>salesFmtShort(x.sales*cr.rate)), textposition:'outside', textfont:{size:13,color:'#e2e8f0'}}],
+    marker:{color:'#b08d57'}, text:tt.map(x=>salesFmtShort(x.sales*cr.rate)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}}],
     {margin:{t:10,b:20,l:120,r:150}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#a0b4c8',size:13},
      height:Math.max(200, tt.length*40), hovermode:'y unified', showlegend:false,
      xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(255,255,255,0.04)'}}, {responsive:true, displayModeBar:false});
@@ -1446,7 +1446,7 @@ async function loadSalesData() {
   // 7. Top Fabrics
   const tf = d.top_fabrics;
   Plotly.newPlot('salesFabricChart', [{type:'bar', orientation:'h', x:tf.map(x=>x.sales*cr.rate), y:tf.map(x=>x.name),
-    marker:{color:'#5c7cfa'}, text:tf.map(x=>salesFmtShort(x.sales*cr.rate)), textposition:'outside', textfont:{size:13,color:'#e2e8f0'}}],
+    marker:{color:'#5c7cfa'}, text:tf.map(x=>salesFmtShort(x.sales*cr.rate)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}}],
     {margin:{t:10,b:20,l:120,r:150}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#a0b4c8',size:13},
      height:Math.max(200, tf.length*40), hovermode:'y unified', showlegend:false,
      xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(255,255,255,0.04)'}}, {responsive:true, displayModeBar:false});
@@ -1503,8 +1503,8 @@ async function loadExpensesData() {
   const deptAct = depts.map(k=>p.dept_expenses[k].actual*cr.rate);
   const deptFct = depts.map(k=>p.dept_expenses[k].forecast*cr.rate);
   Plotly.newPlot('expDeptChart', [
-    {type:'bar', orientation:'h', name:'Actual', x:deptAct, y:depts, marker:{color:'#8a7fb8'}, text:deptAct.map(v=>expFmtShort(v)), textposition:'outside', textfont:{size:12,color:'#e2e8f0'}},
-    {type:'bar', orientation:'h', name:'Forecast', x:deptFct, y:depts, marker:{color:'#c4b5fd'}, text:deptFct.map(v=>expFmtShort(v)), textposition:'outside', textfont:{size:12,color:'#94a3b8'}}
+    {type:'bar', orientation:'h', name:'Actual', x:deptAct, y:depts, marker:{color:'#8a7fb8'}, text:deptAct.map(v=>expFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}},
+    {type:'bar', orientation:'h', name:'Forecast', x:deptFct, y:depts, marker:{color:'#c4b5fd'}, text:deptFct.map(v=>expFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}}
   ], {margin:{t:15,b:25,l:165,r:150}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#a0b4c8',size:13},
       barmode:'group', height:Math.max(250, depts.length*50), hovermode:'y unified',
       legend:{orientation:'h',y:1.05,x:.5,xanchor:'center',font:{size:12,color:'#a0b4c8'}},
@@ -1514,7 +1514,7 @@ async function loadExpensesData() {
   const varVals = monthly.map(m=>(m.expenses.actual - m.expenses.forecast)*cr.rate);
   const varColors = varVals.map(v=>v <= 0 ? '#6a9b6e' : '#c0392b');
   Plotly.newPlot('expVarChart', [{type:'bar', x:months, y:varVals, marker:{color:varColors},
-    text:varVals.map(v=>(v<=0?'':'+')+expFmtShort(v)), textposition:'outside', textfont:{size:13,color:'#e2e8f0'}, cliponaxis:false}],
+    text:varVals.map(v=>(v<=0?'':'+')+expFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}],
     {margin:{t:45,b:40,l:60,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#a0b4c8',size:13},
      yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(255,255,255,0.04)'}, height:300, hovermode:'x unified', showlegend:false},
     {responsive:true, displayModeBar:false});
@@ -1523,7 +1523,7 @@ async function loadExpensesData() {
   const pieColors = ['#c0392b','#c9a96e','#8a7fb8','#b08d57','#5c7cfa','#6a9b6e','#d4709f'];
   Plotly.newPlot('expPieChart', [{
     type:'pie', labels:depts, values:deptAct,
-    text:deptAct.map(v=>expFmtShort(v)), textinfo:'label+percent', textfont:{size:13,color:'#ffffff'},
+    text:deptAct.map(v=>expFmtShort(v)), textinfo:'label+percent', textfont:{size:16,color:'#ffffff',family:'Arial Black'},
     marker:{colors:pieColors.slice(0,depts.length),line:{color:'#fff',width:2}},
     hovertemplate:'%{label}<br>%{value:,.0f} '+cr.symbol+'<extra></extra>'}],
     {margin:{t:5,b:5,l:5,r:5}, paper_bgcolor:'rgba(0,0,0,0)', height:300, showlegend:true,
