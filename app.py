@@ -643,26 +643,23 @@ async function loadData() {
 
   // Monthly Quantity Sold
   const qtyVals = months.map((_,i) => M[i].qty);
-  const qtyLabels = qtyVals.map(v => v > 0 ? v.toLocaleString() : '');
   Plotly.newPlot('qtyChart', [{type:'bar', x:months, y:qtyVals,
-    marker:{color:'#5a8a5e'}, text:qtyLabels, textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial'}, cliponaxis:false}],
-    {margin:{t:40,b:45,l:55,r:15}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-     font:{size:13,color:'#a0b4c8'}, yaxis:{rangemode:'tozero',gridcolor:'rgba(255,255,255,0.04)',automargin:true},
-     height:360, hovermode:'x unified', showlegend:false, bargap:0.3},
+    marker:{color:'#5a8a5e'}, text:qtyVals.map(v => v.toLocaleString()), textposition:'outside', textfont:{size:20,color:'#ffffff'}, cliponaxis:false}],
+    {margin:{t:30,b:45,l:65,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+     font:{size:14,color:'#a0b4c8'}, yaxis:{rangemode:'tozero',gridcolor:'rgba(255,255,255,0.04)'},
+     height:320, hovermode:'x unified', showlegend:false},
     {responsive:true, displayModeBar:false});
 
   // Monthly Net Sales vs COGS
   const ncogsV = months.map((_,i) => M[i].cogs * c.rate);
   const nnsV = months.map((_,i) => M[i].ns * c.rate);
-  const nsLabels = nnsV.map(v => v > 0 ? fmtNoSymbol(v)+' '+c.symbol : '');
-  const cogsLabels = ncogsV.map(v => v > 0 ? fmtNoSymbol(v)+' '+c.symbol : '');
   Plotly.newPlot('cogsChart', [
-    {type:'bar', name:'Net Sales', x:months, y:nnsV, marker:{color:'#b08d57'}, text:nsLabels, textposition:'outside', textfont:{size:11,color:'#ffffff',family:'Arial'}, cliponaxis:false},
-    {type:'bar', name:'COGS', x:months, y:ncogsV, marker:{color:'#a07830'}, text:cogsLabels, textposition:'outside', textfont:{size:11,color:'#ffffff',family:'Arial'}, cliponaxis:false}
-  ], {margin:{t:40,b:45,l:55,r:15}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:13,color:'#a0b4c8'}, barmode:'group', height:360, hovermode:'x unified', bargap:0.25, bargroupgap:0.1,
-      legend:{orientation:'h',y:1.12,x:.5,xanchor:'center',font:{size:13,color:'#a0b4c8'}},
-      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)',automargin:true}}, {responsive:true, displayModeBar:false});
+    {type:'bar', name:'Net Sales', x:months, y:nnsV, marker:{color:'#b08d57'}, text:nnsV.map(v=>fmtNoSymbol(v)+' '+c.symbol), textposition:'outside', textfont:{size:16,color:'#ffffff'}, cliponaxis:false},
+    {type:'bar', name:'COGS', x:months, y:ncogsV, marker:{color:'#a07830'}, text:ncogsV.map(v=>fmtNoSymbol(v)+' '+c.symbol), textposition:'outside', textfont:{size:16,color:'#ffffff'}, cliponaxis:false}
+  ], {margin:{t:30,b:45,l:65,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+      font:{size:14,color:'#a0b4c8'}, barmode:'group', height:330, hovermode:'x unified',
+      legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:14,color:'#a0b4c8'}},
+      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'}}, {responsive:true, displayModeBar:false});
   renderCurrencyChart();
   setTimeout(updatePlotlyBlur, 100);
 }
