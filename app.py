@@ -657,13 +657,14 @@ async function loadData() {
   // Monthly Net Sales vs COGS
   const ncogsV = months.map((_,i) => M[i].cogs * c.rate);
   const nnsV = months.map((_,i) => M[i].ns * c.rate);
-  const nsLabels = nnsV.map(v => v > 0 ? fmtNoSymbol(v)+' '+c.symbol : '');
-  const cogsLabels = ncogsV.map(v => v > 0 ? fmtNoSymbol(v)+' '+c.symbol : '');
+  const fmtBig = v => { const a=Math.abs(v); if(a>=1e6)return (a/1e6).toFixed(1)+'M'; if(a>=1e3)return (a/1e3).toFixed(0)+'K'; return Math.round(a).toString(); };
+  const nsLabels = nnsV.map(v => v > 0 ? fmtBig(v)+' '+c.symbol : '');
+  const cogsLabels = ncogsV.map(v => v > 0 ? fmtBig(v)+' '+c.symbol : '');
   Plotly.newPlot('cogsChart', [
-    {type:'bar', name:'Net Sales', x:months, y:nnsV, marker:{color:'#b08d57'}, text:nsLabels, textposition:'outside', textfont:{size:22,color:'#ffffff',family:'Arial'}, cliponaxis:false},
-    {type:'bar', name:'COGS', x:months, y:ncogsV, marker:{color:'#a07830'}, text:cogsLabels, textposition:'outside', textfont:{size:22,color:'#ffffff',family:'Arial'}, cliponaxis:false}
-  ], {margin:{t:50,b:50,l:80,r:30}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:15,color:'#a0b4c8'}, barmode:'group', height:420, hovermode:'x unified', bargap:0.25, bargroupgap:0.1,
+    {type:'bar', name:'Net Sales', x:months, y:nnsV, marker:{color:'#b08d57'}, text:nsLabels, textposition:'outside', textfont:{size:24,color:'#ffffff',family:'Arial Black'}, cliponaxis:false},
+    {type:'bar', name:'COGS', x:months, y:ncogsV, marker:{color:'#a07830'}, text:cogsLabels, textposition:'outside', textfont:{size:24,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}
+  ], {margin:{t:60,b:50,l:80,r:30}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+      font:{size:15,color:'#a0b4c8'}, barmode:'group', height:450, hovermode:'x unified', bargap:0.25, bargroupgap:0.1,
       legend:{orientation:'h',y:1.12,x:.5,xanchor:'center',font:{size:15,color:'#a0b4c8'}},
       yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)',automargin:true}}, {responsive:true, displayModeBar:false});
   renderCurrencyChart();
