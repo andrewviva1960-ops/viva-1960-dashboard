@@ -516,7 +516,7 @@ function renderCurrencyChart() {
     type: 'bar', x: allCurs, y: vals,
     marker: {color: barColors, line: {color: '#b08d57', width: allCurs.map(n => n === sel ? 2 : 0)}},
     text: vals.map(v => v.toFixed(2) + ' EGP'),
-    textposition: 'outside', textfont: {size: 14, color: '#ffffff'}, cliponaxis: false
+    textposition: 'outside', textfont: {size: 16, color: '#ffffff', family: 'Arial Black'}, cliponaxis: false
   }], {
     margin: {t: 30, b: 45, l: 70, r: 25},
     paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
