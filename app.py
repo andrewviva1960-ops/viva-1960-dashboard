@@ -236,7 +236,7 @@ body:not(.blur-mode) .main .js-plotly-plot svg text{filter:blur(0);transition:fi
   </div>
   <div class="kpi-grid" id="kpiGrid"></div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-university" style="color:var(--accent);margin-right:6px"></i>CBE Official Exchange Rates</h5><span style="font-size:11px;color:var(--text-secondary)">Base: EGP</span></div><div class="chart-body" id="currencyRateChart" style="min-height:280px"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-university" style="color:var(--accent);margin-right:6px"></i>CBE Official Exchange Rates</h5><span style="font-size:11px;color:var(--text-secondary)">Base: EGP</span></div><div class="chart-body" id="currencyRateChart" style="min-height:350px"></div></div>
   </div>
   <div class="chart-grid">
     <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:#8a6d3b;margin-right:6px"></i>Monthly Gross Sales</h5></div><div class="chart-body" id="salesChart"></div></div>
@@ -541,7 +541,7 @@ function renderTopChart(d, c) {
     marker:{color:['#b08d57','#c4a265','#d4b87a','#e0c88f','#ecdaa3']},
     text:vals.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}],
     {margin:{t:50,b:55,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-     font:{size:14,color:'#a0b4c8'}, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'}, height:340,
+     font:{size:14,color:'#a0b4c8'}, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'}, height:350,
      hovermode:'x unified', showlegend:false}, {responsive:true, displayModeBar:false});
 }
 
@@ -580,14 +580,14 @@ async function loadData() {
   Plotly.newPlot('salesChart', [{type:'bar', x:months, y:gsV, marker:{color:'#b08d57'}, text:gsV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}],
     {margin:{t:40,b:45,l:65,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
      font:{size:14,color:'#a0b4c8'}, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'},
-     height:320, hovermode:'x unified', showlegend:false},
+     height:350, hovermode:'x unified', showlegend:false},
     {responsive:true, displayModeBar:false});
 
   const expV = months.map((_,i) => M[i].exp * c.rate);
   Plotly.newPlot('expChart', [{type:'bar', x:months, y:expV, marker:{color:'#c0392b'},     text:expV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}],
     {margin:{t:40,b:45,l:65,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
      font:{size:14,color:'#a0b4c8'}, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'},
-     height:320, hovermode:'x unified', showlegend:false},
+     height:350, hovermode:'x unified', showlegend:false},
     {responsive:true, displayModeBar:false});
 
   const nsV = months.map((_,i) => M[i].ns * c.rate);
@@ -595,7 +595,7 @@ async function loadData() {
     {type:'bar', name:'Net Sales', x:months, y:nsV, marker:{color:'#b08d57'}, text:nsV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false},
     {type:'bar', name:'Expenses', x:months, y:expV, marker:{color:'#c0392b'}, text:expV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}
   ], {margin:{t:50,b:45,l:65,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:14,color:'#a0b4c8'}, barmode:'group', height:330, hovermode:'x unified',
+       font:{size:14,color:'#a0b4c8'}, barmode:'group', height:350, hovermode:'x unified',
       legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:14,color:'#a0b4c8'}},
       yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'}}, {responsive:true, displayModeBar:false});
 
@@ -641,7 +641,7 @@ async function loadData() {
     text:buSalesPct.map(v => v.toFixed(1) + '%'), textinfo:'label+percent', textfont:{size:16,color:'#ffffff',family:'Arial Black'},
     marker:{colors:buColors.slice(0,buNames.length),line:{color:'#fff',width:3}},
     hovertemplate:'%{label}<br>%{value:.1f}%<extra></extra>'}],
-    {margin:{t:5,b:5,l:5,r:5}, paper_bgcolor:'rgba(0,0,0,0)', height:320, showlegend:true,
+    {margin:{t:5,b:5,l:5,r:5}, paper_bgcolor:'rgba(0,0,0,0)', height:350, showlegend:true,
      legend:{orientation:'h',y:-0.12,font:{size:14,color:'#a0b4c8'}}},
     {responsive:true, displayModeBar:false});
 
@@ -651,7 +651,7 @@ async function loadData() {
     marker:{color:'#5a8a5e'}, text:qtyVals.map(v => v > 0 ? v.toLocaleString() : ''), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}],
     {margin:{t:50,b:50,l:80,r:30}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
      font:{size:15,color:'#a0b4c8'}, yaxis:{rangemode:'tozero',gridcolor:'rgba(255,255,255,0.04)',automargin:true},
-     height:420, hovermode:'x unified', showlegend:false, bargap:0.3},
+     height:350, hovermode:'x unified', showlegend:false, bargap:0.3},
     {responsive:true, displayModeBar:false});
 
   // Monthly Net Sales vs COGS
@@ -664,7 +664,7 @@ async function loadData() {
     {type:'bar', name:'Net Sales', x:months, y:nnsV, marker:{color:'#b08d57'}, text:nsLabels, textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false},
     {type:'bar', name:'COGS', x:months, y:ncogsV, marker:{color:'#a07830'}, text:cogsLabels, textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}
   ], {margin:{t:60,b:50,l:80,r:30}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:15,color:'#a0b4c8'}, barmode:'group', height:450, hovermode:'x unified', bargap:0.25, bargroupgap:0.1,
+      font:{size:15,color:'#a0b4c8'}, barmode:'group', height:350, hovermode:'x unified', bargap:0.25, bargroupgap:0.1,
       legend:{orientation:'h',y:1.12,x:.5,xanchor:'center',font:{size:15,color:'#a0b4c8'}},
       yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)',automargin:true}}, {responsive:true, displayModeBar:false});
   renderCurrencyChart();
