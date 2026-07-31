@@ -1089,12 +1089,12 @@ async function loadCashflowData() {
       showlegend:true, legend:{orientation:'h',y:-0.1,font:{size:11,color:'#475569'}}
     }, {responsive:true, displayModeBar:false});
     // Payment status
-    const payKeys = Object.keys(s.payment_status);
-    const payColors = {'Bank Transfer':'#7c3aed','Cash':'#10b981','Cheque':'#a78bfa'};
+    const payKeys = Object.keys(s.payment_status).filter(k=>s.payment_status[k]>0);
+    const payColors = {'Bank Transfer':'#7c3aed','Bank transfer':'#7c3aed','Cash':'#10b981','Cheque':'#a78bfa'};
     Plotly.newPlot('cfPayChart', [{
-      type:'doughnut', labels:payKeys, values:payKeys.map(k=>s.payment_status[k]*c.rate),
+      type:'doughnut', labels:payKeys, values:payKeys.map(k=>Number(s.payment_status[k])*c.rate),
       textinfo:'label+percent', textfont:{size:11,color:'#1e293b',family:'Arial Black'},
-      marker:{colors:payKeys.map(k=>payColors[k]||'#7c3aed'),line:{color:'#e5e7eb',width:3}},
+      marker:{colors:payKeys.map(k=>payColors[k.trim()]||payColors[k]||'#7c3aed'),line:{color:'#e5e7eb',width:3}},
       hole:0.5, hovertemplate:'%{label}<br>'+c.symbol+' %{value:,.0f}<br>%{percent}<extra></extra>'
     }], {
       margin:{t:10,b:10,l:10,r:10}, paper_bgcolor:'rgba(0,0,0,0)', height:300,
