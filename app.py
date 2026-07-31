@@ -1374,9 +1374,23 @@ function confirmEdit() {
   const val = document.getElementById('editModalInput').value.trim();
   if (!val && val !== '0') { closeEditModal(); return; }
   _pushUndo();
-  _editTarget.el.textContent = val;
   const editId = _editTarget.editId;
   const edType = _editTarget.type;
+
+  if (_editTarget._dept) {
+    const numVal = parseFloat(val.replace(/[^0-9.\-]/g, ''));
+    if (isNaN(numVal)) { closeEditModal(); return; }
+    const prefix = _editTarget._prefix || 'pnl';
+    const storeKey = prefix + '_dept_' + _editTarget._dept + '_' + (_editTarget._isActual ? 'act' : 'fct');
+    if (!_overrides.values) _overrides.values = {};
+    _overrides.values[storeKey] = numVal;
+    closeEditModal();
+    _persistOverrides();
+    _refreshCurrentTab();
+    return;
+  }
+
+  if (_editTarget.el) _editTarget.el.textContent = val;
   if (edType === 'value') {
     if (!_overrides.values) _overrides.values = {};
     _overrides.values[editId] = val;
@@ -1384,7 +1398,7 @@ function confirmEdit() {
     if (!_overrides.labels) _overrides.labels = {};
     _overrides.labels[editId] = val;
   }
-  _editTarget.el.classList.remove('editing');
+  if (_editTarget.el) _editTarget.el.classList.remove('editing');
   closeEditModal();
   highlightDirty();
   _persistOverrides();
@@ -1627,15 +1641,33 @@ async function loadPnlData() {
 
   // 5. Department Expenses
   const depts = Object.keys(d.dept_expenses);
-  const deptAct = depts.map(k => d.dept_expenses[k].actual * cr.rate);
-  const deptFct = depts.map(k => d.dept_expenses[k].forecast * cr.rate);
+  const deptAct = depts.map(k => {
+    const ovKey = 'pnl_dept_'+k+'_act';
+    const raw = _overrides && _overrides.values && _overrides.values[ovKey] !== undefined ? _overrides.values[ovKey] : d.dept_expenses[k].actual;
+    return (typeof raw === 'number' ? raw : parseFloat(String(raw).replace(/[^0-9.\-]/g,'')) || 0) * (_overrides && _overrides.values && _overrides.values[ovKey] !== undefined ? 1 : cr.rate);
+  });
+  const deptFct = depts.map(k => {
+    const ovKey = 'pnl_dept_'+k+'_fct';
+    const raw = _overrides && _overrides.values && _overrides.values[ovKey] !== undefined ? _overrides.values[ovKey] : d.dept_expenses[k].forecast;
+    return (typeof raw === 'number' ? raw : parseFloat(String(raw).replace(/[^0-9.\-]/g,'')) || 0) * (_overrides && _overrides.values && _overrides.values[ovKey] !== undefined ? 1 : cr.rate);
+  });
   Plotly.newPlot('pnlDeptChart', [
-    {type:'bar', orientation:'h', name:'Actual', x:deptAct, y:depts, marker:{color:'#7c3aed'}, text:deptAct.map(v=>pnlFmtShort(v)), textposition:'outside', textfont:{size:11,color:'#1e293b',family:'Arial Black'}},
-    {type:'bar', orientation:'h', name:'Forecast', x:deptFct, y:depts, marker:{color:'#c4b5fd'}, text:deptFct.map(v=>pnlFmtShort(v)), textposition:'outside', textfont:{size:11,color:'#1e293b',family:'Arial Black'}}
-  ], {margin:{t:15,b:25,l:160,r:150}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#475569',size:11},
-      barmode:'group', height:Math.max(250, depts.length*50), hovermode:'y unified',
+    {type:'bar', orientation:'h', name:'Actual', x:deptAct, y:depts, marker:{color:'#7c3aed'}, text:deptAct.map(v=>pnlFmtShort(v)), textposition:'outside', textfont:{size:11,color:'#1e293b',family:'Arial Black'}, cliponaxis:false},
+    {type:'bar', orientation:'h', name:'Forecast', x:deptFct, y:depts, marker:{color:'#c4b5fd'}, text:deptFct.map(v=>pnlFmtShort(v)), textposition:'outside', textfont:{size:11,color:'#1e293b',family:'Arial Black'}, cliponaxis:false}
+  ], {margin:{t:15,b:25,l:160,r:180}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#475569',size:11},
+      barmode:'group', bargap:0.25, bargroupgap:0.1, height:Math.max(280, depts.length*45), hovermode:'y unified',
       legend:{orientation:'h',y:1.05,x:.5,xanchor:'center',font:{size:11,color:'#475569'}},
-      xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.06)'}}, {responsive:true, displayModeBar:false});
+      xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.06)',automargin:true}}, {responsive:true, displayModeBar:false});
+  document.getElementById('pnlDeptChart').on('plotly_click', function(data) {
+    if (!_editMode) return;
+    const pt = data.points[0];
+    const dept = pt.y;
+    const traceIdx = pt.curveNumber;
+    const isActual = traceIdx === 0;
+    const currentVal = isActual ? d.dept_expenses[dept].actual * cr.rate : d.dept_expenses[dept].forecast * cr.rate;
+    _editTarget = {el:null, type:'value', editId:'pnl_dept_'+dept+'_'+(isActual?'act':'fct'), original: pnlFmtShort(currentVal), _dept: dept, _isActual: isActual, _rate: cr.rate, _raw: isActual ? d.dept_expenses[dept].actual : d.dept_expenses[dept].forecast};
+    openEditModal('value', pnlFmtShort(currentVal), null);
+  });
 
   // 6. P&L Waterfall
   const pnlLabels = ['Net Sales', 'COGS', 'Gross Profit', 'Expenses', 'Net Income'];
@@ -1841,15 +1873,33 @@ async function loadExpensesData() {
   ]);
 
   // 2. Department Expenses
-  const deptAct = depts.map(k=>p.dept_expenses[k].actual*cr.rate);
-  const deptFct = depts.map(k=>p.dept_expenses[k].forecast*cr.rate);
+  const deptAct = depts.map(k=>{
+    const ovKey = 'exp_dept_'+k+'_act';
+    const raw = _overrides && _overrides.values && _overrides.values[ovKey] !== undefined ? _overrides.values[ovKey] : p.dept_expenses[k].actual;
+    return (typeof raw === 'number' ? raw : parseFloat(String(raw).replace(/[^0-9.\-]/g,'')) || 0) * (_overrides && _overrides.values && _overrides.values[ovKey] !== undefined ? 1 : cr.rate);
+  });
+  const deptFct = depts.map(k=>{
+    const ovKey = 'exp_dept_'+k+'_fct';
+    const raw = _overrides && _overrides.values && _overrides.values[ovKey] !== undefined ? _overrides.values[ovKey] : p.dept_expenses[k].forecast;
+    return (typeof raw === 'number' ? raw : parseFloat(String(raw).replace(/[^0-9.\-]/g,'')) || 0) * (_overrides && _overrides.values && _overrides.values[ovKey] !== undefined ? 1 : cr.rate);
+  });
   Plotly.newPlot('expDeptChart', [
-    {type:'bar', orientation:'h', name:'Actual', x:deptAct, y:depts, marker:{color:'#7c3aed'}, text:deptAct.map(v=>expFmtShort(v)), textposition:'outside', textfont:{size:11,color:'#1e293b',family:'Arial Black'}},
-    {type:'bar', orientation:'h', name:'Forecast', x:deptFct, y:depts, marker:{color:'#c4b5fd'}, text:deptFct.map(v=>expFmtShort(v)), textposition:'outside', textfont:{size:11,color:'#1e293b',family:'Arial Black'}}
+    {type:'bar', orientation:'h', name:'Actual', x:deptAct, y:depts, marker:{color:'#7c3aed'}, text:deptAct.map(v=>expFmtShort(v)), textposition:'outside', textfont:{size:11,color:'#1e293b',family:'Arial Black'}, cliponaxis:false},
+    {type:'bar', orientation:'h', name:'Forecast', x:deptFct, y:depts, marker:{color:'#c4b5fd'}, text:deptFct.map(v=>expFmtShort(v)), textposition:'outside', textfont:{size:11,color:'#1e293b',family:'Arial Black'}, cliponaxis:false}
   ], {margin:{t:25,b:30,l:170,r:180}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#475569',size:11},
-      barmode:'group', height:Math.max(300, depts.length*60), hovermode:'y unified',
+      barmode:'group', bargap:0.25, bargroupgap:0.1, height:Math.max(280, depts.length*45), hovermode:'y unified',
       legend:{orientation:'h',y:1.08,x:.5,xanchor:'center',font:{size:11,color:'#475569'}},
       xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.06)',automargin:true}}, {responsive:true, displayModeBar:false});
+  document.getElementById('expDeptChart').on('plotly_click', function(data) {
+    if (!_editMode) return;
+    const pt = data.points[0];
+    const dept = pt.y;
+    const traceIdx = pt.curveNumber;
+    const isActual = traceIdx === 0;
+    const currentVal = isActual ? p.dept_expenses[dept].actual * cr.rate : p.dept_expenses[dept].forecast * cr.rate;
+    _editTarget = {el:null, type:'value', editId:'exp_dept_'+dept+'_'+(isActual?'act':'fct'), original: expFmtShort(currentVal), _dept: dept, _isActual: isActual, _rate: cr.rate, _raw: isActual ? p.dept_expenses[dept].actual : p.dept_expenses[dept].forecast, _prefix: 'exp'};
+    openEditModal('value', expFmtShort(currentVal), null);
+  });
 
   // 3. Monthly Variance (Actual - Forecast)
   const varVals = monthly.map(m=>(m.expenses.actual - m.expenses.forecast)*cr.rate);
