@@ -33,57 +33,57 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
 <script src="/static/plotly.min.js"></script>
 <style>
 :root {
-  --sidebar-bg: #0a0a0a;
+  --sidebar-bg: #ffffff;
   --sidebar-width: 220px;
-  --header-bg: #0f0f0f;
-  --accent: #b08d57;
-  --accent2: #8a6d3b;
-  --card-bg: #161616;
-  --card-border: #2a2a2a;
-  --text-primary: #f0f0f0;
-  --text-secondary: #7a7a7a;
-  --green: #4caf50;
-  --red: #e74c3c;
-  --teal: #b08d57;
-  --blue: #5c7cfa;
-  --purple: #9b7ed8;
-  --orange: #d4a843;
-  --pink: #d4709f;
+  --header-bg: #ffffff;
+  --accent: #7c3aed;
+  --accent2: #5b21b6;
+  --card-bg: #ffffff;
+  --card-border: #e5e7eb;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --green: #10b981;
+  --red: #ef4444;
+  --teal: #06b6d4;
+  --blue: #3b82f6;
+  --purple: #8b5cf6;
+  --orange: #f59e0b;
+  --pink: #ec4899;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0a0a0a;color:var(--text-primary);overflow-x:hidden}
-.header{background:var(--header-bg);color:#fff;height:100px;display:flex;align-items:center;padding:0 20px;position:fixed;top:0;left:0;right:0;z-index:1000;border-bottom:1px solid #222}
-.header .brand{display:flex;align-items:center;gap:14px;width:var(--sidebar-width);font-size:17px;font-weight:700;letter-spacing:.5px;color:#fff}
-.header .brand img{height:72px;width:auto;flex-shrink:0}
-.header .top-right{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text-secondary)}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f1f5f9;color:var(--text-primary);overflow-x:hidden}
+.header{background:var(--header-bg);color:var(--text-primary);height:64px;display:flex;align-items:center;padding:0 24px;position:fixed;top:0;left:0;right:0;z-index:1000;box-shadow:0 1px 3px rgba(0,0,0,0.08)}
+.header .brand{display:flex;align-items:center;gap:12px;width:var(--sidebar-width);font-size:16px;font-weight:700;letter-spacing:.3px;color:var(--text-primary)}
+.header .brand img{height:40px;width:auto;flex-shrink:0}
+.header .top-right{margin-left:auto;display:flex;align-items:center;gap:12px;font-size:12px;color:var(--text-secondary)}
 .header .top-right .status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:4px;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.header .currency-selector{display:flex;align-items:center;gap:6px;margin-left:14px;padding-left:14px;border-left:1px solid #333}
+.header .currency-selector{display:flex;align-items:center;gap:6px;margin-left:14px;padding-left:14px;border-left:1px solid #e5e7eb}
 .header .currency-selector label{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary)}
-.header .currency-selector select{background:var(--card-bg);border:1px solid var(--card-border);border-radius:6px;padding:4px 28px 4px 10px;color:#f1f5f9;font-size:12px;font-weight:500;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a8ba3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
-.sidebar{position:fixed;top:100px;left:0;bottom:0;width:var(--sidebar-width);background:var(--sidebar-bg);color:var(--text-secondary);overflow-y:auto;z-index:999;padding-top:0;border-right:1px solid #222}
-.sidebar .nav-item{padding:10px 20px;display:flex;align-items:center;gap:11px;cursor:pointer;font-size:13px;transition:.15s;border-left:3px solid transparent}
-.sidebar .nav-item:hover{background:rgba(176,141,87,0.08);color:#fff}
-.sidebar .nav-item.active{background:rgba(176,141,87,0.12);color:#fff;border-left-color:var(--accent);font-weight:600}
+.header .currency-selector select{background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:4px 28px 4px 10px;color:#334155;font-size:12px;font-weight:500;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
+.sidebar{position:fixed;top:64px;left:0;bottom:0;width:var(--sidebar-width);background:var(--sidebar-bg);color:var(--text-secondary);overflow-y:auto;z-index:999;padding-top:8px;border-right:1px solid #e5e7eb;box-shadow:1px 0 3px rgba(0,0,0,0.04)}
+.sidebar .nav-item{padding:10px 20px;display:flex;align-items:center;gap:11px;cursor:pointer;font-size:13px;transition:.15s;border-left:3px solid transparent;border-radius:0 8px 8px 0;margin-right:8px}
+.sidebar .nav-item:hover{background:#f1f5f9;color:var(--text-primary)}
+.sidebar .nav-item.active{background:#ede9fe;color:var(--accent);border-left-color:var(--accent);font-weight:600}
 .sidebar .nav-item i{width:18px;text-align:center;font-size:14px;color:var(--accent)}
-.sidebar .nav-section{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:#555;padding:16px 20px 5px;font-weight:600}
-.main{margin-left:var(--sidebar-width);margin-top:100px;padding:16px 20px;min-height:calc(100vh - 100px)}
-.page-title{font-size:18px;font-weight:600;color:#f1f5f9;margin-bottom:16px}
+.sidebar .nav-section{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:#94a3b8;padding:16px 20px 5px;font-weight:600}
+.main{margin-left:var(--sidebar-width);margin-top:64px;padding:20px 24px;min-height:calc(100vh - 64px)}
+.page-title{font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:16px}
 .kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:18px}
 @media(max-width:1200px){.kpi-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:600px){.kpi-grid{grid-template-columns:1fr 1fr}}
-.kpi-card{background:var(--card-bg);border-radius:8px;padding:14px 10px;border:1px solid var(--card-border);border-left:3px solid #333;display:flex;flex-direction:row;align-items:center;gap:10px;transition:.2s}
-.kpi-card:hover{border-color:#444;transform:translateY(-1px)}
-.kpi-card .kpi-icon{width:38px;height:38px;min-width:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff}
-.kpi-card .kpi-label{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary);margin-bottom:2px}
-.kpi-card .kpi-value{font-size:20px;font-weight:700;color:#f1f5f9;line-height:1.1}
-.kpi-card .kpi-sub{font-size:10px;color:var(--text-secondary);margin-top:1px}
-.kpi-card.kpi-gs{border-left-color:var(--green)}.kpi-card.kpi-gs .kpi-icon{background:var(--green)}
-.kpi-card.kpi-ns{border-left-color:var(--blue)}.kpi-card.kpi-ns .kpi-icon{background:var(--blue)}
-.kpi-card.kpi-cogs{border-left-color:var(--orange)}.kpi-card.kpi-cogs .kpi-icon{background:var(--orange)}
-.kpi-card.kpi-gp{border-left-color:var(--purple)}.kpi-card.kpi-gp .kpi-icon{background:var(--purple)}
-.kpi-card.kpi-exp{border-left-color:var(--red)}.kpi-card.kpi-exp .kpi-icon{background:var(--red)}
-.kpi-card.kpi-ni{border-left-color:var(--teal)}.kpi-card.kpi-ni .kpi-icon{background:var(--teal)}
+.kpi-card{background:var(--card-bg);border-radius:12px;padding:16px 14px;border:1px solid var(--card-border);box-shadow:0 1px 3px rgba(0,0,0,0.06);display:flex;flex-direction:row;align-items:center;gap:12px;transition:.2s}
+.kpi-card:hover{box-shadow:0 4px 12px rgba(0,0,0,0.1);transform:translateY(-2px)}
+.kpi-card .kpi-icon{width:40px;height:40px;min-width:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff}
+.kpi-card .kpi-label{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary);margin-bottom:2px;font-weight:500}
+.kpi-card .kpi-value{font-size:20px;font-weight:700;color:var(--text-primary);line-height:1.1}
+.kpi-card .kpi-sub{font-size:10px;color:var(--text-secondary);margin-top:2px}
+.kpi-card.kpi-gs{border-left:4px solid var(--green)}.kpi-card.kpi-gs .kpi-icon{background:linear-gradient(135deg,#10b981,#059669)}
+.kpi-card.kpi-ns{border-left:4px solid var(--blue)}.kpi-card.kpi-ns .kpi-icon{background:linear-gradient(135deg,#3b82f6,#2563eb)}
+.kpi-card.kpi-cogs{border-left:4px solid var(--orange)}.kpi-card.kpi-cogs .kpi-icon{background:linear-gradient(135deg,#f59e0b,#d97706)}
+.kpi-card.kpi-gp{border-left:4px solid var(--purple)}.kpi-card.kpi-gp .kpi-icon{background:linear-gradient(135deg,#8b5cf6,#7c3aed)}
+.kpi-card.kpi-exp{border-left:4px solid var(--red)}.kpi-card.kpi-exp .kpi-icon{background:linear-gradient(135deg,#ef4444,#dc2626)}
+.kpi-card.kpi-ni{border-left:4px solid var(--teal)}.kpi-card.kpi-ni .kpi-icon{background:linear-gradient(135deg,#06b6d4,#0891b2)}
 .kpi-card .kpi-value.green{color:var(--green)}.kpi-card .kpi-value.red{color:var(--red)}
 #pnlKpiGrid{grid-template-columns:repeat(5,1fr)!important;gap:8px!important;margin-bottom:14px!important}
 #pnlKpiGrid .kpi-card{padding:6px 6px!important}
@@ -94,15 +94,15 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0a0a0
 .chart-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
 @media(max-width:1100px){.chart-grid-3{grid-template-columns:1fr 1fr}}
 @media(max-width:900px){.chart-grid,.chart-grid-3{grid-template-columns:1fr}}
-.chart-card{background:var(--card-bg);border-radius:8px;border:1px solid var(--card-border);overflow:hidden}
-.chart-card .chart-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 0}
-.chart-card .chart-header h5{font-size:13px;font-weight:600;color:#f1f5f9;margin:0}
+.chart-card{background:var(--card-bg);border-radius:12px;border:1px solid var(--card-border);box-shadow:0 1px 3px rgba(0,0,0,0.06);overflow:hidden}
+.chart-card .chart-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 0}
+.chart-card .chart-header h5{font-size:13px;font-weight:600;color:var(--text-primary);margin:0}
 .chart-card .chart-body{padding:4px 4px 6px;min-height:260px}
 .chart-card .pnl-body{padding:0;min-height:220px;display:flex;align-items:stretch}
 .chart-card.full{grid-column:1/-1}
-.pnl-card{background:var(--card-bg);border-radius:8px;border:1px solid var(--card-border);padding:0;height:100%;display:flex;flex-direction:column;width:100%}
+.pnl-card{background:var(--card-bg);border-radius:12px;border:1px solid var(--card-border);box-shadow:0 1px 3px rgba(0,0,0,0.06);padding:0;height:100%;display:flex;flex-direction:column;width:100%}
 .pnl-card .pnl-header{padding:12px 20px 0;display:flex;align-items:center;justify-content:space-between}
-.pnl-card .pnl-header h5{font-size:13px;font-weight:600;color:#f1f5f9;margin:0}
+.pnl-card .pnl-header h5{font-size:13px;font-weight:600;color:var(--text-primary);margin:0}
 .pnl-card .pnl-header .pnl-period{font-size:11px;color:var(--text-secondary)}
 .pnl-card .pnl-inner{padding:0;flex:1;overflow-x:auto}
 .pnl-card table{width:100%;border-collapse:collapse;font-size:13px}
@@ -111,15 +111,15 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0a0a0
 .pnl-card .pnl-label{color:var(--text-secondary);padding-left:22px}
 .pnl-card .pnl-label.sub{padding-left:40px;font-size:12px}
 .pnl-card .pnl-label.sub2{padding-left:52px;font-size:11.5px}
-.pnl-card .pnl-label.section-title{color:#f1f5f9;font-weight:600;font-size:12px;padding-left:22px;text-transform:uppercase;letter-spacing:.5px}
+.pnl-card .pnl-label.section-title{color:var(--text-primary);font-weight:600;font-size:12px;padding-left:22px;text-transform:uppercase;letter-spacing:.5px}
 .pnl-card tr.section-row td{height:1px;padding:0;border:0}
-.pnl-card tr.section-row td::before{content:"";display:block;width:100%;height:1px;background:rgba(255,255,255,0.06)}
+.pnl-card tr.section-row td::before{content:"";display:block;width:100%;height:1px;background:rgba(0,0,0,0.06)}
 .pnl-card tr.section-divider td{height:4px;padding:0;border:0}
 .pnl-card tr.subtotal td{padding-top:8px}
-.pnl-card tr.subtotal .pnl-label{color:#7a8ba3;font-weight:600}
-.pnl-card tr.subtotal td:last-child{border-top:1px solid #333;padding-top:8px;font-weight:700;color:#f0f0f0}
+.pnl-card tr.subtotal .pnl-label{color:#64748b;font-weight:600}
+.pnl-card tr.subtotal td:last-child{border-top:1px solid #e5e7eb;padding-top:8px;font-weight:700;color:var(--text-primary)}
 .pnl-card tr.grand-total td{padding-top:12px}
-.pnl-card tr.grand-total .pnl-label{color:#f1f5f9;font-size:14px;font-weight:700}
+.pnl-card tr.grand-total .pnl-label{color:var(--text-primary);font-size:14px;font-weight:700}
 .pnl-card tr.grand-total td:last-child{border-top:3px double var(--accent);padding-top:12px;font-size:16px;font-weight:800;color:var(--accent)}
 .pnl-card .neg{color:var(--red)}.pnl-card .pos{color:var(--green)}
 .pnl-card tr.deduction td:last-child{color:var(--red)}
@@ -199,7 +199,7 @@ body:not(.blur-mode) .main .js-plotly-plot svg text{filter:blur(0);transition:fi
       <div style="display:flex;align-items:center;gap:5px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:6px;padding:5px 10px">
         <i class="fas fa-calendar" style="font-size:11px;color:var(--accent)"></i>
         <label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary)">Period</label>
-        <select id="dashPeriod" onchange="loadData()" style="background:transparent;border:none;color:#f1f5f9;font-size:12px;font-weight:500;cursor:pointer;appearance:none;padding-right:14px;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237a8ba3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 2px center">
+        <select id="dashPeriod" onchange="loadData()" style="background:transparent;border:none;color:#334155;font-size:12px;font-weight:500;cursor:pointer;appearance:none;padding-right:14px;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237a8ba3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 2px center">
           <option value="ytd">YTD</option>
           <option value="q1">Q1</option>
           <option value="q2">Q2</option>
@@ -209,7 +209,7 @@ body:not(.blur-mode) .main .js-plotly-plot svg text{filter:blur(0);transition:fi
       <div style="display:flex;align-items:center;gap:5px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:6px;padding:5px 10px">
         <i class="fas fa-building" style="font-size:11px;color:var(--accent)"></i>
         <label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary)">B.U</label>
-        <select id="dashBU" onchange="document.getElementById('dashMonth').value='all';loadData()" style="background:transparent;border:none;color:#f1f5f9;font-size:12px;font-weight:500;cursor:pointer;appearance:none;padding-right:14px;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237a8ba3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 2px center">
+        <select id="dashBU" onchange="document.getElementById('dashMonth').value='all';loadData()" style="background:transparent;border:none;color:#334155;font-size:12px;font-weight:500;cursor:pointer;appearance:none;padding-right:14px;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237a8ba3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 2px center">
           <option value="all">All</option>
           <option value="Export">Export</option>
           <option value="B2B">B2B</option>
@@ -220,7 +220,7 @@ body:not(.blur-mode) .main .js-plotly-plot svg text{filter:blur(0);transition:fi
       <div style="display:flex;align-items:center;gap:5px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:6px;padding:5px 10px">
         <i class="fas fa-calendar-day" style="font-size:11px;color:var(--accent)"></i>
         <label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary)">Month</label>
-        <select id="dashMonth" onchange="document.getElementById('dashPeriod').value='ytd';loadData()" style="background:transparent;border:none;color:#f1f5f9;font-size:12px;font-weight:500;cursor:pointer;appearance:none;padding-right:14px;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237a8ba3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 2px center">
+        <select id="dashMonth" onchange="document.getElementById('dashPeriod').value='ytd';loadData()" style="background:transparent;border:none;color:#334155;font-size:12px;font-weight:500;cursor:pointer;appearance:none;padding-right:14px;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237a8ba3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 2px center">
           <option value="all">All</option>
           <option value="1">January</option>
           <option value="2">February</option>
@@ -239,27 +239,27 @@ body:not(.blur-mode) .main .js-plotly-plot svg text{filter:blur(0);transition:fi
     <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-university" style="color:var(--accent);margin-right:6px"></i>CBE Official Exchange Rates</h5><span style="font-size:11px;color:var(--text-secondary)">Base: EGP</span></div><div class="chart-body" id="currencyRateChart" style="min-height:350px"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:#8a6d3b;margin-right:6px"></i>Monthly Gross Sales</h5></div><div class="chart-body" id="salesChart"></div></div>
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-receipt" style="color:#c0392b;margin-right:6px"></i>Monthly Expenses</h5></div><div class="chart-body" id="expChart"></div></div>
+    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:var(--accent);margin-right:6px"></i>Monthly Gross Sales</h5></div><div class="chart-body" id="salesChart"></div></div>
+    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-receipt" style="color:#ef4444;margin-right:6px"></i>Monthly Expenses</h5></div><div class="chart-body" id="expChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-arrows-alt-h" style="color:#8a6d3b;margin-right:6px"></i>Monthly Net Sales vs Expenses</h5></div><div class="chart-body" id="monthlyChart"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-arrows-alt-h" style="color:var(--accent);margin-right:6px"></i>Monthly Net Sales vs Expenses</h5></div><div class="chart-body" id="monthlyChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-sitemap" style="color:#7a6faa;margin-right:6px"></i>Expenses by Department</h5></div><div class="chart-body" id="deptChart"></div></div>
+    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-sitemap" style="color:#6d28d9;margin-right:6px"></i>Expenses by Department</h5></div><div class="chart-body" id="deptChart"></div></div>
     <div class="chart-card"><div class="pnl-card"><div class="pnl-header"><h5><i class="fas fa-file-invoice-dollar" style="color:var(--accent);margin-right:6px"></i>Profit &amp; Loss Statement</h5><span class="pnl-period">Jan - Jun 2026</span></div><div class="pnl-inner" id="pnlCard"></div></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-trophy" style="color:#a07830;margin-right:6px"></i>Top 5 <span id="topSlicerLabel">Customers</span> by Sales</h5><div class="slicer-selector" style="display:flex;align-items:center;gap:6px"><label style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary)">View</label><select id="topSlicer" onchange="changeTopSlicer(this.value)" style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:6px;padding:4px 28px 4px 10px;color:#f1f5f9;font-size:12px;font-weight:500;cursor:pointer;appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238899aa' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 8px center"><option value="customers">Customers</option><option value="types">Types</option><option value="fabrics">Fabrics</option></select></div></div><div class="chart-body" id="topCustomersChart"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-trophy" style="color:var(--accent);margin-right:6px"></i>Top 5 <span id="topSlicerLabel">Customers</span> by Sales</h5><div class="slicer-selector" style="display:flex;align-items:center;gap:6px"><label style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary)">View</label><select id="topSlicer" onchange="changeTopSlicer(this.value)" style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:6px;padding:4px 28px 4px 10px;color:#334155;font-size:12px;font-weight:500;cursor:pointer;appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237c3aed' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 8px center"><option value="customers">Customers</option><option value="types">Types</option><option value="fabrics">Fabrics</option></select></div></div><div class="chart-body" id="topCustomersChart"></div></div>
   </div>
   <div class="chart-grid">
     <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-cubes" style="color:#5a8a5e;margin-right:6px"></i>Monthly Quantity Sold</h5></div><div class="chart-body" id="qtyChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-balance-scale" style="color:#a07830;margin-right:6px"></i>Monthly Net Sales vs COGS</h5></div><div class="chart-body" id="cogsChart"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-balance-scale" style="color:var(--accent);margin-right:6px"></i>Monthly Net Sales vs COGS</h5></div><div class="chart-body" id="cogsChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-pie-chart" style="color:#8a6d3b;margin-right:6px"></i>BU Sales %</h5></div><div class="chart-body" id="buSalesChart"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-pie-chart" style="color:var(--accent);margin-right:6px"></i>BU Sales %</h5></div><div class="chart-body" id="buSalesChart"></div></div>
   </div>
 </div>
 
@@ -267,21 +267,21 @@ body:not(.blur-mode) .main .js-plotly-plot svg text{filter:blur(0);transition:fi
   <div class="page-title"><i class="fas fa-file-invoice-dollar" style="color:var(--accent);margin-right:8px"></i>P&amp;L Actuals vs Forecast</div>
   <div class="kpi-grid" id="pnlKpiGrid" style="grid-template-columns:repeat(5,1fr)"></div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:#8a6d3b;margin-right:6px"></i>Monthly Net Sales — Actual vs Forecast</h5></div><div class="chart-body" id="pnlSalesChart"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:var(--accent);margin-right:6px"></i>Monthly Net Sales — Actual vs Forecast</h5></div><div class="chart-body" id="pnlSalesChart"></div></div>
   </div>
   <div class="chart-grid">
     <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:#5a8a5e;margin-right:6px"></i>Monthly Gross Profit — Actual vs Forecast</h5></div><div class="chart-body" id="pnlGpChart"></div></div>
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:#6a9b6e;margin-right:6px"></i>Monthly Net Income — Actual vs Forecast</h5></div><div class="chart-body" id="pnlNiChart"></div></div>
+    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:#10b981;margin-right:6px"></i>Monthly Net Income — Actual vs Forecast</h5></div><div class="chart-body" id="pnlNiChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-chart-line" style="color:#c9a96e;margin-right:6px"></i>Gross Profit Margin % Trend</h5></div><div class="chart-body" id="pnlMarginChart"></div></div>
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-sitemap" style="color:#8a7fb8;margin-right:6px"></i>Department Expenses — Actual vs Forecast</h5></div><div class="chart-body" id="pnlDeptChart"></div></div>
+    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-chart-line" style="color:#a78bfa;margin-right:6px"></i>Gross Profit Margin % Trend</h5></div><div class="chart-body" id="pnlMarginChart"></div></div>
+    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-sitemap" style="color:#7c3aed;margin-right:6px"></i>Department Expenses — Actual vs Forecast</h5></div><div class="chart-body" id="pnlDeptChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-arrows-alt" style="color:#b08d57;margin-right:6px"></i>P&amp;L Waterfall — YTD Actual vs Forecast</h5></div><div class="chart-body" id="pnlWaterfallChart"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-arrows-alt" style="color:#7c3aed;margin-right:6px"></i>P&amp;L Waterfall — YTD Actual vs Forecast</h5></div><div class="chart-body" id="pnlWaterfallChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-file-invoice-dollar" style="color:#f1f5f9;margin-right:6px"></i>P&amp;L Summary — Actual vs Forecast</h5></div><div class="pnl-body" id="pnlSummaryTable"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-file-invoice-dollar" style="color:#334155;margin-right:6px"></i>P&amp;L Summary — Actual vs Forecast</h5></div><div class="pnl-body" id="pnlSummaryTable"></div></div>
   </div>
 </div>
 
@@ -289,22 +289,22 @@ body:not(.blur-mode) .main .js-plotly-plot svg text{filter:blur(0);transition:fi
   <div class="page-title"><i class="fas fa-chart-bar" style="color:var(--accent);margin-right:8px"></i>Sales Analytics</div>
   <div class="kpi-grid" id="salesKpiGrid"></div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:#8a6d3b;margin-right:6px"></i>Monthly Gross Sales — Actual vs Budget</h5></div><div class="chart-body" id="salesGSChart"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:var(--accent);margin-right:6px"></i>Monthly Gross Sales — Actual vs Budget</h5></div><div class="chart-body" id="salesGSChart"></div></div>
   </div>
   <div class="chart-grid">
     <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-chart-area" style="color:#5a8a5e;margin-right:6px"></i>Monthly Returns &amp; Discounts</h5></div><div class="chart-body" id="salesDedChart"></div></div>
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-cubes" style="color:#a07830;margin-right:6px"></i>Monthly Quantity Sold</h5></div><div class="chart-body" id="salesQtyChart"></div></div>
+    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-cubes" style="color:var(--accent);margin-right:6px"></i>Monthly Quantity Sold</h5></div><div class="chart-body" id="salesQtyChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-pie-chart" style="color:#7a6faa;margin-right:6px"></i>Sales by Business Unit</h5></div><div class="chart-body" id="salesBUChart"></div></div>
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-trophy" style="color:#c9a96e;margin-right:6px"></i>Top 5 Customers</h5></div><div class="chart-body" id="salesTopChart"></div></div>
+    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-pie-chart" style="color:#6d28d9;margin-right:6px"></i>Sales by Business Unit</h5></div><div class="chart-body" id="salesBUChart"></div></div>
+    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-trophy" style="color:#a78bfa;margin-right:6px"></i>Top 5 Customers</h5></div><div class="chart-body" id="salesTopChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-list" style="color:#b08d57;margin-right:6px"></i>Top 5 Types</h5></div><div class="chart-body" id="salesTypeChart"></div></div>
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-tshirt" style="color:#5c7cfa;margin-right:6px"></i>Top 5 Fabrics</h5></div><div class="chart-body" id="salesFabricChart"></div></div>
+    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-list" style="color:#7c3aed;margin-right:6px"></i>Top 5 Types</h5></div><div class="chart-body" id="salesTypeChart"></div></div>
+    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-tshirt" style="color:#3b82f6;margin-right:6px"></i>Top 5 Fabrics</h5></div><div class="chart-body" id="salesFabricChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-percent" style="color:#6a9b6e;margin-right:6px"></i>Net Sales Conversion Rate %</h5></div><div class="chart-body" id="salesConversionChart"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-percent" style="color:#10b981;margin-right:6px"></i>Net Sales Conversion Rate %</h5></div><div class="chart-body" id="salesConversionChart"></div></div>
   </div>
 </div>
 
@@ -312,18 +312,18 @@ body:not(.blur-mode) .main .js-plotly-plot svg text{filter:blur(0);transition:fi
   <div class="page-title"><i class="fas fa-receipt" style="color:var(--accent);margin-right:8px"></i>Expense Analytics</div>
   <div class="kpi-grid" id="expKpiGrid"></div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:#c0392b;margin-right:6px"></i>Monthly Expenses — Actual vs Budget</h5></div><div class="chart-body" id="expMonthlyChart"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:#ef4444;margin-right:6px"></i>Monthly Expenses — Actual vs Budget</h5></div><div class="chart-body" id="expMonthlyChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:#8a7fb8;margin-right:6px"></i>Department Expenses — Actual vs Forecast</h5></div><div class="chart-body" id="expDeptChart"></div></div>
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-chart-line" style="color:#c9a96e;margin-right:6px"></i>Monthly Expense Variance</h5></div><div class="chart-body" id="expVarChart"></div></div>
+    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:#7c3aed;margin-right:6px"></i>Department Expenses — Actual vs Forecast</h5></div><div class="chart-body" id="expDeptChart"></div></div>
+    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-chart-line" style="color:#a78bfa;margin-right:6px"></i>Monthly Expense Variance</h5></div><div class="chart-body" id="expVarChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-pie-chart" style="color:#b08d57;margin-right:6px"></i>Expense Distribution</h5></div><div class="chart-body" id="expPieChart"></div></div>
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-chart-area" style="color:#5c7cfa;margin-right:6px"></i>Top Departments Monthly Trend</h5></div><div class="chart-body" id="expTrendChart"></div></div>
+    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-pie-chart" style="color:#7c3aed;margin-right:6px"></i>Expense Distribution</h5></div><div class="chart-body" id="expPieChart"></div></div>
+    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-chart-area" style="color:#3b82f6;margin-right:6px"></i>Top Departments Monthly Trend</h5></div><div class="chart-body" id="expTrendChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-table" style="color:#f1f5f9;margin-right:6px"></i>Department Expense Detail — Variance Analysis</h5></div><div class="pnl-body" id="expTable"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-table" style="color:#334155;margin-right:6px"></i>Department Expense Detail — Variance Analysis</h5></div><div class="pnl-body" id="expTable"></div></div>
   </div>
 </div>
 
@@ -331,26 +331,26 @@ body:not(.blur-mode) .main .js-plotly-plot svg text{filter:blur(0);transition:fi
   <div class="page-title"><i class="fas fa-tshirt" style="color:var(--accent);margin-right:8px"></i>32 Degree Style Analysis — 168 Soft Bra</div>
   <div class="kpi-grid" id="styleKpiGrid"></div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-water" style="color:#b08d57;margin-right:6px"></i>Profit Waterfall — Planned to Actual</h5></div><div class="chart-body" id="styleWaterfall"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-water" style="color:#7c3aed;margin-right:6px"></i>Profit Waterfall — Planned to Actual</h5></div><div class="chart-body" id="styleWaterfall"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-hand-holding-usd" style="color:#6a9b6e;margin-right:6px"></i>Net Profit by Purchase Order</h5></div><div class="chart-body" id="styleNpChart"></div></div>
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-chart-pie" style="color:#8a7fb8;margin-right:6px"></i>COGS % by Purchase Order</h5></div><div class="chart-body" id="styleCogsPie"></div></div>
+    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-hand-holding-usd" style="color:#10b981;margin-right:6px"></i>Net Profit by Purchase Order</h5></div><div class="chart-body" id="styleNpChart"></div></div>
+    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-chart-pie" style="color:#7c3aed;margin-right:6px"></i>COGS % by Purchase Order</h5></div><div class="chart-body" id="styleCogsPie"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-th-list" style="color:#c9a96e;margin-right:6px"></i>PO-Level Cost Breakdown</h5></div><div class="pnl-body" id="styleTable"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-th-list" style="color:#a78bfa;margin-right:6px"></i>PO-Level Cost Breakdown</h5></div><div class="pnl-body" id="styleTable"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-chart-line" style="color:#6a9b6e;margin-right:6px"></i>Margin Trend Across POs</h5></div><div class="chart-body" id="styleMarginChart"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-chart-line" style="color:#10b981;margin-right:6px"></i>Margin Trend Across POs</h5></div><div class="chart-body" id="styleMarginChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:#5c7cfa;margin-right:6px"></i>Cost Per Item Comparison</h5></div><div class="chart-body" id="styleCostBar"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:#3b82f6;margin-right:6px"></i>Cost Per Item Comparison</h5></div><div class="chart-body" id="styleCostBar"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-chart-line" style="color:#c9a96e;margin-right:6px"></i>Variance Analysis</h5></div><div class="pnl-body" id="styleVariance"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-chart-line" style="color:#a78bfa;margin-right:6px"></i>Variance Analysis</h5></div><div class="pnl-body" id="styleVariance"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-lightbulb" style="color:#6a9b6e;margin-right:6px"></i>Recommendations</h5></div><div class="pnl-body" id="styleRecommendations"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-lightbulb" style="color:#10b981;margin-right:6px"></i>Recommendations</h5></div><div class="pnl-body" id="styleRecommendations"></div></div>
   </div>
 </div>
 
@@ -358,23 +358,23 @@ body:not(.blur-mode) .main .js-plotly-plot svg text{filter:blur(0);transition:fi
   <div class="page-title"><i class="fas fa-coins" style="color:var(--accent);margin-right:8px"></i>Investment Insights — 2025 vs 2026 Analysis</div>
   <div class="kpi-grid" id="invKpiGrid"></div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:#c9a96e;margin-right:6px"></i>Return Rate Comparison — Gold / Silver / Swiss Frank</h5></div><div class="chart-body" id="invReturnChart"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:#a78bfa;margin-right:6px"></i>Return Rate Comparison — Gold / Silver / Swiss Frank</h5></div><div class="chart-body" id="invReturnChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-chart-line" style="color:#8a7fb8;margin-right:6px"></i>Risk-Adjusted Returns — Sharpe / Sortino / Calmar</h5></div><div class="chart-body" id="invRiskChart"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-chart-line" style="color:#7c3aed;margin-right:6px"></i>Risk-Adjusted Returns — Sharpe / Sortino / Calmar</h5></div><div class="chart-body" id="invRiskChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-shield-alt" style="color:#c0392b;margin-right:6px"></i>Risk Metrics — MDD / Downside Deviation / Volatility</h5></div><div class="chart-body" id="invRiskMetrics"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-shield-alt" style="color:#ef4444;margin-right:6px"></i>Risk Metrics — MDD / Downside Deviation / Volatility</h5></div><div class="chart-body" id="invRiskMetrics"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-project-diagram" style="color:#b08d57;margin-right:6px"></i>Correlation Matrix</h5></div><div class="chart-body" id="invCorrChart"></div></div>
+    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-project-diagram" style="color:#7c3aed;margin-right:6px"></i>Correlation Matrix</h5></div><div class="chart-body" id="invCorrChart"></div></div>
     <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-pie-chart" style="color:#5a8a5e;margin-right:6px"></i>Portfolio Allocation</h5></div><div class="chart-body" id="invPieChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-file-invoice-dollar" style="color:#a07830;margin-right:6px"></i>Investment Performance — Actual vs Forecast</h5></div><div class="chart-body" id="invPerfChart"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-file-invoice-dollar" style="color:var(--accent);margin-right:6px"></i>Investment Performance — Actual vs Forecast</h5></div><div class="chart-body" id="invPerfChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-lightbulb" style="color:#6a9b6e;margin-right:6px"></i>Recommendation</h5></div><div class="pnl-body" id="invRecommendation"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-lightbulb" style="color:#10b981;margin-right:6px"></i>Recommendation</h5></div><div class="pnl-body" id="invRecommendation"></div></div>
   </div>
 </div>
 
@@ -382,34 +382,34 @@ body:not(.blur-mode) .main .js-plotly-plot svg text{filter:blur(0);transition:fi
   <div class="page-title"><i class="fas fa-money-bill-wave" style="color:var(--accent);margin-right:8px"></i>Cash Flow Analysis</div>
   <div class="kpi-grid" id="cfKpiGrid"></div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-exchange-alt" style="color:#b08d57;margin-right:6px"></i>Monthly Cash In vs Out vs Net</h5></div><div class="chart-body" id="cfMonthlyChart"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-exchange-alt" style="color:#7c3aed;margin-right:6px"></i>Monthly Cash In vs Out vs Net</h5></div><div class="chart-body" id="cfMonthlyChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-building" style="color:#8a7fb8;margin-right:6px"></i>Collections by Business Unit</h5></div><div class="chart-body" id="cfBuChart"></div></div>
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-credit-card" style="color:#c9a96e;margin-right:6px"></i>Payment Status Breakdown</h5></div><div class="chart-body" id="cfPayChart"></div></div>
+    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-building" style="color:#7c3aed;margin-right:6px"></i>Collections by Business Unit</h5></div><div class="chart-body" id="cfBuChart"></div></div>
+    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-credit-card" style="color:#a78bfa;margin-right:6px"></i>Payment Status Breakdown</h5></div><div class="chart-body" id="cfPayChart"></div></div>
   </div>
   <div class="chart-grid">
     <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-sitemap" style="color:#5a8a5e;margin-right:6px"></i>Spending by Department</h5></div><div class="chart-body" id="cfDeptChart"></div></div>
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-tags" style="color:#c0392b;margin-right:6px"></i>Top Spending Categories</h5></div><div class="chart-body" id="cfCatChart"></div></div>
+    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-tags" style="color:#ef4444;margin-right:6px"></i>Top Spending Categories</h5></div><div class="chart-body" id="cfCatChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-chart-line" style="color:#b08d57;margin-right:6px"></i>Collection vs Spending by Month (Stacked)</h5></div><div class="chart-body" id="cfStackChart"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-chart-line" style="color:#7c3aed;margin-right:6px"></i>Collection vs Spending by Month (Stacked)</h5></div><div class="chart-body" id="cfStackChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-clock" style="color:#a07830;margin-right:6px"></i>Aging Analysis — Receivables</h5></div><div class="chart-body" id="cfAgingChart"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-clock" style="color:var(--accent);margin-right:6px"></i>Aging Analysis — Receivables</h5></div><div class="chart-body" id="cfAgingChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-users" style="color:#6a9b6e;margin-right:6px"></i>Top 10 Customers</h5></div><div class="chart-body" id="cfCustChart"></div></div>
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-list-ol" style="color:#8a7fb8;margin-right:6px"></i>Top 10 Spending Categories</h5></div><div class="chart-body" id="cfCatBarChart"></div></div>
+    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-users" style="color:#10b981;margin-right:6px"></i>Top 10 Customers</h5></div><div class="chart-body" id="cfCustChart"></div></div>
+    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-list-ol" style="color:#7c3aed;margin-right:6px"></i>Top 10 Spending Categories</h5></div><div class="chart-body" id="cfCatBarChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-file-invoice-dollar" style="color:#a07830;margin-right:6px"></i>Collections vs Forecast (Actuals)</h5></div><div class="chart-body" id="cfCollForecastChart"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-file-invoice-dollar" style="color:var(--accent);margin-right:6px"></i>Collections vs Forecast (Actuals)</h5></div><div class="chart-body" id="cfCollForecastChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-file-invoice-dollar" style="color:#c0392b;margin-right:6px"></i>Spending vs Forecast (Actuals)</h5></div><div class="chart-body" id="cfSpendForecastChart"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-file-invoice-dollar" style="color:#ef4444;margin-right:6px"></i>Spending vs Forecast (Actuals)</h5></div><div class="chart-body" id="cfSpendForecastChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-lightbulb" style="color:#6a9b6e;margin-right:6px"></i>Cash Flow Insights</h5></div><div class="pnl-body" id="cfInsights"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-lightbulb" style="color:#10b981;margin-right:6px"></i>Cash Flow Insights</h5></div><div class="pnl-body" id="cfInsights"></div></div>
   </div>
 </div>
 
@@ -511,17 +511,17 @@ function renderCurrencyChart() {
     const rate = CURRENCIES[n] ? CURRENCIES[n].rate : 0;
     return rate > 0 ? (1 / rate) : 0;
   });
-  const barColors = allCurs.map(n => n === sel ? '#b08d57' : '#333');
+  const barColors = allCurs.map(n => n === sel ? '#7c3aed' : '#cbd5e1');
   Plotly.newPlot('currencyRateChart', [{
     type: 'bar', x: allCurs, y: vals,
-    marker: {color: barColors, line: {color: '#b08d57', width: allCurs.map(n => n === sel ? 2 : 0)}},
+    marker: {color: barColors, line: {color: '#7c3aed', width: allCurs.map(n => n === sel ? 2 : 0)}},
     text: vals.map(v => v.toFixed(2) + ' EGP'),
-    textposition: 'outside', textfont: {size: 16, color: '#ffffff', family: 'Arial Black'}, cliponaxis: false
+    textposition: 'outside', textfont: {size: 16, color: '#1e293b', family: 'Arial Black'}, cliponaxis: false
   }], {
     margin: {t: 30, b: 45, l: 70, r: 25},
     paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
-    font: {size: 14, color: '#a0b4c8'},
-    yaxis: {title: 'EGP per 1 unit', gridcolor: 'rgba(255,255,255,0.04)', rangemode: 'tozero'},
+    font: {size: 14, color: '#475569'},
+    yaxis: {title: 'EGP per 1 unit', gridcolor: 'rgba(0,0,0,0.06)', rangemode: 'tozero'},
     height: 280, hovermode: 'x unified', showlegend: false
   }, {responsive: true, displayModeBar: false});
   const ts = document.getElementById('rateTimestamp');
@@ -538,10 +538,10 @@ function renderTopChart(d, c) {
   const names = items.map(x => x.name);
   const vals = items.map(x => x.sales * c.rate);
   Plotly.newPlot('topCustomersChart', [{type:'bar', x:names, y:vals,
-    marker:{color:['#b08d57','#c4a265','#d4b87a','#e0c88f','#ecdaa3']},
-    text:vals.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}],
+    marker:{color:['#7c3aed','#8b5cf6','#a78bfa','#c4b5fd','#ddd6fe']},
+    text:vals.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false}],
     {margin:{t:50,b:55,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-     font:{size:14,color:'#a0b4c8'}, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'}, height:350,
+     font:{size:14,color:'#475569'}, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}, height:350,
      hovermode:'x unified', showlegend:false}, {responsive:true, displayModeBar:false});
 }
 
@@ -577,35 +577,35 @@ async function loadData() {
 
   const c = getCurrency();
   const gsV = months.map((_,i) => M[i].gs * c.rate);
-  Plotly.newPlot('salesChart', [{type:'bar', x:months, y:gsV, marker:{color:'#b08d57'}, text:gsV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}],
+  Plotly.newPlot('salesChart', [{type:'bar', x:months, y:gsV, marker:{color:'#7c3aed'}, text:gsV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false}],
     {margin:{t:40,b:45,l:65,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-     font:{size:14,color:'#a0b4c8'}, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'},
+     font:{size:14,color:'#475569'}, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'},
      height:350, hovermode:'x unified', showlegend:false},
     {responsive:true, displayModeBar:false});
 
   const expV = months.map((_,i) => M[i].exp * c.rate);
-  Plotly.newPlot('expChart', [{type:'bar', x:months, y:expV, marker:{color:'#c0392b'},     text:expV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}],
+  Plotly.newPlot('expChart', [{type:'bar', x:months, y:expV, marker:{color:'#ef4444'},     text:expV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false}],
     {margin:{t:40,b:45,l:65,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-     font:{size:14,color:'#a0b4c8'}, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'},
+     font:{size:14,color:'#475569'}, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'},
      height:350, hovermode:'x unified', showlegend:false},
     {responsive:true, displayModeBar:false});
 
   const nsV = months.map((_,i) => M[i].ns * c.rate);
   Plotly.newPlot('monthlyChart', [
-    {type:'bar', name:'Net Sales', x:months, y:nsV, marker:{color:'#b08d57'}, text:nsV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false},
-    {type:'bar', name:'Expenses', x:months, y:expV, marker:{color:'#c0392b'}, text:expV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}
+    {type:'bar', name:'Net Sales', x:months, y:nsV, marker:{color:'#7c3aed'}, text:nsV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false},
+    {type:'bar', name:'Expenses', x:months, y:expV, marker:{color:'#ef4444'}, text:expV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false}
   ], {margin:{t:50,b:45,l:65,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-       font:{size:14,color:'#a0b4c8'}, barmode:'group', height:350, hovermode:'x unified',
-      legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:14,color:'#a0b4c8'}},
-      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'}}, {responsive:true, displayModeBar:false});
+       font:{size:14,color:'#475569'}, barmode:'group', height:350, hovermode:'x unified',
+      legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:14,color:'#475569'}},
+      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}}, {responsive:true, displayModeBar:false});
 
   const depts = Object.keys(d.depts);
   const dVals = Object.values(d.depts).map(v => v * c.rate);
   Plotly.newPlot('deptChart', [{type:'bar', orientation:'h', x:dVals, y:depts,
-    marker:{color:'#8a7fb8'}, text:dVals.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}],
+    marker:{color:'#7c3aed'}, text:dVals.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false}],
     {margin:{t:15,b:25,l:160,r:150}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-     font:{size:14,color:'#a0b4c8'}, height:Math.max(300, depts.length*45), hovermode:'y unified', showlegend:false,
-     xaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'}}, {responsive:true, displayModeBar:false});
+     font:{size:14,color:'#475569'}, height:Math.max(300, depts.length*45), hovermode:'y unified', showlegend:false,
+     xaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}}, {responsive:true, displayModeBar:false});
 
   document.getElementById('pnlCard').innerHTML =
     '<table>' +
@@ -633,24 +633,24 @@ async function loadData() {
   // Business Units
   const busUnits = d.business_units;
   const buNames = busUnits.map(x => x.name);
-  const buColors = ['#8a6d3b','#5a8a5e','#a07830','#7a6faa','#c0392b'];
+  const buColors = ['#5b21b6','#5a8a5e','#6d28d9','#6d28d9','#ef4444'];
 
   const buSalesPct = busUnits.map(x => x.sales_pct);
   Plotly.newPlot('buSalesChart', [{
     type:'pie', labels:buNames, values:buSalesPct,
-    text:buSalesPct.map(v => v.toFixed(1) + '%'), textinfo:'label+percent', textfont:{size:16,color:'#ffffff',family:'Arial Black'},
-    marker:{colors:buColors.slice(0,buNames.length),line:{color:'#fff',width:3}},
+    text:buSalesPct.map(v => v.toFixed(1) + '%'), textinfo:'label+percent', textfont:{size:16,color:'#1e293b',family:'Arial Black'},
+    marker:{colors:buColors.slice(0,buNames.length),line:{color:'#e5e7eb',width:3}},
     hovertemplate:'%{label}<br>%{value:.1f}%<extra></extra>'}],
     {margin:{t:5,b:5,l:5,r:5}, paper_bgcolor:'rgba(0,0,0,0)', height:350, showlegend:true,
-     legend:{orientation:'h',y:-0.12,font:{size:14,color:'#a0b4c8'}}},
+     legend:{orientation:'h',y:-0.12,font:{size:14,color:'#475569'}}},
     {responsive:true, displayModeBar:false});
 
   // Monthly Quantity Sold
   const qtyVals = months.map((_,i) => M[i].qty);
   Plotly.newPlot('qtyChart', [{type:'bar', x:months, y:qtyVals,
-    marker:{color:'#5a8a5e'}, text:qtyVals.map(v => v > 0 ? v.toLocaleString() : ''), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}],
+    marker:{color:'#10b981'}, text:qtyVals.map(v => v > 0 ? v.toLocaleString() : ''), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false}],
     {margin:{t:50,b:50,l:80,r:30}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-     font:{size:15,color:'#a0b4c8'}, yaxis:{rangemode:'tozero',gridcolor:'rgba(255,255,255,0.04)',automargin:true},
+     font:{size:15,color:'#475569'}, yaxis:{rangemode:'tozero',gridcolor:'rgba(0,0,0,0.06)',automargin:true},
      height:350, hovermode:'x unified', showlegend:false, bargap:0.3},
     {responsive:true, displayModeBar:false});
 
@@ -661,12 +661,12 @@ async function loadData() {
   const nsLabels = nnsV.map(v => v > 0 ? fmtBig(v)+' '+c.symbol : '');
   const cogsLabels = ncogsV.map(v => v > 0 ? fmtBig(v)+' '+c.symbol : '');
   Plotly.newPlot('cogsChart', [
-    {type:'bar', name:'Net Sales', x:months, y:nnsV, marker:{color:'#b08d57'}, text:nsLabels, textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false},
-    {type:'bar', name:'COGS', x:months, y:ncogsV, marker:{color:'#a07830'}, text:cogsLabels, textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}
+    {type:'bar', name:'Net Sales', x:months, y:nnsV, marker:{color:'#7c3aed'}, text:nsLabels, textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false},
+    {type:'bar', name:'COGS', x:months, y:ncogsV, marker:{color:'#6d28d9'}, text:cogsLabels, textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false}
   ], {margin:{t:60,b:50,l:80,r:30}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:15,color:'#a0b4c8'}, barmode:'group', height:350, hovermode:'x unified', bargap:0.25, bargroupgap:0.1,
-      legend:{orientation:'h',y:1.12,x:.5,xanchor:'center',font:{size:15,color:'#a0b4c8'}},
-      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)',automargin:true}}, {responsive:true, displayModeBar:false});
+      font:{size:15,color:'#475569'}, barmode:'group', height:350, hovermode:'x unified', bargap:0.25, bargroupgap:0.1,
+      legend:{orientation:'h',y:1.12,x:.5,xanchor:'center',font:{size:15,color:'#475569'}},
+      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)',automargin:true}}, {responsive:true, displayModeBar:false});
   renderCurrencyChart();
   setTimeout(updatePlotlyBlur, 100);
 }
@@ -691,12 +691,12 @@ async function loadStyleAnalysis() {
     const avgGPM = cb.gross_profit_margin.total;
     const avgNPM = totalNP / (totalRev || 1);
     const kpis = [
-      {label:'Total Revenue', value:fmtS(totalRev*c.rate)+' '+c.symbol, color:'#6a9b6e'},
-      {label:'Total COGS', value:fmtS(totalCogs*c.rate)+' '+c.symbol, color:'#c9a96e'},
-      {label:'Gross Profit', value:fmtS(totalGP*c.rate)+' '+c.symbol, color:'#8a7fb8'},
-      {label:'Net Profit', value:fmtS(totalNP*c.rate)+' '+c.symbol, color:'#6a9b6e'},
-      {label:'Avg GP Margin', value:fmtPct(avgGPM), color:'#6a9b6e'},
-      {label:'Avg NP Margin', value:fmtPct(avgNPM), color:'#6a9b6e'}
+      {label:'Total Revenue', value:fmtS(totalRev*c.rate)+' '+c.symbol, color:'#10b981'},
+      {label:'Total COGS', value:fmtS(totalCogs*c.rate)+' '+c.symbol, color:'#a78bfa'},
+      {label:'Gross Profit', value:fmtS(totalGP*c.rate)+' '+c.symbol, color:'#7c3aed'},
+      {label:'Net Profit', value:fmtS(totalNP*c.rate)+' '+c.symbol, color:'#10b981'},
+      {label:'Avg GP Margin', value:fmtPct(avgGPM), color:'#10b981'},
+      {label:'Avg NP Margin', value:fmtPct(avgNPM), color:'#10b981'}
     ];
     document.getElementById('styleKpiGrid').innerHTML = kpis.map(k =>
       '<div class="kpi-card"><div class="kpi-icon" style="background:'+k.color+'"><i class="fas fa-chart-line" style="color:#fff"></i></div><div class="kpi-label">'+k.label+'</div><div class="kpi-value" style="color:'+k.color+'">'+k.value+'</div></div>'
@@ -708,37 +708,37 @@ async function loadStyleAnalysis() {
       type:'waterfall', orientation:'v',
       x: wfLabels, y: wfVals,
       connector:{line:{color:'#475569',width:1,dash:'dot'}},
-      decreasing:{marker:{color:'#c0392b'}},
-      increasing:{marker:{color:'#6a9b6e'}},
-      totals:{marker:{color:'#b08d57'}},
+      decreasing:{marker:{color:'#ef4444'}},
+      increasing:{marker:{color:'#10b981'}},
+      totals:{marker:{color:'#7c3aed'}},
       text: wfVals.map(v => fmtS(v*c.rate)),
-      textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false
+      textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false
     }], {
       margin:{t:40,b:70,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#a0b4c8'}, height:400, showlegend:false,
-      yaxis:{ticksuffix:' '+c.symbol, gridcolor:'rgba(255,255,255,0.04)'}
+      font:{size:12,color:'#475569'}, height:400, showlegend:false,
+      yaxis:{ticksuffix:' '+c.symbol, gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
     // Net Profit by PO (bar chart)
     const npVals = pf.total_net_profit.values.map(v => v * c.rate);
-    const npColors = npVals.map(v => v >= 0 ? '#6a9b6e' : '#c0392b');
+    const npColors = npVals.map(v => v >= 0 ? '#10b981' : '#ef4444');
     Plotly.newPlot('styleNpChart', [{
       type:'bar', x:po, y:npVals, marker:{color:npColors},
-      text:npVals.map(v=>fmtS(v)+' '+c.symbol), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false
+      text:npVals.map(v=>fmtS(v)+' '+c.symbol), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false
     }], {
       margin:{t:40,b:45,l:65,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#a0b4c8'}, height:350, showlegend:false, xaxis:{tickangle:-30},
-      yaxis:{ticksuffix:' '+c.symbol, gridcolor:'rgba(255,255,255,0.04)'}
+      font:{size:12,color:'#475569'}, height:350, showlegend:false, xaxis:{tickangle:-30},
+      yaxis:{ticksuffix:' '+c.symbol, gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
     // COGS % pie
     Plotly.newPlot('styleCogsPie', [{
       type:'pie', labels:po, values:cb.total_cogs.values,
       text:cb.total_cogs.values.map(v=>fmtS(v*c.rate)), textinfo:'label+percent',
-      textfont:{size:16,color:'#ffffff',family:'Arial Black'},
-      marker:{colors:['#b08d57','#c9a96e','#6a9b6e','#8a7fb8','#c0392b'],line:{color:'#fff',width:2}},
+      textfont:{size:16,color:'#1e293b',family:'Arial Black'},
+      marker:{colors:['#7c3aed','#a78bfa','#10b981','#7c3aed','#ef4444'],line:{color:'#e5e7eb',width:2}},
       hovertemplate:'%{label}<br>'+c.symbol+': %{text}<br>%{percent}<extra></extra>'
     }], {
       margin:{t:10,b:10,l:10,r:10}, paper_bgcolor:'rgba(0,0,0,0)', height:350,
-      showlegend:true, legend:{orientation:'h',y:-0.1,font:{size:12,color:'#a0b4c8'}}
+      showlegend:true, legend:{orientation:'h',y:-0.1,font:{size:12,color:'#475569'}}
     }, {responsive:true, displayModeBar:false});
     // Table
     const tableRows = [
@@ -752,18 +752,18 @@ async function loadStyleAnalysis() {
       {label:'GP Margin', key:'gross_profit_margin', fmt:v=>fmtPct(v)},
       {label:'Production Time (days)', key:'production_time', fmt:v=>v.toLocaleString()}
     ];
-    let tbl = '<table style="width:100%;border-collapse:collapse;font-size:13px;color:#cbd5e1"><thead><tr style="border-bottom:1px solid #334155"><th style="padding:8px 12px;text-align:left;color:#94a3b8;font-weight:500">Metric</th>';
-    po.forEach(p => { tbl += '<th style="padding:8px 12px;text-align:right;color:#94a3b8;font-weight:500">'+p+'</th>'; });
-    tbl += '<th style="padding:8px 12px;text-align:right;color:#f1f5f9;font-weight:600">Total</th><th style="padding:8px 12px;text-align:right;color:#b08d57;font-weight:600">Forecast</th><th style="padding:8px 12px;text-align:right;color:#94a3b8;font-weight:600">Variance</th></tr></thead><tbody>';
+    let tbl = '<table style="width:100%;border-collapse:collapse;font-size:13px;color:#475569"><thead><tr style="border-bottom:1px solid #e5e7eb"><th style="padding:8px 12px;text-align:left;color:#64748b;font-weight:500">Metric</th>';
+    po.forEach(p => { tbl += '<th style="padding:8px 12px;text-align:right;color:#64748b;font-weight:500">'+p+'</th>'; });
+    tbl += '<th style="padding:8px 12px;text-align:right;color:#1e293b;font-weight:600">Total</th><th style="padding:8px 12px;text-align:right;color:#7c3aed;font-weight:600">Forecast</th><th style="padding:8px 12px;text-align:right;color:#64748b;font-weight:600">Variance</th></tr></thead><tbody>';
     tableRows.forEach((row, i) => {
       const d = cb[row.key];
-      const bg = i%2===0 ? 'rgba(255,255,255,0.02)' : 'transparent';
-      tbl += '<tr style="border-bottom:1px solid #1e293b;background:'+bg+'"><td style="padding:8px 12px;color:#f1f5f9;font-weight:500">'+row.label+'</td>';
+      const bg = i%2===0 ? 'rgba(0,0,0,0.02)' : 'transparent';
+      tbl += '<tr style="border-bottom:1px solid #e5e7eb;background:'+bg+'"><td style="padding:8px 12px;color:#1e293b;font-weight:500">'+row.label+'</td>';
       d.values.forEach(v => { tbl += '<td style="padding:8px 12px;text-align:right">'+row.fmt(v)+'</td>'; });
-      tbl += '<td style="padding:8px 12px;text-align:right;color:#f1f5f9;font-weight:600">'+row.fmt(d.total)+'</td>';
-      tbl += '<td style="padding:8px 12px;text-align:right;color:#b08d57">'+row.fmt(d.forecasted||0)+'</td>';
+      tbl += '<td style="padding:8px 12px;text-align:right;color:#1e293b;font-weight:600">'+row.fmt(d.total)+'</td>';
+      tbl += '<td style="padding:8px 12px;text-align:right;color:#7c3aed">'+row.fmt(d.forecasted||0)+'</td>';
       const vv = d.variance||0;
-      tbl += '<td style="padding:8px 12px;text-align:right;color:'+(vv>0?'#6a9b6e':vv<0?'#c0392b':'#94a3b8')+'">'+row.fmt(vv)+'</td></tr>';
+      tbl += '<td style="padding:8px 12px;text-align:right;color:'+(vv>0?'#10b981':vv<0?'#ef4444':'#64748b')+'">'+row.fmt(vv)+'</td></tr>';
     });
     tbl += '</tbody></table>';
     document.getElementById('styleTable').innerHTML = tbl;
@@ -771,35 +771,35 @@ async function loadStyleAnalysis() {
     const gpMargins = cb.gross_profit_margin.values.map(v => v * 100);
     const npMargins = pf.net_profit_margin.values.map(v => v * 100);
     Plotly.newPlot('styleMarginChart', [
-      {type:'scatter', mode:'lines+markers', name:'GP Margin', x:po, y:gpMargins, line:{color:'#8a7fb8',width:3}, marker:{size:10,color:'#8a7fb8'}, text:gpMargins.map(v=>v.toFixed(1)+'%'), textposition:'top center', textfont:{size:16,color:'#ffffff',family:'Arial Black'}},
-      {type:'scatter', mode:'lines+markers', name:'NP Margin', x:po, y:npMargins, line:{color:'#6a9b6e',width:3}, marker:{size:10,color:'#6a9b6e'}, text:npMargins.map(v=>v.toFixed(1)+'%'), textposition:'top center', textfont:{size:16,color:'#ffffff',family:'Arial Black'}}
+      {type:'scatter', mode:'lines+markers', name:'GP Margin', x:po, y:gpMargins, line:{color:'#7c3aed',width:3}, marker:{size:10,color:'#7c3aed'}, text:gpMargins.map(v=>v.toFixed(1)+'%'), textposition:'top center', textfont:{size:16,color:'#1e293b',family:'Arial Black'}},
+      {type:'scatter', mode:'lines+markers', name:'NP Margin', x:po, y:npMargins, line:{color:'#10b981',width:3}, marker:{size:10,color:'#10b981'}, text:npMargins.map(v=>v.toFixed(1)+'%'), textposition:'top center', textfont:{size:16,color:'#1e293b',family:'Arial Black'}}
     ], {
       margin:{t:50,b:50,l:60,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#a0b4c8'}, height:350, showlegend:true, xaxis:{tickangle:-30},
-      legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#a0b4c8'}},
-      yaxis:{ticksuffix:'%', gridcolor:'rgba(255,255,255,0.04)'}
+      font:{size:12,color:'#475569'}, height:350, showlegend:true, xaxis:{tickangle:-30},
+      legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#475569'}},
+      yaxis:{ticksuffix:'%', gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
     // Cost per item stacked bar
     const laborV = cb.labor_cost_per_item.values;
     const otV = cb.overtime_per_item.values;
     const packV = cb.packing_per_item.values;
     Plotly.newPlot('styleCostBar', [
-      {type:'bar', name:'Labor', x:po, y:laborV, marker:{color:'#b08d57'}},
-      {type:'bar', name:'Overtime', x:po, y:otV, marker:{color:'#c9a96e'}},
-      {type:'bar', name:'Packing', x:po, y:packV, marker:{color:'#6a9b6e'}}
+      {type:'bar', name:'Labor', x:po, y:laborV, marker:{color:'#7c3aed'}},
+      {type:'bar', name:'Overtime', x:po, y:otV, marker:{color:'#a78bfa'}},
+      {type:'bar', name:'Packing', x:po, y:packV, marker:{color:'#10b981'}}
     ], {
       margin:{t:40,b:45,l:60,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#a0b4c8'}, barmode:'stack', height:350, xaxis:{tickangle:-30},
-      legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#a0b4c8'}},
-      yaxis:{gridcolor:'rgba(255,255,255,0.04)'}
+      font:{size:12,color:'#475569'}, barmode:'stack', height:350, xaxis:{tickangle:-30},
+      legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#475569'}},
+      yaxis:{gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
     // Variance text
     if (s.variance_detail) {
-      document.getElementById('styleVariance').innerHTML = '<div style="padding:18px 22px"><div style="font-size:13px;font-weight:600;color:#c9a96e;margin-bottom:12px">'+s.variance_title+'</div><div style="font-size:13px;color:#94a3b8;line-height:1.8;white-space:pre-line">'+s.variance_detail+'</div></div>';
+      document.getElementById('styleVariance').innerHTML = '<div style="padding:18px 22px"><div style="font-size:13px;font-weight:600;color:#a78bfa;margin-bottom:12px">'+s.variance_title+'</div><div style="font-size:13px;color:#64748b;line-height:1.8;white-space:pre-line">'+s.variance_detail+'</div></div>';
     }
     // Recommendations
     if (s.recommendations) {
-      document.getElementById('styleRecommendations').innerHTML = '<div style="padding:18px 22px"><div style="font-size:13px;font-weight:600;color:#6a9b6e;margin-bottom:12px">'+s.rec_title+'</div><div style="font-size:13px;color:#94a3b8;line-height:1.8;white-space:pre-line">'+s.recommendations+'</div></div>';
+      document.getElementById('styleRecommendations').innerHTML = '<div style="padding:18px 22px"><div style="font-size:13px;font-weight:600;color:#10b981;margin-bottom:12px">'+s.rec_title+'</div><div style="font-size:13px;color:#64748b;line-height:1.8;white-space:pre-line">'+s.recommendations+'</div></div>';
     }
     setTimeout(updatePlotlyBlur, 100);
   } catch(e) { console.error('Style analysis error:', e); }
@@ -818,12 +818,12 @@ async function loadInvestmentData() {
     const p = s.portfolio;
     const inv = s.investment;
     const kpis = [
-      {label:'Portfolio Return 2025', value:fmtR(p.return_rate.y2025), color:p.return_rate.y2025>=0?'#6a9b6e':'#c0392b'},
-      {label:'Portfolio Return 2026A', value:fmtR(p.return_rate.y2026a), color:p.return_rate.y2026a>=0?'#6a9b6e':'#c0392b'},
-      {label:'Portfolio Return 2026F', value:fmtR(p.return_rate.y2026f), color:p.return_rate.y2026f>=0?'#6a9b6e':'#c0392b'},
-      {label:'Sharpe Ratio 2026A', value:p.sharpe_ratio.y2026a.toFixed(3), color:'#8a7fb8'},
-      {label:'Max Drawdown 2026A', value:pct(p.mdd.y2026a), color:'#c0392b'},
-      {label:'Initial Investment', value:fmtM(inv.initial)+' '+c.symbol, color:'#b08d57'}
+      {label:'Portfolio Return 2025', value:fmtR(p.return_rate.y2025), color:p.return_rate.y2025>=0?'#10b981':'#ef4444'},
+      {label:'Portfolio Return 2026A', value:fmtR(p.return_rate.y2026a), color:p.return_rate.y2026a>=0?'#10b981':'#ef4444'},
+      {label:'Portfolio Return 2026F', value:fmtR(p.return_rate.y2026f), color:p.return_rate.y2026f>=0?'#10b981':'#ef4444'},
+      {label:'Sharpe Ratio 2026A', value:p.sharpe_ratio.y2026a.toFixed(3), color:'#7c3aed'},
+      {label:'Max Drawdown 2026A', value:pct(p.mdd.y2026a), color:'#ef4444'},
+      {label:'Initial Investment', value:fmtM(inv.initial)+' '+c.symbol, color:'#7c3aed'}
     ];
     document.getElementById('invKpiGrid').innerHTML = kpis.map(k =>
       '<div class="kpi-card"><div class="kpi-icon" style="background:'+k.color+'"><i class="fas fa-chart-line" style="color:#fff"></i></div><div class="kpi-label">'+k.label+'</div><div class="kpi-value" style="color:'+k.color+';font-size:18px">'+k.value+'</div></div>'
@@ -834,7 +834,7 @@ async function loadInvestmentData() {
     const yrs = ['y2025','y2026a','y2026f'];
     const yrLabels = ['2025','2026 Actual','2026 Forecast'];
     const traces_return = [];
-    const colors = {'Gold':'#c9a96e','Silver':'#94a3b8','Swiss Frank':'#b08d57'};
+    const colors = {'Gold':'#a78bfa','Silver':'#94a3b8','Swiss Frank':'#7c3aed'};
     assets.forEach((asset, ai) => {
       const data = asset === 'Gold' ? s.gold : asset === 'Silver' ? s.silver : s.swiss;
       traces_return.push({
@@ -843,15 +843,15 @@ async function loadInvestmentData() {
         y:metrics.map(m => data[m].y2025*100),
         marker:{color:colors[asset],opacity:0.9},
         text:metrics.map(m => pct(data[m].y2025)),
-        textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false,
+        textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false,
         offset: ai * 0.25
       });
     });
     Plotly.newPlot('invReturnChart', traces_return, {
       margin:{t:50,b:70,l:70,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#a0b4c8'}, barmode:'group', height:400,
-      legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#a0b4c8'}},
-      yaxis:{ticksuffix:'%',gridcolor:'rgba(255,255,255,0.04)'}
+      font:{size:12,color:'#475569'}, barmode:'group', height:400,
+      legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#475569'}},
+      yaxis:{ticksuffix:'%',gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
     const riskMetrics = ['sharpe_ratio','sortino','calmar'];
     const riskNames = ['Sharpe Ratio','Sortino Ratio','Calmar Ratio'];
@@ -866,9 +866,9 @@ async function loadInvestmentData() {
     });
     Plotly.newPlot('invRiskChart', traces_risk, {
       margin:{t:50,b:60,l:60,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#a0b4c8'}, height:380,
-      legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#a0b4c8'}},
-      yaxis:{gridcolor:'rgba(255,255,255,0.04)'}
+      font:{size:12,color:'#475569'}, height:380,
+      legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#475569'}},
+      yaxis:{gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
     const riskLabels2 = ['Max Drawdown','Downside Deviation','Monthly Volatility'];
     const riskKeys = ['mdd','downside_dev','monthly_risk'];
@@ -881,14 +881,14 @@ async function loadInvestmentData() {
         y:riskKeys.map(k => Math.abs(data[k].y2026a)*100),
         marker:{color:colors[asset]},
         text:riskKeys.map(k => pct(Math.abs(data[k].y2026a))),
-        textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false
+        textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false
       });
     });
     Plotly.newPlot('invRiskMetrics', traces_rm, {
       margin:{t:50,b:60,l:60,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#a0b4c8'}, barmode:'group', height:380,
-      legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#a0b4c8'}},
-      yaxis:{ticksuffix:'%',gridcolor:'rgba(255,255,255,0.04)'}
+      font:{size:12,color:'#475569'}, barmode:'group', height:380,
+      legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#475569'}},
+      yaxis:{ticksuffix:'%',gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
     const corrLabels = ['Gold','Silver','Swiss Frank'];
     const corrMatrix = [
@@ -899,13 +899,13 @@ async function loadInvestmentData() {
     const corrText = corrMatrix.map(row => row.map(v => v.toFixed(3)));
     Plotly.newPlot('invCorrChart', [{
       type:'heatmap', z:corrMatrix, x:corrLabels, y:corrLabels,
-      text:corrText, texttemplate:'%{text}', textfont:{size:16,color:'#ffffff',family:'Arial Black'},
-      colorscale:[[0,'#c0392b'],[0.5,'#1e293b'],[1,'#6a9b6e']],
+      text:corrText, texttemplate:'%{text}', textfont:{size:16,color:'#1e293b',family:'Arial Black'},
+      colorscale:[[0,'#ef4444'],[0.5,'#e5e7eb'],[1,'#10b981']],
       zmin:-1, zmax:1,
       hovertemplate:'%{x} vs %{y}<br>Correlation: %{z:.3f}<extra></extra>'
     }], {
       margin:{t:30,b:50,l:80,r:30}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#a0b4c8'}, height:350,
+      font:{size:12,color:'#475569'}, height:350,
       xaxis:{side:'bottom'}, yaxis:{autorange:'reversed'}
     }, {responsive:true, displayModeBar:false});
     const pw = s.portfolio.weights || {gold:0.3,silver:0.2,swiss:0.5};
@@ -913,29 +913,29 @@ async function loadInvestmentData() {
       type:'pie', labels:['Gold','Silver','Swiss Frank'],
       values:[pw.gold*100,pw.silver*100,pw.swiss*100],
       text:[(pw.gold*100).toFixed(0)+'%',(pw.silver*100).toFixed(0)+'%',(pw.swiss*100).toFixed(0)+'%'],
-      textinfo:'label+percent', textfont:{size:16,color:'#ffffff',family:'Arial Black'},
-      marker:{colors:['#c9a96e','#94a3b8','#b08d57'],line:{color:'#fff',width:3}},
+      textinfo:'label+percent', textfont:{size:16,color:'#1e293b',family:'Arial Black'},
+      marker:{colors:['#a78bfa','#94a3b8','#7c3aed'],line:{color:'#e5e7eb',width:3}},
       hovertemplate:'%{label}<br>%{value:.0f}%<extra></extra>'
     }], {
       margin:{t:10,b:10,l:10,r:10}, paper_bgcolor:'rgba(0,0,0,0)', height:350,
-      showlegend:true, legend:{orientation:'h',y:-0.1,font:{size:13,color:'#a0b4c8'}}
+      showlegend:true, legend:{orientation:'h',y:-0.1,font:{size:13,color:'#475569'}}
     }, {responsive:true, displayModeBar:false});
     const perfLabels = ['Annual Return','Return After Loss','Present Value'];
     const perfActual = [inv.annual_return.actual, inv.return_after_loss.actual, inv.pv.actual];
     const perfForecast = [inv.annual_return.forecast, inv.return_after_loss.forecast, inv.pv.forecast];
     Plotly.newPlot('invPerfChart', [
-      {type:'bar', name:'2026 Actual', x:perfLabels, y:perfActual, marker:{color:'#b08d57'},
-       text:perfActual.map(v=>fmtM(v*c.rate)+' '+c.symbol), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false},
-      {type:'bar', name:'2026 Forecast', x:perfLabels, y:perfForecast, marker:{color:'#c9a96e'},
-       text:perfForecast.map(v=>fmtM(v*c.rate)+' '+c.symbol), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}
+      {type:'bar', name:'2026 Actual', x:perfLabels, y:perfActual, marker:{color:'#7c3aed'},
+       text:perfActual.map(v=>fmtM(v*c.rate)+' '+c.symbol), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false},
+      {type:'bar', name:'2026 Forecast', x:perfLabels, y:perfForecast, marker:{color:'#a78bfa'},
+       text:perfForecast.map(v=>fmtM(v*c.rate)+' '+c.symbol), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false}
     ], {
       margin:{t:50,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#a0b4c8'}, barmode:'group', height:380,
-      legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#a0b4c8'}},
-      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'}
+      font:{size:12,color:'#475569'}, barmode:'group', height:380,
+      legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#475569'}},
+      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
     if (s.recommendation) {
-      document.getElementById('invRecommendation').innerHTML = '<div style="padding:18px 22px;font-size:13px;color:#94a3b8;line-height:1.8;white-space:pre-line">'+s.recommendation+'</div>';
+      document.getElementById('invRecommendation').innerHTML = '<div style="padding:18px 22px;font-size:13px;color:#64748b;line-height:1.8;white-space:pre-line">'+s.recommendation+'</div>';
     }
     setTimeout(updatePlotlyBlur, 100);
   } catch(e) { console.error('Investment data error:', e); }
@@ -955,11 +955,11 @@ async function loadCashflowData() {
     // KPIs
     const netCF = s.total_collections - s.total_spending;
     const kpis = [
-      {label:'Total Collections', value:fmtFull(s.total_collections), color:'#6a9b6e', icon:'fa-arrow-down'},
-      {label:'Total Spending', value:fmtFull(s.total_spending), color:'#c0392b', icon:'fa-arrow-up'},
-      {label:'Net Cash Flow', value:fmtFull(netCF), color: netCF>=0?'#b08d57':'#c9a96e', icon:'fa-balance-scale'},
-      {label:'Days Receivable', value:s.days_receivable.toFixed(1) + ' days', color:'#8a7fb8', icon:'fa-clock'},
-      {label:'Days Payable', value:s.days_payable.toFixed(1) + ' days', color:'#a07830', icon:'fa-clock'}
+      {label:'Total Collections', value:fmtFull(s.total_collections), color:'#10b981', icon:'fa-arrow-down'},
+      {label:'Total Spending', value:fmtFull(s.total_spending), color:'#ef4444', icon:'fa-arrow-up'},
+      {label:'Net Cash Flow', value:fmtFull(netCF), color: netCF>=0?'#7c3aed':'#a78bfa', icon:'fa-balance-scale'},
+      {label:'Days Receivable', value:s.days_receivable.toFixed(1) + ' days', color:'#7c3aed', icon:'fa-clock'},
+      {label:'Days Payable', value:s.days_payable.toFixed(1) + ' days', color:'#6d28d9', icon:'fa-clock'}
     ];
     document.getElementById('cfKpiGrid').innerHTML = kpis.map(k =>
       '<div class="kpi-card"><div class="kpi-icon" style="background:'+k.color+'"><i class="fas '+k.icon+'" style="color:#fff"></i></div><div class="kpi-label">'+k.label+'</div><div class="kpi-value" style="color:'+k.color+';font-size:18px">'+k.value+'</div></div>'
@@ -969,68 +969,68 @@ async function loadCashflowData() {
     const outVals = months.map(m => -s.monthly_spending[m] * c.rate);
     const netVals = months.map(m => s.monthly_net[m] * c.rate);
     Plotly.newPlot('cfMonthlyChart', [
-      {type:'bar', name:'Collections', x:months.map(m=>monthNames[m]), y:inVals, marker:{color:'#6a9b6e'}, text:inVals.map(v=>fmtFull(v/c.rate)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false},
-      {type:'bar', name:'Spending', x:months.map(m=>monthNames[m]), y:outVals, marker:{color:'#c0392b'}, text:outVals.map(v=>'(-'+fmtFull(-v/c.rate)+')'), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false},
-      {type:'scatter', mode:'lines+markers', name:'Net Cash Flow', x:months.map(m=>monthNames[m]), y:netVals, line:{color:'#b08d57',width:3}, marker:{size:10}}
+      {type:'bar', name:'Collections', x:months.map(m=>monthNames[m]), y:inVals, marker:{color:'#10b981'}, text:inVals.map(v=>fmtFull(v/c.rate)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false},
+      {type:'bar', name:'Spending', x:months.map(m=>monthNames[m]), y:outVals, marker:{color:'#ef4444'}, text:outVals.map(v=>'(-'+fmtFull(-v/c.rate)+')'), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false},
+      {type:'scatter', mode:'lines+markers', name:'Net Cash Flow', x:months.map(m=>monthNames[m]), y:netVals, line:{color:'#7c3aed',width:3}, marker:{size:10}}
     ], {
       margin:{t:50,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#a0b4c8'}, barmode:'relative', height:400,
-      legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#a0b4c8'}},
-      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'}
+      font:{size:12,color:'#475569'}, barmode:'relative', height:400,
+      legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#475569'}},
+      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
     // Collections by BU (from dashboard - authoritative)
     const buKeys = Object.keys(s.bu_collections_actual).filter(k=>k!=='TOTAL');
     Plotly.newPlot('cfBuChart', [{
       type:'pie', labels:buKeys, values:buKeys.map(k=>s.bu_collections_actual[k]*c.rate),
-      textinfo:'label+percent', textfont:{size:16,color:'#ffffff',family:'Arial Black'},
-      marker:{colors:['#b08d57','#8a7fb8','#6a9b6e','#c9a96e'],line:{color:'#fff',width:3}},
+      textinfo:'label+percent', textfont:{size:16,color:'#1e293b',family:'Arial Black'},
+      marker:{colors:['#7c3aed','#7c3aed','#10b981','#a78bfa'],line:{color:'#e5e7eb',width:3}},
       hovertemplate:'%{label}<br>'+c.symbol+' %{value:,.0f}<br>%{percent}<extra></extra>'
     }], {
       margin:{t:10,b:10,l:10,r:10}, paper_bgcolor:'rgba(0,0,0,0)', height:350,
-      showlegend:true, legend:{orientation:'h',y:-0.1,font:{size:13,color:'#a0b4c8'}}
+      showlegend:true, legend:{orientation:'h',y:-0.1,font:{size:13,color:'#475569'}}
     }, {responsive:true, displayModeBar:false});
     // Payment status
     const payKeys = Object.keys(s.payment_status);
-    const payColors = {'Bank Transfer':'#b08d57','Cash':'#6a9b6e','Cheque':'#c9a96e'};
+    const payColors = {'Bank Transfer':'#7c3aed','Cash':'#10b981','Cheque':'#a78bfa'};
     Plotly.newPlot('cfPayChart', [{
       type:'doughnut', labels:payKeys, values:payKeys.map(k=>s.payment_status[k]*c.rate),
-      textinfo:'label+percent', textfont:{size:16,color:'#ffffff',family:'Arial Black'},
-      marker:{colors:payKeys.map(k=>payColors[k]||'#8a7fb8'),line:{color:'#fff',width:3}},
+      textinfo:'label+percent', textfont:{size:16,color:'#1e293b',family:'Arial Black'},
+      marker:{colors:payKeys.map(k=>payColors[k]||'#7c3aed'),line:{color:'#e5e7eb',width:3}},
       hole:0.5, hovertemplate:'%{label}<br>'+c.symbol+' %{value:,.0f}<br>%{percent}<extra></extra>'
     }], {
       margin:{t:10,b:10,l:10,r:10}, paper_bgcolor:'rgba(0,0,0,0)', height:350,
-      showlegend:true, legend:{orientation:'h',y:-0.1,font:{size:13,color:'#a0b4c8'}}
+      showlegend:true, legend:{orientation:'h',y:-0.1,font:{size:13,color:'#475569'}}
     }, {responsive:true, displayModeBar:false});
     // Spending by department (from dashboard - authoritative)
     const deptKeys = Object.keys(s.dept_spending_actual).filter(k=>k!=='TOTAL');
-    const deptColors = {'Production':'#c9a96e','G&A':'#b08d57','Assets':'#8a7fb8','Financing Expenses':'#c0392b','S&M':'#6a9b6e','R&D':'#a07830'};
+    const deptColors = {'Production':'#a78bfa','G&A':'#7c3aed','Assets':'#7c3aed','Financing Expenses':'#ef4444','S&M':'#10b981','R&D':'#6d28d9'};
     Plotly.newPlot('cfDeptChart', [{
       type:'bar', x:deptKeys, y:deptKeys.map(k=>s.dept_spending_actual[k]*c.rate),
-      marker:{color:deptKeys.map(k=>deptColors[k]||'#6a9b6e')},
+      marker:{color:deptKeys.map(k=>deptColors[k]||'#10b981')},
       text:deptKeys.map(k=>fmtFull(s.dept_spending_actual[k])),
-      textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false
+      textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false
     }], {
       margin:{t:30,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#a0b4c8'}, height:350,
-      xaxis:{tickangle:-30}, yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'}
+      font:{size:12,color:'#475569'}, height:350,
+      xaxis:{tickangle:-30}, yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
     // Top spending categories
     const catKeys = Object.keys(s.category_spending).slice().reverse();
     Plotly.newPlot('cfCatChart', [{
       type:'bar', y:catKeys, x:catKeys.map(k=>s.category_spending[k]*c.rate),
-      orientation:'h', marker:{color:'#c0392b'},
+      orientation:'h', marker:{color:'#ef4444'},
       text:catKeys.map(k=>fmtFull(s.category_spending[k])),
-      textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false
+      textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false
     }], {
       margin:{t:10,b:40,l:120,r:60}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#a0b4c8'}, height:380,
-      xaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'}
+      font:{size:12,color:'#475569'}, height:380,
+      xaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
     // Stacked collection vs spending by month
     const buList = [...new Set(Object.values(s.monthly_bu).flatMap(v=>Object.keys(v)))];
     const deptList = [...new Set(Object.values(s.monthly_dept).flatMap(v=>Object.keys(v)))];
     const stackTraces = [];
-    const buColors2 = {'CM':'#6a9b6e','Export':'#b08d57','B2B':'#8a7fb8','B2C':'#c9a96e'};
+    const buColors2 = {'CM':'#10b981','Export':'#7c3aed','B2B':'#7c3aed','B2C':'#a78bfa'};
     buList.forEach(bu => {
       stackTraces.push({
         type:'bar', name:'In: '+bu,
@@ -1039,7 +1039,7 @@ async function loadCashflowData() {
         marker:{color:buColors2[bu]||'#666'}
       });
     });
-    const deptColors2 = {'Production':'#c0392b','G&A':'#a07830','Assets':'#94a3b8'};
+    const deptColors2 = {'Production':'#ef4444','G&A':'#6d28d9','Assets':'#94a3b8'};
     deptList.forEach(dept => {
       stackTraces.push({
         type:'bar', name:'Out: '+dept,
@@ -1050,86 +1050,86 @@ async function loadCashflowData() {
     });
     Plotly.newPlot('cfStackChart', stackTraces, {
       margin:{t:50,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#a0b4c8'}, barmode:'relative', height:420,
-      legend:{orientation:'h',y:1.2,x:.5,xanchor:'center',font:{size:12,color:'#a0b4c8'}},
-      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'}
+      font:{size:12,color:'#475569'}, barmode:'relative', height:420,
+      legend:{orientation:'h',y:1.2,x:.5,xanchor:'center',font:{size:12,color:'#475569'}},
+      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
     // Aging chart
     const agingKeys = Object.keys(s.aging);
     if (agingKeys.length) {
       Plotly.newPlot('cfAgingChart', [{
         type:'bar', x:agingKeys, y:agingKeys.map(k=>s.aging[k].amount*c.rate),
-        marker:{color:agingKeys.map((_,i)=>['#6a9b6e','#c9a96e','#c0392b'][i]||'#666')},
+        marker:{color:agingKeys.map((_,i)=>['#10b981','#a78bfa','#ef4444'][i]||'#666')},
         text:agingKeys.map(k=>s.aging[k].aging+'<br>'+fmtFull(s.aging[k].amount)),
-        textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false
+        textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false
       }], {
         margin:{t:30,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-        font:{size:12,color:'#a0b4c8'}, height:350,
-        yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'}
+        font:{size:12,color:'#475569'}, height:350,
+        yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}
       }, {responsive:true, displayModeBar:false});
     }
     // Top 10 customers
     const custKeys = Object.keys(s.customer_collections).slice().reverse();
     Plotly.newPlot('cfCustChart', [{
       type:'bar', y:custKeys, x:custKeys.map(k=>s.customer_collections[k]*c.rate),
-      orientation:'h', marker:{color:'#6a9b6e'},
+      orientation:'h', marker:{color:'#10b981'},
       text:custKeys.map(k=>fmtFull(s.customer_collections[k])),
-      textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false
+      textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false
     }], {
       margin:{t:10,b:40,l:120,r:60}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#a0b4c8'}, height:400,
-      xaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'}
+      font:{size:12,color:'#475569'}, height:400,
+      xaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
     // Top 10 spending categories bar
     const catKeysBar = Object.keys(s.category_spending).sort((a,b)=>s.category_spending[b]-s.category_spending[a]);
     Plotly.newPlot('cfCatBarChart', [{
       type:'bar', x:catKeysBar, y:catKeysBar.map(k=>s.category_spending[k]*c.rate),
-      marker:{color:'#8a7fb8'},
+      marker:{color:'#7c3aed'},
       text:catKeysBar.map(k=>fmtFull(s.category_spending[k])),
-      textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false
+      textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false
     }], {
       margin:{t:30,b:80,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#a0b4c8'}, height:400,
-      xaxis:{tickangle:-40}, yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'}
+      font:{size:12,color:'#475569'}, height:400,
+      xaxis:{tickangle:-40}, yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
     // Collections vs Forecast
     const cfBUs = Object.keys(s.bu_collections_forecast).filter(k=>k!=='TOTAL');
     Plotly.newPlot('cfCollForecastChart', [
       {type:'bar', name:'Actual', x:cfBUs, y:cfBUs.map(bu=>(s.bu_collections_actual[bu]||0)*c.rate),
-       marker:{color:'#b08d57'}, text:cfBUs.map(bu=>fmtFull(s.bu_collections_actual[bu]||0)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false},
+       marker:{color:'#7c3aed'}, text:cfBUs.map(bu=>fmtFull(s.bu_collections_actual[bu]||0)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false},
       {type:'bar', name:'Forecast', x:cfBUs, y:cfBUs.map(bu=>s.bu_collections_forecast[bu]*c.rate),
-       marker:{color:'#c9a96e'}, text:cfBUs.map(bu=>fmtFull(s.bu_collections_forecast[bu])), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}
+       marker:{color:'#a78bfa'}, text:cfBUs.map(bu=>fmtFull(s.bu_collections_forecast[bu])), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false}
     ], {
       margin:{t:50,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#a0b4c8'}, barmode:'group', height:380,
-      legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#a0b4c8'}},
-      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'}
+      font:{size:12,color:'#475569'}, barmode:'group', height:380,
+      legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#475569'}},
+      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
     // Spending vs Forecast
     const cfDepts = Object.keys(s.dept_spending_forecast).filter(k=>k!=='TOTAL');
     Plotly.newPlot('cfSpendForecastChart', [
       {type:'bar', name:'Actual', x:cfDepts, y:cfDepts.map(d=>(s.dept_spending_actual[d]||0)*c.rate),
-       marker:{color:'#c0392b'}, text:cfDepts.map(d=>fmtFull(s.dept_spending_actual[d]||0)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false},
+       marker:{color:'#ef4444'}, text:cfDepts.map(d=>fmtFull(s.dept_spending_actual[d]||0)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false},
       {type:'bar', name:'Forecast', x:cfDepts, y:cfDepts.map(d=>s.dept_spending_forecast[d]*c.rate),
-       marker:{color:'#c9a96e'}, text:cfDepts.map(d=>fmtFull(s.dept_spending_forecast[d])), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}
+       marker:{color:'#a78bfa'}, text:cfDepts.map(d=>fmtFull(s.dept_spending_forecast[d])), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false}
     ], {
       margin:{t:50,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#a0b4c8'}, barmode:'group', height:380,
-      legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#a0b4c8'}},
-      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)'}
+      font:{size:12,color:'#475569'}, barmode:'group', height:380,
+      legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#475569'}},
+      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
     // Insights
     const collVar = s.total_forecast_coll ? ((s.total_collections - s.total_forecast_coll)/s.total_forecast_coll*100) : 0;
     const spendVar = s.total_forecast_spend ? ((s.total_spending - s.total_forecast_spend)/s.total_forecast_spend*100) : 0;
     const insights = [
-      '<div style="margin-bottom:14px"><b style="color:#b08d57;font-size:14px">Cash Flow Summary</b></div>',
-      '<div style="margin-bottom:10px"><b style="color:#6a9b6e">Days Receivable:</b> ' + s.days_receivable.toFixed(1) + ' days — ' + (s.days_receivable <= 30 ? '<span style="color:#6a9b6e">Healthy</span>' : s.days_receivable <= 60 ? '<span style="color:#c9a96e">Moderate — consider tighter credit terms</span>' : '<span style="color:#c0392b">High — collections are slow, review receivables process</span>') + '</div>',
-      '<div style="margin-bottom:10px"><b style="color:#a07830">Days Payable:</b> ' + s.days_payable.toFixed(1) + ' days — ' + (s.days_payable >= 30 ? '<span style="color:#6a9b6e">Good leverage of payment terms</span>' : '<span style="color:#c9a96e">Paying too fast — consider optimizing cash retention</span>') + '</div>',
-      '<div style="margin-bottom:10px"><b style="color:#8a7fb8">Collection vs Forecast:</b> ' + (collVar>=0?'+':'') + collVar.toFixed(1) + '% variance — ' + (collVar>=0?'<span style="color:#6a9b6e">Above target</span>':'<span style="color:#c0392b">Below target — review sales pipeline</span>') + '</div>',
-      '<div style="margin-bottom:10px"><b style="color:#c0392b">Spending vs Forecast:</b> ' + (spendVar>=0?'+':'') + spendVar.toFixed(1) + '% variance — ' + (spendVar<=0?'<span style="color:#6a9b6e">Under budget</span>':'<span style="color:#c0392b">Over budget — review departmental spend</span>') + '</div>',
-      '<div style="margin-bottom:10px"><b style="color:#b08d57">Net Cash Position:</b> ' + fmtFull(netCF) + ' — ' + (netCF>=0?'<span style="color:#6a9b6e">Positive cash generation</span>':'<span style="color:#c0392b">Cash burn — monitor closely</span>') + '</div>'
+      '<div style="margin-bottom:14px"><b style="color:#7c3aed;font-size:14px">Cash Flow Summary</b></div>',
+      '<div style="margin-bottom:10px"><b style="color:#10b981">Days Receivable:</b> ' + s.days_receivable.toFixed(1) + ' days — ' + (s.days_receivable <= 30 ? '<span style="color:#10b981">Healthy</span>' : s.days_receivable <= 60 ? '<span style="color:#a78bfa">Moderate — consider tighter credit terms</span>' : '<span style="color:#ef4444">High — collections are slow, review receivables process</span>') + '</div>',
+      '<div style="margin-bottom:10px"><b style="color:var(--accent)">Days Payable:</b> ' + s.days_payable.toFixed(1) + ' days — ' + (s.days_payable >= 30 ? '<span style="color:#10b981">Good leverage of payment terms</span>' : '<span style="color:#a78bfa">Paying too fast — consider optimizing cash retention</span>') + '</div>',
+      '<div style="margin-bottom:10px"><b style="color:#7c3aed">Collection vs Forecast:</b> ' + (collVar>=0?'+':'') + collVar.toFixed(1) + '% variance — ' + (collVar>=0?'<span style="color:#10b981">Above target</span>':'<span style="color:#ef4444">Below target — review sales pipeline</span>') + '</div>',
+      '<div style="margin-bottom:10px"><b style="color:#ef4444">Spending vs Forecast:</b> ' + (spendVar>=0?'+':'') + spendVar.toFixed(1) + '% variance — ' + (spendVar<=0?'<span style="color:#10b981">Under budget</span>':'<span style="color:#ef4444">Over budget — review departmental spend</span>') + '</div>',
+      '<div style="margin-bottom:10px"><b style="color:#7c3aed">Net Cash Position:</b> ' + fmtFull(netCF) + ' — ' + (netCF>=0?'<span style="color:#10b981">Positive cash generation</span>':'<span style="color:#ef4444">Cash burn — monitor closely</span>') + '</div>'
     ].join('');
-    document.getElementById('cfInsights').innerHTML = '<div style="padding:18px 22px;font-size:13px;color:#94a3b8;line-height:1.8">' + insights + '</div>';
+    document.getElementById('cfInsights').innerHTML = '<div style="padding:18px 22px;font-size:13px;color:#64748b;line-height:1.8">' + insights + '</div>';
     setTimeout(updatePlotlyBlur, 100);
   } catch(e) { console.error('Cash flow data error:', e); }
 }
@@ -1246,7 +1246,7 @@ async function loadPnlData() {
       (isPos ? '+' : '') + pnlFmtShort(varAmt) + ' (' + varPct + '%)</div></div>';
   }).join('');
 
-  const colAct = '#b08d57';
+  const colAct = '#7c3aed';
   const colFct = '#94a3b8';
 
   // 1. Net Sales chart
@@ -1269,7 +1269,7 @@ async function loadPnlData() {
   const niAct = monthly.map(m => m.net_income.actual * cr.rate);
   const niFct = monthly.map(m => m.net_income.forecast * cr.rate);
   buildGroupedBar('pnlNiChart', pnlMonths, [
-    {name:'Actual', y:niAct, color:'#6a9b6e'},
+    {name:'Actual', y:niAct, color:'#10b981'},
     {name:'Forecast', y:niFct, color:colFct}
   ], 'Net Income');
 
@@ -1277,11 +1277,11 @@ async function loadPnlData() {
   const gpMarginAct = monthly.map(m => m.net_sales.actual > 0 ? (m.gross_profit.actual / m.net_sales.actual * 100) : 0);
   const gpMarginFct = monthly.map(m => m.net_sales.forecast > 0 ? (m.gross_profit.forecast / m.net_sales.forecast * 100) : 0);
   Plotly.newPlot('pnlMarginChart', [
-    {type:'scatter', mode:'lines+markers', name:'Actual Margin', x:pnlMonths, y:gpMarginAct, line:{color:'#6a9b6e', width:3}, marker:{size:8, color:'#6a9b6e'}},
+    {type:'scatter', mode:'lines+markers', name:'Actual Margin', x:pnlMonths, y:gpMarginAct, line:{color:'#10b981', width:3}, marker:{size:8, color:'#10b981'}},
     {type:'scatter', mode:'lines+markers', name:'Forecast Margin', x:pnlMonths, y:gpMarginFct, line:{color:'#94a3b8', width:3, dash:'dot'}, marker:{size:8, color:'#94a3b8'}}
-  ], {margin:{t:15,b:35,l:50,r:15}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#a0b4c8',size:12},
-      yaxis:{ticksuffix:'%', gridcolor:'rgba(255,255,255,0.04)', rangemode:'tozero'}, height:260,
-      hovermode:'x unified', legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#a0b4c8'}}},
+  ], {margin:{t:15,b:35,l:50,r:15}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#475569',size:12},
+      yaxis:{ticksuffix:'%', gridcolor:'rgba(0,0,0,0.06)', rangemode:'tozero'}, height:260,
+      hovermode:'x unified', legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#475569'}}},
     {responsive:true, displayModeBar:false});
 
   // 5. Department Expenses
@@ -1289,12 +1289,12 @@ async function loadPnlData() {
   const deptAct = depts.map(k => d.dept_expenses[k].actual * cr.rate);
   const deptFct = depts.map(k => d.dept_expenses[k].forecast * cr.rate);
   Plotly.newPlot('pnlDeptChart', [
-    {type:'bar', orientation:'h', name:'Actual', x:deptAct, y:depts, marker:{color:'#8a7fb8'}, text:deptAct.map(v=>pnlFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}},
-    {type:'bar', orientation:'h', name:'Forecast', x:deptFct, y:depts, marker:{color:'#c4b5fd'}, text:deptFct.map(v=>pnlFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}}
-  ], {margin:{t:15,b:25,l:160,r:150}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#a0b4c8',size:13},
+    {type:'bar', orientation:'h', name:'Actual', x:deptAct, y:depts, marker:{color:'#7c3aed'}, text:deptAct.map(v=>pnlFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}},
+    {type:'bar', orientation:'h', name:'Forecast', x:deptFct, y:depts, marker:{color:'#c4b5fd'}, text:deptFct.map(v=>pnlFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}}
+  ], {margin:{t:15,b:25,l:160,r:150}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#475569',size:13},
       barmode:'group', height:Math.max(250, depts.length*50), hovermode:'y unified',
-      legend:{orientation:'h',y:1.05,x:.5,xanchor:'center',font:{size:12,color:'#a0b4c8'}},
-      xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(255,255,255,0.04)'}}, {responsive:true, displayModeBar:false});
+      legend:{orientation:'h',y:1.05,x:.5,xanchor:'center',font:{size:12,color:'#475569'}},
+      xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.06)'}}, {responsive:true, displayModeBar:false});
 
   // 6. P&L Waterfall
   const pnlLabels = ['Net Sales', 'COGS', 'Gross Profit', 'Expenses', 'Net Income'];
@@ -1303,18 +1303,18 @@ async function loadPnlData() {
   const waterfallMeasures = ['relative', 'relative', 'total', 'relative', 'total'];
   Plotly.newPlot('pnlWaterfallChart', [
     {type:'waterfall', name:'Actual', x:pnlLabels, y:pnlActVals, measure:waterfallMeasures,
-     decreasing:{marker:{color:'#c0392b'}}, increasing:{marker:{color:'#6a9b6e'}}, totals:{marker:{color:'#b08d57'}},
+     decreasing:{marker:{color:'#ef4444'}}, increasing:{marker:{color:'#10b981'}}, totals:{marker:{color:'#7c3aed'}},
      connector:{line:{color:'rgba(255,255,255,0.2)', width:2}},
-     text:pnlActVals.map(v => pnlFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}},
+     text:pnlActVals.map(v => pnlFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}},
     {type:'waterfall', name:'Forecast', x:pnlLabels, y:pnlFctVals, measure:waterfallMeasures,
-     decreasing:{marker:{color:'#fca5a5'}}, increasing:{marker:{color:'#86efac'}}, totals:{marker:{color:'#d4b87a'}},
+     decreasing:{marker:{color:'#fca5a5'}}, increasing:{marker:{color:'#86efac'}}, totals:{marker:{color:'#c4b5fd'}},
      connector:{line:{color:'rgba(255,255,255,0.1)', width:1}},
-     text:pnlFctVals.map(v => pnlFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'},
+     text:pnlFctVals.map(v => pnlFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'},
      opacity:0.7}
-  ], {margin:{t:50,b:40,l:55,r:15}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#a0b4c8',size:12},
+  ], {margin:{t:50,b:40,l:55,r:15}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#475569',size:12},
       height:280, hovermode:'x unified',
-      legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#a0b4c8'}},
-      yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(255,255,255,0.04)'}}, {responsive:true, displayModeBar:false});
+      legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#475569'}},
+      yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.06)'}}, {responsive:true, displayModeBar:false});
 
   // 7. P&L Summary Table
   const pnlLines = [
@@ -1335,9 +1335,9 @@ async function loadPnlData() {
       const varPct = l.f !== 0 ? ((l.a - (l.neg ? -l.f : l.f)) / (l.neg ? -l.f : l.f) * 100).toFixed(1) : 'N/A';
       const isGood = l.neg ? (varAmt >= 0) : (varAmt >= 0);
       return '<tr' + (l.bold ? ' style="border-top:2px solid #475569;font-weight:700"' : '') + '>' +
-        '<td style="padding:10px 16px;color:' + (l.bold ? '#f1f5f9' : 'var(--text-secondary)') + '">' + l.label + '</td>' +
+        '<td style="padding:10px 16px;color:' + (l.bold ? '#1e293b' : 'var(--text-secondary)') + '">' + l.label + '</td>' +
         '<td class="num" style="padding:10px 16px;text-align:right;font-weight:600">' + pnlFmt(l.a) + '</td>' +
-        '<td class="num" style="padding:10px 16px;text-align:right;color:#94a3b8">' + pnlFmt(l.neg ? -l.f : l.f) + '</td>' +
+        '<td class="num" style="padding:10px 16px;text-align:right;color:#64748b">' + pnlFmt(l.neg ? -l.f : l.f) + '</td>' +
         '<td class="num" style="padding:10px 16px;text-align:right;color:' + (isGood ? 'var(--green)' : 'var(--red)') + ';font-weight:600">' +
         (varAmt >= 0 ? '+' : '') + pnlFmt(varAmt) + '</td>' +
         '<td class="num" style="padding:10px 16px;text-align:right;color:' + (isGood ? 'var(--green)' : 'var(--red)') + '">' +
@@ -1350,13 +1350,13 @@ function buildGroupedBar(divId, labels, series, title) {
   const c = getCurrency();
   const traces = series.map(s => ({
     type:'bar', name:s.name, x:labels, y:s.y, marker:{color:s.color},
-    text:s.y.map(v=>pnlFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false
+    text:s.y.map(v=>pnlFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false
   }));
   Plotly.newPlot(divId, traces, {
     margin:{t:50,b:35,l:55,r:15}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-    font:{color:'#a0b4c8',size:12}, barmode:'group', height:280, hovermode:'x unified',
-    legend:{orientation:'h',y:1.12,x:.5,xanchor:'center',font:{size:11,color:'#a0b4c8'}},
-    yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(255,255,255,0.04)',automargin:true}
+    font:{color:'#475569',size:12}, barmode:'group', height:280, hovermode:'x unified',
+    legend:{orientation:'h',y:1.12,x:.5,xanchor:'center',font:{size:11,color:'#475569'}},
+    yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)',automargin:true}
   }, {responsive:true, displayModeBar:false});
 }
 
@@ -1392,7 +1392,7 @@ async function loadSalesData() {
   const gsAct = actMonths.map((_,i)=>M[i].gs*cr.rate);
   const gsFct = sf.monthly.map(m=>m.gross_sales.forecast*cr.rate);
   buildGroupedBar('salesGSChart', actMonths, [
-    {name:'Actual', y:gsAct, color:'#8a6d3b'},
+    {name:'Actual', y:gsAct, color:'#5b21b6'},
     {name:'Budget', y:gsFct, color:'#94a3b8'}
   ]);
 
@@ -1400,66 +1400,66 @@ async function loadSalesData() {
   const retVals = sf.monthly.map(m=>m.returns * cr.rate);
   const discVals = sf.monthly.map(m=>m.discounts * cr.rate);
   Plotly.newPlot('salesDedChart', [
-    {type:'bar', name:'Returns', x:actMonths, y:retVals, marker:{color:'#c0392b'}, text:retVals.map(v=>salesFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}},
-    {type:'bar', name:'Discounts', x:actMonths, y:discVals, marker:{color:'#c9a96e'}, text:discVals.map(v=>salesFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}}
-  ], {margin:{t:45,b:40,l:60,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#a0b4c8',size:13},
+    {type:'bar', name:'Returns', x:actMonths, y:retVals, marker:{color:'#ef4444'}, text:retVals.map(v=>salesFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}},
+    {type:'bar', name:'Discounts', x:actMonths, y:discVals, marker:{color:'#a78bfa'}, text:discVals.map(v=>salesFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}}
+  ], {margin:{t:45,b:40,l:60,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#475569',size:13},
       barmode:'group', height:300, hovermode:'x unified',
-      legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:12,color:'#a0b4c8'}},
-      yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(255,255,255,0.04)'}}, {responsive:true, displayModeBar:false});
+      legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:12,color:'#475569'}},
+      yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.06)'}}, {responsive:true, displayModeBar:false});
 
   // 3. Quantity Sold
   const qtyV = actMonths.map((_,i)=>M[i].qty);
-  Plotly.newPlot('salesQtyChart', [{type:'bar', x:actMonths, y:qtyV, marker:{color:'#a07830'}, text:qtyV.map(v=>v.toLocaleString()), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}],
-    {margin:{t:45,b:40,l:60,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#a0b4c8',size:13},
-     yaxis:{rangemode:'tozero',gridcolor:'rgba(255,255,255,0.04)'}, height:300, hovermode:'x unified', showlegend:false},
+  Plotly.newPlot('salesQtyChart', [{type:'bar', x:actMonths, y:qtyV, marker:{color:'#6d28d9'}, text:qtyV.map(v=>v.toLocaleString()), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false}],
+    {margin:{t:45,b:40,l:60,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#475569',size:13},
+     yaxis:{rangemode:'tozero',gridcolor:'rgba(0,0,0,0.06)'}, height:300, hovermode:'x unified', showlegend:false},
     {responsive:true, displayModeBar:false});
 
   // 4. Sales by BU (pie)
   const bu = d.business_units;
-  const buColors = ['#8a6d3b','#5a8a5e','#a07830','#7a6faa'];
+  const buColors = ['#5b21b6','#5a8a5e','#6d28d9','#6d28d9'];
   Plotly.newPlot('salesBUChart', [{
     type:'pie', labels:bu.map(x=>x.name), values:bu.map(x=>x.sales_pct),
-    text:bu.map(x=>x.sales_pct.toFixed(1)+'%'), textinfo:'label+percent', textfont:{size:16,color:'#ffffff',family:'Arial Black'},
-    marker:{colors:buColors.slice(0,bu.length),line:{color:'#fff',width:2}},
+    text:bu.map(x=>x.sales_pct.toFixed(1)+'%'), textinfo:'label+percent', textfont:{size:16,color:'#1e293b',family:'Arial Black'},
+    marker:{colors:buColors.slice(0,bu.length),line:{color:'#e5e7eb',width:2}},
     hovertemplate:'%{label}<br>%{value:.1f}%<extra></extra>'}],
     {margin:{t:5,b:5,l:5,r:5}, paper_bgcolor:'rgba(0,0,0,0)', height:290, showlegend:true,
-     legend:{orientation:'h',y:-0.08,font:{size:12,color:'#a0b4c8'}}},
+     legend:{orientation:'h',y:-0.08,font:{size:12,color:'#475569'}}},
     {responsive:true, displayModeBar:false});
 
   // 5. Top Customers
   const tc = d.top_customers;
   Plotly.newPlot('salesTopChart', [{type:'bar', orientation:'h', x:tc.map(x=>x.sales*cr.rate), y:tc.map(x=>x.name),
-    marker:{color:['#b08d57','#c4a265','#d4b87a','#e0c88f','#ecdaa3']},
-    text:tc.map(x=>salesFmtShort(x.sales*cr.rate)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}}],
-    {margin:{t:10,b:20,l:100,r:150}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#a0b4c8',size:13},
+    marker:{color:['#7c3aed','#8b5cf6','#a78bfa','#c4b5fd','#ddd6fe']},
+    text:tc.map(x=>salesFmtShort(x.sales*cr.rate)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}}],
+    {margin:{t:10,b:20,l:100,r:150}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#475569',size:13},
      height:Math.max(200, tc.length*40), hovermode:'y unified', showlegend:false,
-     xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(255,255,255,0.04)'}}, {responsive:true, displayModeBar:false});
+     xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.06)'}}, {responsive:true, displayModeBar:false});
 
   // 6. Top Types
   const tt = d.top_types;
   Plotly.newPlot('salesTypeChart', [{type:'bar', orientation:'h', x:tt.map(x=>x.sales*cr.rate), y:tt.map(x=>x.name),
-    marker:{color:'#b08d57'}, text:tt.map(x=>salesFmtShort(x.sales*cr.rate)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}}],
-    {margin:{t:10,b:20,l:120,r:150}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#a0b4c8',size:13},
+    marker:{color:'#7c3aed'}, text:tt.map(x=>salesFmtShort(x.sales*cr.rate)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}}],
+    {margin:{t:10,b:20,l:120,r:150}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#475569',size:13},
      height:Math.max(200, tt.length*40), hovermode:'y unified', showlegend:false,
-     xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(255,255,255,0.04)'}}, {responsive:true, displayModeBar:false});
+     xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.06)'}}, {responsive:true, displayModeBar:false});
 
   // 7. Top Fabrics
   const tf = d.top_fabrics;
   Plotly.newPlot('salesFabricChart', [{type:'bar', orientation:'h', x:tf.map(x=>x.sales*cr.rate), y:tf.map(x=>x.name),
-    marker:{color:'#5c7cfa'}, text:tf.map(x=>salesFmtShort(x.sales*cr.rate)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}}],
-    {margin:{t:10,b:20,l:120,r:150}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#a0b4c8',size:13},
+    marker:{color:'#3b82f6'}, text:tf.map(x=>salesFmtShort(x.sales*cr.rate)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}}],
+    {margin:{t:10,b:20,l:120,r:150}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#475569',size:13},
      height:Math.max(200, tf.length*40), hovermode:'y unified', showlegend:false,
-     xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(255,255,255,0.04)'}}, {responsive:true, displayModeBar:false});
+     xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.06)'}}, {responsive:true, displayModeBar:false});
 
   // 8. Net Sales Conversion Rate %
   const convAct = actMonths.map((_,i)=>M[i].gs > 0 ? ((M[i].ns / M[i].gs) * 100) : 0);
   const convFct = sf.monthly.map(m=>m.gross_sales.forecast > 0 ? ((m.net_sales / m.gross_sales.forecast) * 100) : 0);
   Plotly.newPlot('salesConversionChart', [
-    {type:'scatter', mode:'lines+markers', name:'Actual', x:actMonths, y:convAct, line:{color:'#6a9b6e', width:3}, marker:{size:8, color:'#6a9b6e'}},
+    {type:'scatter', mode:'lines+markers', name:'Actual', x:actMonths, y:convAct, line:{color:'#10b981', width:3}, marker:{size:8, color:'#10b981'}},
     {type:'scatter', mode:'lines+markers', name:'Budget', x:actMonths, y:convFct, line:{color:'#94a3b8', width:3, dash:'dot'}, marker:{size:8, color:'#94a3b8'}}
-  ], {margin:{t:15,b:40,l:55,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#a0b4c8',size:13},
-      yaxis:{ticksuffix:'%', gridcolor:'rgba(255,255,255,0.04)', rangemode:'tozero'}, height:300,
-      hovermode:'x unified', legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:12,color:'#a0b4c8'}}},
+  ], {margin:{t:15,b:40,l:55,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#475569',size:13},
+      yaxis:{ticksuffix:'%', gridcolor:'rgba(0,0,0,0.06)', rangemode:'tozero'}, height:300,
+      hovermode:'x unified', legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:12,color:'#475569'}}},
     {responsive:true, displayModeBar:false});
   setTimeout(updatePlotlyBlur, 100);
 }
@@ -1495,7 +1495,7 @@ async function loadExpensesData() {
   const expAct = monthly.map(m=>m.expenses.actual*cr.rate);
   const expFct = monthly.map(m=>m.expenses.forecast*cr.rate);
   buildGroupedBar('expMonthlyChart', months, [
-    {name:'Actual', y:expAct, color:'#c0392b'},
+    {name:'Actual', y:expAct, color:'#ef4444'},
     {name:'Budget', y:expFct, color:'#94a3b8'}
   ]);
 
@@ -1503,45 +1503,45 @@ async function loadExpensesData() {
   const deptAct = depts.map(k=>p.dept_expenses[k].actual*cr.rate);
   const deptFct = depts.map(k=>p.dept_expenses[k].forecast*cr.rate);
   Plotly.newPlot('expDeptChart', [
-    {type:'bar', orientation:'h', name:'Actual', x:deptAct, y:depts, marker:{color:'#8a7fb8'}, text:deptAct.map(v=>expFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}},
-    {type:'bar', orientation:'h', name:'Forecast', x:deptFct, y:depts, marker:{color:'#c4b5fd'}, text:deptFct.map(v=>expFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}}
-  ], {margin:{t:15,b:25,l:165,r:150}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#a0b4c8',size:13},
+    {type:'bar', orientation:'h', name:'Actual', x:deptAct, y:depts, marker:{color:'#7c3aed'}, text:deptAct.map(v=>expFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}},
+    {type:'bar', orientation:'h', name:'Forecast', x:deptFct, y:depts, marker:{color:'#c4b5fd'}, text:deptFct.map(v=>expFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}}
+  ], {margin:{t:15,b:25,l:165,r:150}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#475569',size:13},
       barmode:'group', height:Math.max(250, depts.length*50), hovermode:'y unified',
-      legend:{orientation:'h',y:1.05,x:.5,xanchor:'center',font:{size:12,color:'#a0b4c8'}},
-      xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(255,255,255,0.04)'}}, {responsive:true, displayModeBar:false});
+      legend:{orientation:'h',y:1.05,x:.5,xanchor:'center',font:{size:12,color:'#475569'}},
+      xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.06)'}}, {responsive:true, displayModeBar:false});
 
   // 3. Monthly Variance (Actual - Forecast)
   const varVals = monthly.map(m=>(m.expenses.actual - m.expenses.forecast)*cr.rate);
-  const varColors = varVals.map(v=>v <= 0 ? '#6a9b6e' : '#c0392b');
+  const varColors = varVals.map(v=>v <= 0 ? '#10b981' : '#ef4444');
   Plotly.newPlot('expVarChart', [{type:'bar', x:months, y:varVals, marker:{color:varColors},
-    text:varVals.map(v=>(v<=0?'':'+')+expFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#ffffff',family:'Arial Black'}, cliponaxis:false}],
-    {margin:{t:45,b:40,l:60,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#a0b4c8',size:13},
-     yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(255,255,255,0.04)'}, height:300, hovermode:'x unified', showlegend:false},
+    text:varVals.map(v=>(v<=0?'':'+')+expFmtShort(v)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false}],
+    {margin:{t:45,b:40,l:60,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#475569',size:13},
+     yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.06)'}, height:300, hovermode:'x unified', showlegend:false},
     {responsive:true, displayModeBar:false});
 
   // 4. Expense Distribution Pie
-  const pieColors = ['#c0392b','#c9a96e','#8a7fb8','#b08d57','#5c7cfa','#6a9b6e','#d4709f'];
+  const pieColors = ['#ef4444','#a78bfa','#7c3aed','#7c3aed','#3b82f6','#10b981','#ec4899'];
   Plotly.newPlot('expPieChart', [{
     type:'pie', labels:depts, values:deptAct,
-    text:deptAct.map(v=>expFmtShort(v)), textinfo:'label+percent', textfont:{size:16,color:'#ffffff',family:'Arial Black'},
-    marker:{colors:pieColors.slice(0,depts.length),line:{color:'#fff',width:2}},
+    text:deptAct.map(v=>expFmtShort(v)), textinfo:'label+percent', textfont:{size:16,color:'#1e293b',family:'Arial Black'},
+    marker:{colors:pieColors.slice(0,depts.length),line:{color:'#e5e7eb',width:2}},
     hovertemplate:'%{label}<br>%{value:,.0f} '+cr.symbol+'<extra></extra>'}],
     {margin:{t:5,b:5,l:5,r:5}, paper_bgcolor:'rgba(0,0,0,0)', height:300, showlegend:true,
-     legend:{orientation:'h',y:-0.1,font:{size:11,color:'#a0b4c8'}}},
+     legend:{orientation:'h',y:-0.1,font:{size:11,color:'#475569'}}},
     {responsive:true, displayModeBar:false});
 
   // 5. Top 3 Departments Monthly Trend
   const top3 = depts.sort((a,b)=>p.dept_expenses[b].actual - p.dept_expenses[a].actual).slice(0,3);
-  const trendColors = ['#c0392b','#c9a96e','#8a7fb8'];
+  const trendColors = ['#ef4444','#a78bfa','#7c3aed'];
   const trendTraces = top3.map((d,i)=>({
     type:'scatter', mode:'lines+markers', name:d,
     x:months, y:p.dept_expenses[d].monthly.map(m=>m.actual*cr.rate),
     line:{color:trendColors[i], width:3}, marker:{size:7, color:trendColors[i]}
   }));
   Plotly.newPlot('expTrendChart', trendTraces,
-    {margin:{t:45,b:40,l:60,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#a0b4c8',size:13},
-     yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(255,255,255,0.04)'}, height:300, hovermode:'x unified',
-     legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#a0b4c8'}}},
+    {margin:{t:45,b:40,l:60,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#475569',size:13},
+     yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.06)'}, height:300, hovermode:'x unified',
+     legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#475569'}}},
     {responsive:true, displayModeBar:false});
 
   // 6. Department Detail Table
@@ -1557,17 +1557,17 @@ async function loadExpensesData() {
       const good = varAmt <= 0;
       return '<tr><td style="padding:8px 14px;color:var(--text-secondary)">' + k + '</td>' +
         '<td class="num" style="padding:8px 14px;text-align:right;font-weight:600">' + expFmt(a) + '</td>' +
-        '<td class="num" style="padding:8px 14px;text-align:right;color:#94a3b8">' + expFmt(f) + '</td>' +
+        '<td class="num" style="padding:8px 14px;text-align:right;color:#64748b">' + expFmt(f) + '</td>' +
         '<td class="num" style="padding:8px 14px;text-align:right;font-weight:600;color:' + (good?'var(--green)':'var(--red)') + '">' + (varAmt>0?'+':'') + expFmt(varAmt) + '</td>' +
         '<td class="num" style="padding:8px 14px;text-align:right;color:' + (good?'var(--green)':'var(--red)') + '">' + (varPct!=='N/A'?(varAmt>0?'+':'')+varPct+'%':'N/A') + '</td>' +
-        '<td class="num" style="padding:8px 14px;text-align:right;color:#94a3b8">' + pct + '%</td></tr>';
+        '<td class="num" style="padding:8px 14px;text-align:right;color:#64748b">' + pct + '%</td></tr>';
     }).join('') +
-    '<tr style="border-top:2px solid #475569"><td style="padding:8px 14px;font-weight:700;color:#f1f5f9">Total</td>' +
+    '<tr style="border-top:2px solid #e5e7eb"><td style="padding:8px 14px;font-weight:700;color:#1e293b">Total</td>' +
     '<td class="num" style="padding:8px 14px;text-align:right;font-weight:700">' + expFmt(ytd.actual*cr.rate) + '</td>' +
-    '<td class="num" style="padding:8px 14px;text-align:right;color:#94a3b8">' + expFmt(ytd.forecast*cr.rate) + '</td>' +
+    '<td class="num" style="padding:8px 14px;text-align:right;color:#64748b">' + expFmt(ytd.forecast*cr.rate) + '</td>' +
     '<td class="num" style="padding:8px 14px;text-align:right;font-weight:700;color:' + (ytd.actual<=ytd.forecast?'var(--green)':'var(--red)') + '">' + (ytd.actual>ytd.forecast?'+':'') + expFmt((ytd.actual-ytd.forecast)*cr.rate) + '</td>' +
     '<td class="num" style="padding:8px 14px;text-align:right;color:' + (ytd.actual<=ytd.forecast?'var(--green)':'var(--red)') + '">' + (ytd.forecast>0?((ytd.actual-ytd.forecast)/ytd.forecast*100).toFixed(1):'N/A') + '%</td>' +
-    '<td class="num" style="padding:8px 14px;text-align:right;color:#94a3b8">100%</td></tr></table></div>';
+    '<td class="num" style="padding:8px 14px;text-align:right;color:#64748b">100%</td></tr></table></div>';
   setTimeout(updatePlotlyBlur, 100);
 }
 </script>
