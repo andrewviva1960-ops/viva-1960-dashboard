@@ -1882,9 +1882,16 @@ def api_pnl_forecast():
 def api_sales_forecast():
     return jsonify(get_sales_cached())
 
+_style_cache = {"data": None, "ts": 0}
+_inv_cache = {"data": None, "ts": 0}
+_cf_cache = {"data": None, "ts": 0}
+
 @app.route("/api/style_analysis")
 @auth.login_required
 def api_style_analysis():
+    now = time.time()
+    if _style_cache["data"] and (now - _style_cache["ts"]) < 300:
+        return jsonify(_style_cache["data"])
     try:
         df = pd.read_excel(_EXCEL_PATH, sheet_name="32 Degree Style Analysis ", header=None)
         result = {}
@@ -1997,6 +2004,8 @@ def api_style_analysis():
         except:
             pass
         result["cost_reduction"] = cost_reduction
+        _style_cache["data"] = result
+        _style_cache["ts"] = time.time()
         return jsonify(result)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -2004,6 +2013,9 @@ def api_style_analysis():
 @app.route("/api/investment")
 @auth.login_required
 def api_investment():
+    now = time.time()
+    if _inv_cache["data"] and (now - _inv_cache["ts"]) < 300:
+        return jsonify(_inv_cache["data"])
     try:
         df = pd.read_excel(_EXCEL_PATH, sheet_name="2025 - 2026 Analysis ", header=None)
         result = {}
@@ -2065,6 +2077,8 @@ def api_investment():
             "hedge_pct": {"actual": safe_float(96, 1), "forecast": safe_float(96, 2)}
         }
         result["recommendation"] = safe_str(99, 0)
+        _inv_cache["data"] = result
+        _inv_cache["ts"] = time.time()
         return jsonify(result)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -2072,6 +2086,9 @@ def api_investment():
 @app.route("/api/cashflow")
 @auth.login_required
 def api_cashflow():
+    now = time.time()
+    if _cf_cache["data"] and (now - _cf_cache["ts"]) < 300:
+        return jsonify(_cf_cache["data"])
     try:
         dash = pd.read_excel(_EXCEL_PATH, sheet_name="Cash Flow Dashboard ", header=None)
         coll = pd.read_excel(_EXCEL_PATH, sheet_name="Cash Collection Raw Data", header=0)
@@ -2144,7 +2161,7 @@ def api_cashflow():
         avg_monthly_cogs = TOTAL_COGS / 12 * months_active
         days_receivable = (total_coll / avg_monthly_revenue * 30) if total_coll > 0 else 0
         days_payable = (total_spend / avg_monthly_cogs * 30) if total_spend > 0 else 0
-        return jsonify({
+        cf_result = {
             "monthly_collections": {str(k): float(v) for k, v in monthly_coll.items()},
             "monthly_spending": {str(k): float(v) for k, v in monthly_spend.items()},
             "monthly_net": {str(k): float(v) for k, v in monthly_net.items()},
@@ -2164,7 +2181,10 @@ def api_cashflow():
             "total_forecast_spend": dept_spend_forecast["TOTAL"],
             "days_receivable": days_receivable,
             "days_payable": days_payable
-        })
+        }
+        _cf_cache["data"] = cf_result
+        _cf_cache["ts"] = time.time()
+        return jsonify(cf_result)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -2172,6 +2192,11 @@ def api_cashflow():
 @auth.login_required
 def api_refresh():
     _cache["data"] = None
+    _style_cache["data"] = None
+    _inv_cache["data"] = None
+    _cf_cache["data"] = None
+    _pnl_cache["data"] = None
+    _sales_cache["data"] = None
     for p in [_CACHE_FILE, _DF_CACHE]:
         if os.path.exists(p):
             os.remove(p)
