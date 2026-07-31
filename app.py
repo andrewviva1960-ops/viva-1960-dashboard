@@ -2448,60 +2448,59 @@ def api_investment():
             try:
                 return str(df.iloc[row, col]).strip() if pd.notna(df.iloc[row, col]) else ""
             except: return ""
-        # Gold metrics (rows 2-19)
+        # Gold metrics (rows 4-20)
         gold = {}
-        gold_labels = {4:"return_rate",5:"monthly_risk",6:"risk_free_rate",7:"avg_monthly_return",8:"avg_monthly_real_return",9:"sharpe_ratio",10:"real_sharpe",11:"inflation_impact",12:"inflation_rate",13:"monthly_inflation",14:"mdd",15:"downside_dev",16:"sortino",17:"calmar",18:"kurtosis",19:"skewness"}
+        gold_labels = {4:"return_rate",6:"monthly_risk",7:"risk_free_rate",8:"avg_monthly_return",9:"avg_monthly_real_return",10:"sharpe_ratio",11:"real_sharpe",12:"inflation_impact",13:"inflation_rate",14:"monthly_inflation",15:"mdd",16:"downside_dev",17:"sortino",18:"calmar",19:"kurtosis",20:"skewness"}
         for row_idx, key in gold_labels.items():
             gold[key] = {"y2025": safe_float(row_idx, 1), "y2026a": safe_float(row_idx, 2), "y2026f": safe_float(row_idx, 3)}
         result["gold"] = gold
-        # Silver metrics (rows 21-38, offset +17 from gold)
+        # Silver metrics (rows 24-39)
         silver = {}
-        silver_labels = {k+17: v for k, v in gold_labels.items()}
+        silver_labels = {24:"return_rate",25:"monthly_risk",26:"risk_free_rate",27:"avg_monthly_return",28:"avg_monthly_real_return",29:"sharpe_ratio",30:"real_sharpe",31:"inflation_impact",32:"inflation_rate",33:"monthly_inflation",34:"mdd",35:"downside_dev",36:"sortino",37:"calmar",38:"kurtosis",39:"skewness"}
         for row_idx, key in silver_labels.items():
             silver[key] = {"y2025": safe_float(row_idx, 1), "y2026a": safe_float(row_idx, 2), "y2026f": safe_float(row_idx, 3)}
         result["silver"] = silver
-        # Swiss Frank metrics (rows 40-57, offset +36 from gold)
+        # Swiss Frank metrics (rows 43-58)
         swiss = {}
-        swiss_labels = {k+36: v for k, v in gold_labels.items()}
+        swiss_labels = {43:"return_rate",44:"monthly_risk",45:"risk_free_rate",46:"avg_monthly_return",47:"avg_monthly_real_return",48:"sharpe_ratio",49:"real_sharpe",50:"inflation_impact",51:"inflation_rate",52:"monthly_inflation",53:"mdd",54:"downside_dev",55:"sortino",56:"calmar",57:"kurtosis",58:"skewness"}
         for row_idx, key in swiss_labels.items():
             swiss[key] = {"y2025": safe_float(row_idx, 1), "y2026a": safe_float(row_idx, 2), "y2026f": safe_float(row_idx, 3)}
         result["swiss"] = swiss
-        # Correlations (rows 59-65)
+        # Correlations (rows 60-62)
         result["correlations"] = {
-            "gold_silver": safe_float(59, 1),
-            "gold_swiss": safe_float(60, 1),
-            "silver_swiss": safe_float(61, 1)
+            "gold_silver": safe_float(60, 1),
+            "gold_swiss": safe_float(61, 1),
+            "silver_swiss": safe_float(62, 1)
         }
         result["betas"] = {
-            "gold_silver": safe_float(63, 1),
-            "gold_swiss": safe_float(64, 1),
-            "silver_swiss": safe_float(65, 1)
+            "gold_silver": safe_float(64, 1),
+            "gold_swiss": safe_float(65, 1),
+            "silver_swiss": safe_float(66, 1)
         }
-        # Portfolio (rows 67-68)
-        result["portfolio"] = {"gold": safe_float(68, 1), "silver": safe_float(68, 2), "swiss": safe_float(68, 3)}
-        # Portfolio metrics (rows 70-86)
+        # Portfolio weights (row 69)
+        w_g = safe_float(69, 1); w_s = safe_float(69, 2); w_sw = safe_float(69, 3)
+        w_total = w_g + w_s + w_sw
+        # Portfolio metrics (rows 72-87)
         portfolio = {}
-        portfolio_labels = {71:"return_rate",72:"monthly_risk",73:"risk_free_rate",74:"avg_monthly_return",75:"avg_monthly_real_return",76:"sharpe_ratio",77:"real_sharpe",78:"inflation_impact",79:"inflation_rate",80:"monthly_inflation",81:"mdd",82:"downside_dev",83:"sortino",84:"calmar",85:"kurtosis",86:"skewness"}
+        portfolio_labels = {72:"return_rate",73:"monthly_risk",74:"risk_free_rate",75:"avg_monthly_return",76:"avg_monthly_real_return",77:"sharpe_ratio",78:"real_sharpe",79:"inflation_impact",80:"inflation_rate",81:"monthly_inflation",82:"mdd",83:"downside_dev",84:"sortino",85:"calmar",86:"kurtosis",87:"skewness"}
         for row_idx, key in portfolio_labels.items():
             portfolio[key] = {"y2025": safe_float(row_idx, 1), "y2026a": safe_float(row_idx, 2), "y2026f": safe_float(row_idx, 3)}
         result["portfolio"] = portfolio
-        w_g = safe_float(68, 1); w_s = safe_float(68, 2); w_sw = safe_float(68, 3)
-        w_total = w_g + w_s + w_sw
         if w_total > 0:
             result["portfolio"]["weights"] = {"gold": w_g/w_total, "silver": w_s/w_total, "swiss": w_sw/w_total}
         else:
-            result["portfolio"]["weights"] = {"gold": 0.3, "silver": 0.2, "swiss": 0.5}
-        result["portfolio"]["prices"] = {"current": safe_float(69, 6), "prev": safe_float(69, 7)}
-        result["portfolio"]["growth"] = safe_float(70, 7)
-        # Investment results (rows 89-96)
+            result["portfolio"]["weights"] = {"gold": 0.33, "silver": 0.33, "swiss": 0.34}
+        result["portfolio"]["prices"] = {"current": safe_float(70, 6), "prev": safe_float(70, 7)}
+        result["portfolio"]["growth"] = safe_float(71, 7)
+        # Investment results (rows 90-97)
         result["investment"] = {
-            "initial": safe_float(89, 1),
-            "annual_return": {"actual": safe_float(91, 1), "forecast": safe_float(91, 2)},
-            "mdd": {"actual": safe_float(92, 1), "forecast": safe_float(92, 2)},
-            "return_after_loss": {"actual": safe_float(93, 1), "forecast": safe_float(93, 2)},
-            "discount_rate": safe_float(94, 1),
-            "pv": {"actual": safe_float(95, 1), "forecast": safe_float(95, 2)},
-            "hedge_pct": {"actual": safe_float(96, 1), "forecast": safe_float(96, 2)}
+            "initial": safe_float(90, 1),
+            "annual_return": {"actual": safe_float(92, 1), "forecast": safe_float(92, 2)},
+            "mdd": {"actual": safe_float(93, 1), "forecast": safe_float(93, 2)},
+            "return_after_loss": {"actual": safe_float(94, 1), "forecast": safe_float(94, 2)},
+            "discount_rate": safe_float(95, 1),
+            "pv": {"actual": safe_float(96, 1), "forecast": safe_float(96, 2)},
+            "hedge_pct": {"actual": safe_float(97, 1), "forecast": safe_float(97, 2)}
         }
         result["recommendation"] = safe_str(99, 0)
         # Optimal portfolio allocations (top 3 by Sharpe ratio)
