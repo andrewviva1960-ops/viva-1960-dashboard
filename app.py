@@ -722,7 +722,7 @@ async function loadData() {
       legend:{orientation:'h',y:1.12,x:.5,xanchor:'center',font:{size:11,color:'#475569'}},
       yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)',automargin:true}}, {responsive:true, displayModeBar:false});
   renderCurrencyChart();
-  setTimeout(() => { updatePlotlyBlur(); if(_editMode) markEditables(); }, 100);
+  setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
 }
 
 async function loadStyleAnalysis() {
@@ -855,7 +855,7 @@ async function loadStyleAnalysis() {
     if (s.recommendations) {
       document.getElementById('styleRecommendations').innerHTML = '<div style="padding:18px 22px"><div style="font-size:11px;font-weight:600;color:#10b981;margin-bottom:12px">'+s.rec_title+'</div><div style="font-size:11px;color:#64748b;line-height:1.8;white-space:pre-line">'+s.recommendations+'</div></div>';
     }
-    setTimeout(() => { updatePlotlyBlur(); if(_editMode) markEditables(); }, 100);
+    setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
   } catch(e) { console.error('Style analysis error:', e); }
 }
 
@@ -991,7 +991,7 @@ async function loadInvestmentData() {
     if (s.recommendation) {
       document.getElementById('invRecommendation').innerHTML = '<div style="padding:18px 22px;font-size:11px;color:#64748b;line-height:1.8;white-space:pre-line">'+s.recommendation+'</div>';
     }
-    setTimeout(() => { updatePlotlyBlur(); if(_editMode) markEditables(); }, 100);
+    setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
   } catch(e) { console.error('Investment data error:', e); }
 }
 
@@ -1184,7 +1184,7 @@ async function loadCashflowData() {
       '<div style="margin-bottom:10px"><b style="color:#7c3aed">Net Cash Position:</b> ' + fmtFull(netCF) + ' — ' + (netCF>=0?'<span style="color:#10b981">Positive cash generation</span>':'<span style="color:#ef4444">Cash burn — monitor closely</span>') + '</div>'
     ].join('');
     document.getElementById('cfInsights').innerHTML = '<div style="padding:18px 22px;font-size:11px;color:#64748b;line-height:1.8">' + insights + '</div>';
-    setTimeout(() => { updatePlotlyBlur(); if(_editMode) markEditables(); }, 100);
+    setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
   } catch(e) { console.error('Cash flow data error:', e); }
 }
 
@@ -1260,32 +1260,49 @@ function toggleEditMode() {
     document.querySelectorAll('.editable').forEach(el => {
       el.contentEditable = 'false';
       el.classList.remove('editable','editing');
-      el.removeAttribute('data-key');
-      el.removeAttribute('data-type');
     });
   }
 }
 
+function generateEditId(el) {
+  const tab = el.closest('.tab-content');
+  const tabId = tab ? tab.id.replace('tab-','') : 'global';
+  const parent = el.closest('[id]');
+  const parentId = parent ? parent.id : 'none';
+  const field = el.classList.contains('kpi-value') ? 'v' : el.classList.contains('kpi-label') ? 'l' : el.classList.contains('pnl-label') ? 'pl' : el.classList.contains('num') ? 'n' : 't';
+  const sibIdx = Array.from(el.parentElement.children).indexOf(el);
+  return tabId + '/' + parentId + '/' + field + '.' + sibIdx;
+}
+
 function markEditables() {
-  document.querySelectorAll('.kpi-value, .kpi-label, .chart-header h5, .pnl-label, td.num, td:not(:first-child)').forEach(el => {
+  let idx = 0;
+  document.querySelectorAll('.kpi-value, .kpi-label, .chart-header h5, .pnl-label, td.num').forEach(el => {
     if (el.closest('.edit-save-bar') || el.closest('.edit-overlay')) return;
     el.classList.add('editable');
-    el.contentEditable = 'false';
-    const key = el.closest('[id]') ? el.closest('[id]').id : '';
-    const type = el.classList.contains('kpi-value') ? 'value' : el.classList.contains('kpi-label') || el.classList.contains('pnl-label') ? 'label' : 'value';
-    el.setAttribute('data-key', key + '|' + (el.textContent||'').trim().substring(0,40));
+    el.contentEditable = _editMode ? 'false' : 'false';
+    const editId = generateEditId(el);
+    el.setAttribute('data-edit-id', editId);
+    const type = el.classList.contains('kpi-value') || el.classList.contains('num') ? 'value' : 'label';
     el.setAttribute('data-type', type);
     el.onclick = function(e) {
       if (!_editMode) return;
       e.stopPropagation();
       document.querySelectorAll('.editable.editing').forEach(x => x.classList.remove('editing'));
       el.classList.add('editing');
-      const edType = el.getAttribute('data-type');
-      const edKey = el.getAttribute('data-key');
-      const currentVal = el.textContent.trim();
-      _editTarget = {el, type: edType, key: edKey, original: currentVal};
-      openEditModal(edType, currentVal, el);
+      _editTarget = {el, type, editId, original: el.textContent.trim()};
+      openEditModal(type, el.textContent.trim(), el);
     };
+  });
+  applyAllOverrides();
+}
+
+function applyAllOverrides() {
+  if (!_overrides || !_overrides.values) return;
+  document.querySelectorAll('.editable').forEach(el => {
+    const editId = el.getAttribute('data-edit-id');
+    if (!editId) return;
+    if (_overrides.values[editId] !== undefined) { el.textContent = _overrides.values[editId]; el.style.borderBottom = '2px solid #f59e0b'; }
+    if (_overrides.labels[editId] !== undefined) { el.textContent = _overrides.labels[editId]; el.style.borderBottom = '2px solid #f59e0b'; }
   });
 }
 
@@ -1322,22 +1339,23 @@ function confirmEdit() {
   const val = document.getElementById('editModalInput').value.trim();
   if (!val && val !== '0') { closeEditModal(); return; }
   _editTarget.el.textContent = val;
-  const edKey = _editTarget.key;
+  const editId = _editTarget.editId;
   const edType = _editTarget.type;
   if (edType === 'value') {
-    _overrides.values[edKey] = val;
+    _overrides.values[editId] = val;
   } else {
-    _overrides.labels[edKey] = val;
+    _overrides.labels[editId] = val;
   }
   _editTarget.el.classList.remove('editing');
   closeEditModal();
   highlightDirty();
+  authFetch('/api/overrides', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(_overrides)});
 }
 
 function highlightDirty() {
   document.querySelectorAll('.editable').forEach(el => {
-    const k = el.getAttribute('data-key');
-    const isDirty = _overrides.values[k] || _overrides.labels[k];
+    const k = el.getAttribute('data-edit-id');
+    const isDirty = (_overrides.values && _overrides.values[k]) || (_overrides.labels && _overrides.labels[k]);
     el.style.borderBottom = isDirty ? '2px solid #f59e0b' : '';
   });
 }
@@ -1383,7 +1401,7 @@ function switchTab(tab) {
   if (tab === 'style' && !window._styleLoaded) { window._styleLoaded = true; loadStyleAnalysis(); }
   if (tab === 'investment' && !window._invLoaded) { window._invLoaded = true; loadInvestmentData(); }
   if (tab === 'cashflow' && !window._cfLoaded) { window._cfLoaded = true; loadCashflowData(); }
-  setTimeout(() => { updatePlotlyBlur(); if (_editMode) markEditables(); }, 300);
+  setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 300);
 }
 
 // ---- P&L Actual vs Forecast ----
@@ -1525,7 +1543,7 @@ async function loadPnlData() {
         '<td class="num" style="padding:6px 12px;text-align:right;color:' + (isGood ? 'var(--green)' : 'var(--red)') + '">' +
         (varPct !== 'N/A' ? (varAmt >= 0 ? '+' : '') + varPct + '%' : 'N/A') + '</td></tr>';
     }).join('') + '</table></div>';
-  setTimeout(() => { updatePlotlyBlur(); if(_editMode) markEditables(); }, 100);
+  setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
 }
 
 function buildGroupedBar(divId, labels, series, title) {
@@ -1643,7 +1661,7 @@ async function loadSalesData() {
       yaxis:{ticksuffix:'%', gridcolor:'rgba(0,0,0,0.06)', rangemode:'tozero'}, height:300,
       hovermode:'x unified', legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#475569'}}},
     {responsive:true, displayModeBar:false});
-  setTimeout(() => { updatePlotlyBlur(); if(_editMode) markEditables(); }, 100);
+  setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
 }
 
 // ---- Expenses Tab ----
@@ -1750,7 +1768,7 @@ async function loadExpensesData() {
     '<td class="num" style="padding:6px 10px;text-align:right;font-weight:700;color:' + (ytd.actual<=ytd.forecast?'var(--green)':'var(--red)') + '">' + (ytd.actual>ytd.forecast?'+':'') + expFmt((ytd.actual-ytd.forecast)*cr.rate) + '</td>' +
     '<td class="num" style="padding:6px 10px;text-align:right;color:' + (ytd.actual<=ytd.forecast?'var(--green)':'var(--red)') + '">' + (ytd.forecast>0?((ytd.actual-ytd.forecast)/ytd.forecast*100).toFixed(1):'N/A') + '%</td>' +
     '<td class="num" style="padding:6px 10px;text-align:right;color:#64748b">100%</td></tr></table></div>';
-  setTimeout(() => { updatePlotlyBlur(); if(_editMode) markEditables(); }, 100);
+  setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
 }
 </script>
 </body>
