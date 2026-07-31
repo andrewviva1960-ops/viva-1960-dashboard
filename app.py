@@ -1505,10 +1505,10 @@ async function loadExpensesData() {
   Plotly.newPlot('expDeptChart', [
     {type:'bar', orientation:'h', name:'Actual', x:deptAct, y:depts, marker:{color:'#7c3aed'}, text:deptAct.map(v=>expFmtShort(v)), textposition:'outside', textfont:{size:11,color:'#1e293b',family:'Arial Black'}},
     {type:'bar', orientation:'h', name:'Forecast', x:deptFct, y:depts, marker:{color:'#c4b5fd'}, text:deptFct.map(v=>expFmtShort(v)), textposition:'outside', textfont:{size:11,color:'#1e293b',family:'Arial Black'}}
-  ], {margin:{t:15,b:25,l:165,r:150}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#475569',size:11},
-      barmode:'group', height:Math.max(250, depts.length*50), hovermode:'y unified',
-      legend:{orientation:'h',y:1.05,x:.5,xanchor:'center',font:{size:11,color:'#475569'}},
-      xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.06)'}}, {responsive:true, displayModeBar:false});
+  ], {margin:{t:25,b:30,l:170,r:180}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#475569',size:11},
+      barmode:'group', height:Math.max(300, depts.length*60), hovermode:'y unified',
+      legend:{orientation:'h',y:1.08,x:.5,xanchor:'center',font:{size:11,color:'#475569'}},
+      xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.06)',automargin:true}}, {responsive:true, displayModeBar:false});
 
   // 3. Monthly Variance (Actual - Forecast)
   const varVals = monthly.map(m=>(m.expenses.actual - m.expenses.forecast)*cr.rate);
