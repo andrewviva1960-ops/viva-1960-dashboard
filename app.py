@@ -107,12 +107,15 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f1f5f
 .chart-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px}
 @media(max-width:1100px){.chart-grid-3{grid-template-columns:1fr 1fr}}
 @media(max-width:900px){.chart-grid,.chart-grid-3{grid-template-columns:1fr}}
-.chart-card{background:var(--card-bg);border-radius:8px;border:1px solid var(--card-border);box-shadow:0 1px 3px rgba(0,0,0,0.06);overflow:hidden}
+.chart-card{background:var(--card-bg);border-radius:8px;border:1px solid var(--card-border);box-shadow:0 1px 3px rgba(0,0,0,0.06);overflow:visible;position:relative}
 .chart-card .chart-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 0}
 .chart-card .chart-header h5{font-size:12px;font-weight:600;color:var(--text-primary);margin:0}
 .chart-card .chart-body{padding:2px 2px 4px;min-height:220px}
 .chart-card .pnl-body{padding:0;min-height:200px;display:flex;align-items:stretch}
 .chart-card.full{grid-column:1/-1}
+.chart-resize-handle{display:none;position:absolute;bottom:0;left:0;right:0;height:8px;cursor:ns-resize;background:linear-gradient(180deg,transparent,rgba(124,58,237,0.15));border-radius:0 0 8px 8px;z-index:10}
+.chart-resize-handle:hover{background:linear-gradient(180deg,transparent,rgba(124,58,237,0.4))}
+body.edit-mode .chart-resize-handle{display:block}
 .pnl-card{background:var(--card-bg);border-radius:8px;border:1px solid var(--card-border);box-shadow:0 1px 3px rgba(0,0,0,0.06);padding:0;height:100%;display:flex;flex-direction:column;width:100%}
 .pnl-card .pnl-header{padding:6px 10px 0;display:flex;align-items:center;justify-content:space-between}
 .pnl-card .pnl-header h5{font-size:12px;font-weight:600;color:var(--text-primary);margin:0}
@@ -1278,6 +1281,7 @@ function toggleEditMode() {
   document.getElementById('editToggle').style.color = _editMode ? '#fff' : '';
   if (_editMode) {
     markEditables();
+    initChartResize();
   } else {
     document.querySelectorAll('.editable').forEach(el => {
       el.contentEditable = 'false';
@@ -1328,6 +1332,7 @@ function markEditables() {
     };
   });
   applyAllOverrides();
+  initChartResize();
 }
 
 function applyAllOverrides() {
@@ -1341,6 +1346,7 @@ function applyAllOverrides() {
     if (_overrides.labels && _overrides.labels[editId] !== undefined) { el.textContent = _overrides.labels[editId]; el.style.borderBottom = '2px solid #f59e0b'; }
   });
   highlightDirty();
+  applyLayoutOverrides();
 }
 
 function openEditModal(type, currentVal, el) {
@@ -1439,17 +1445,15 @@ async function saveAllEdits() {
 
 async function clearAllEdits() {
   if (!confirm('Clear all edits? This cannot be undone.')) return;
+  _overrides = {values:{}, labels:{}, notes:{}, layout:{}};
+  _undoStack = [];
+  _redoStack = [];
+  localStorage.removeItem('viva_overrides');
   try {
-    const r = await authFetch('/api/overrides/clear', {method:'POST'});
-    if (r.ok) {
-      _overrides = {values:{}, labels:{}, notes:{}, layout:{}};
-      _undoStack = [];
-      _redoStack = [];
-      localStorage.removeItem('viva_overrides');
-      document.querySelectorAll('.editable').forEach(el => { el.style.borderBottom = ''; });
-      location.reload();
-    }
-  } catch(e) { alert('Error: ' + e.message); }
+    await authFetch('/api/overrides/clear', {method:'POST'}).catch(()=>{});
+  } catch(e) {}
+  document.querySelectorAll('.editable').forEach(el => { el.style.borderBottom = ''; });
+  location.reload();
 }
 
 document.addEventListener('keydown', function(e) {
@@ -1457,6 +1461,67 @@ document.addEventListener('keydown', function(e) {
   if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); undoEdit(); }
   if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { e.preventDefault(); redoEdit(); }
 });
+
+// ---- Chart Resize ----
+function initChartResize() {
+  document.querySelectorAll('.chart-card').forEach(card => {
+    if (card.querySelector('.chart-resize-handle')) return;
+    const handle = document.createElement('div');
+    handle.className = 'chart-resize-handle';
+    card.appendChild(handle);
+    let startY, startH;
+    handle.addEventListener('mousedown', function(e) {
+      e.preventDefault(); e.stopPropagation();
+      startY = e.clientY;
+      const body = card.querySelector('.chart-body, .pnl-body');
+      startH = body ? body.offsetHeight : 220;
+      document.body.style.cursor = 'ns-resize';
+      document.body.style.userSelect = 'none';
+      function onMove(ev) {
+        const newH = Math.max(100, startH + ev.clientY - startY);
+        if (body) body.style.minHeight = newH + 'px';
+      }
+      function onUp() {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+        const body = card.querySelector('.chart-body, .pnl-body');
+        const chartEl = body ? (body.querySelector('.js-plotly-plot') || body.querySelector('[id]')) : null;
+        const key = chartEl ? chartEl.id : card.querySelector('h5').textContent.trim().replace(/\s+/g,'_').substring(0,30);
+        if (body && key) {
+          if (!_overrides.layout) _overrides.layout = {};
+          _overrides.layout[key] = {h: body.offsetHeight};
+          _persistOverrides();
+        }
+        if (chartEl && chartEl.classList && chartEl.classList.contains('js-plotly-plot')) {
+          Plotly.Plots.resize(chartEl);
+        }
+      }
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    });
+  });
+}
+
+function applyLayoutOverrides() {
+  if (!_overrides || !_overrides.layout) return;
+  document.querySelectorAll('.chart-card').forEach(card => {
+    const chartEl = card.querySelector('.chart-body [id], .pnl-body [id]');
+    const key = chartEl ? chartEl.id : (card.querySelector('h5') ? card.querySelector('h5').textContent.trim().replace(/\s+/g,'_').substring(0,30) : null);
+    if (key && _overrides.layout[key]) {
+      const body = card.querySelector('.chart-body, .pnl-body');
+      if (body && _overrides.layout[key].h) {
+        body.style.minHeight = _overrides.layout[key].h + 'px';
+        body.style.height = _overrides.layout[key].h + 'px';
+        setTimeout(() => {
+          const plot = body.querySelector('.js-plotly-plot');
+          if (plot) Plotly.Plots.resize(plot);
+        }, 200);
+      }
+    }
+  });
+}
 
 loadOverrides();
 loadData();
