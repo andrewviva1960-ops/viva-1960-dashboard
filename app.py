@@ -18,6 +18,19 @@ _cache = {"data": None, "ts": 0}
 _CACHE_FILE = os.path.join(DIR, "dashboard_cache.json")
 _DF_CACHE = os.path.join(DIR, "dataframe.pkl")
 _EXCEL_PATH = os.path.join(DIR, "Viva Financial model 2026 (6).xlsx")
+_OVERRIDES_FILE = os.path.join(DIR, "dashboard_overrides.json")
+
+def _load_overrides():
+    if os.path.exists(_OVERRIDES_FILE):
+        try:
+            with open(_OVERRIDES_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except: pass
+    return {"values": {}, "labels": {}, "notes": {}, "layout": {}}
+
+def _save_overrides(data):
+    with open(_OVERRIDES_FILE, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
 
 HTML_TEMPLATE = '''<!DOCTYPE html>
 <html lang="en">
@@ -143,6 +156,27 @@ body:not(.blur-mode) .main .value-cell,
 body:not(.blur-mode) .main .plotly-num,
 body:not(.blur-mode) .main .js-plotly-plot svg text{filter:blur(0);transition:filter .3s}
 .footer{text-align:center;padding:16px 0;font-size:11px;color:var(--text-secondary)}
+body.edit-mode .editable{cursor:pointer;border-radius:4px;transition:background .15s}
+body.edit-mode .editable:hover{background:rgba(124,58,237,0.1);outline:1px dashed rgba(124,58,237,0.4)}
+body.edit-mode .editable.editing{background:rgba(124,58,237,0.08);outline:2px solid #7c3aed}
+body.edit-mode .editable-note{position:relative}
+body.edit-mode .editable-note.has-note::after{content:attr(data-note);position:absolute;top:-6px;right:-6px;background:#f59e0b;color:#fff;font-size:8px;width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;cursor:pointer}
+.edit-save-bar{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#7c3aed;color:#fff;padding:10px 24px;border-radius:10px;box-shadow:0 4px 20px rgba(124,58,237,0.4);display:none;z-index:9999;gap:10px;align-items:center;font-size:13px}
+body.edit-mode .edit-save-bar{display:flex}
+.edit-save-bar button{border:none;border-radius:6px;padding:6px 16px;font-size:12px;font-weight:600;cursor:pointer}
+.edit-save-bar .btn-save{background:#fff;color:#7c3aed}
+.edit-save-bar .btn-cancel{background:rgba(255,255,255,0.2);color:#fff}
+.edit-save-bar .btn-clear{background:#ef4444;color:#fff}
+.edit-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.3);z-index:10000;align-items:center;justify-content:center}
+.edit-overlay.active{display:flex}
+.edit-modal{background:#fff;border-radius:12px;padding:24px;min-width:320px;max-width:500px;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.edit-modal h4{margin:0 0 16px;font-size:15px;color:#1e293b}
+.edit-modal input,.edit-modal textarea{width:100%;border:1px solid #e5e7eb;border-radius:8px;padding:10px 12px;font-size:13px;color:#1e293b;box-sizing:border-box;margin-bottom:12px}
+.edit-modal textarea{height:80px;resize:vertical}
+.edit-modal .modal-actions{display:flex;gap:8px;justify-content:flex-end}
+.edit-modal .modal-actions button{border:none;border-radius:6px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer}
+.modal-btn-primary{background:#7c3aed;color:#fff}
+.modal-btn-cancel{background:#f1f5f9;color:#64748b}
 </style>
 </head>
 <body>
@@ -169,6 +203,7 @@ body:not(.blur-mode) .main .js-plotly-plot svg text{filter:blur(0);transition:fi
       </select>
     </div>
     <button onclick="refreshData()" class="btn btn-sm btn-outline-light" style="font-size:12px;padding:3px 12px"><i class="fas fa-sync-alt"></i> Refresh</button>
+    <button id="editToggle" onclick="toggleEditMode()" class="btn btn-sm btn-outline-light" style="font-size:12px;padding:3px 10px" title="Toggle edit mode"><i class="fas fa-pen"></i> Edit</button>
     <button id="blurToggle" onclick="toggleBlur()" class="btn btn-sm btn-outline-light" style="font-size:12px;padding:3px 10px" title="Toggle number visibility"><i class="fas fa-eye"></i></button>
   </div>
 </div>
@@ -414,6 +449,25 @@ body:not(.blur-mode) .main .js-plotly-plot svg text{filter:blur(0);transition:fi
 </div>
 
 <div class="footer">VIVA 1960 Dashboard &mdash; Data refreshes every 30 seconds</div>
+</div>
+
+<div class="edit-save-bar">
+  <span><i class="fas fa-pen"></i> Edit Mode Active</span>
+  <button class="btn-save" onclick="saveAllEdits()"><i class="fas fa-check"></i> Save</button>
+  <button class="btn-cancel" onclick="toggleEditMode()">Cancel</button>
+  <button class="btn-clear" onclick="clearAllEdits()"><i class="fas fa-trash"></i> Clear All</button>
+</div>
+
+<div class="edit-overlay" id="editOverlay">
+  <div class="edit-modal">
+    <h4 id="editModalTitle">Edit Value</h4>
+    <input type="text" id="editModalInput" style="display:none" />
+    <textarea id="editModalTextarea" style="display:none"></textarea>
+    <div class="modal-actions">
+      <button class="modal-btn-cancel" onclick="closeEditModal()">Cancel</button>
+      <button class="modal-btn-primary" onclick="confirmEdit()">Save</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -668,7 +722,7 @@ async function loadData() {
       legend:{orientation:'h',y:1.12,x:.5,xanchor:'center',font:{size:11,color:'#475569'}},
       yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)',automargin:true}}, {responsive:true, displayModeBar:false});
   renderCurrencyChart();
-  setTimeout(updatePlotlyBlur, 100);
+  setTimeout(() => { updatePlotlyBlur(); if(_editMode) markEditables(); }, 100);
 }
 
 async function loadStyleAnalysis() {
@@ -801,7 +855,7 @@ async function loadStyleAnalysis() {
     if (s.recommendations) {
       document.getElementById('styleRecommendations').innerHTML = '<div style="padding:18px 22px"><div style="font-size:11px;font-weight:600;color:#10b981;margin-bottom:12px">'+s.rec_title+'</div><div style="font-size:11px;color:#64748b;line-height:1.8;white-space:pre-line">'+s.recommendations+'</div></div>';
     }
-    setTimeout(updatePlotlyBlur, 100);
+    setTimeout(() => { updatePlotlyBlur(); if(_editMode) markEditables(); }, 100);
   } catch(e) { console.error('Style analysis error:', e); }
 }
 
@@ -937,7 +991,7 @@ async function loadInvestmentData() {
     if (s.recommendation) {
       document.getElementById('invRecommendation').innerHTML = '<div style="padding:18px 22px;font-size:11px;color:#64748b;line-height:1.8;white-space:pre-line">'+s.recommendation+'</div>';
     }
-    setTimeout(updatePlotlyBlur, 100);
+    setTimeout(() => { updatePlotlyBlur(); if(_editMode) markEditables(); }, 100);
   } catch(e) { console.error('Investment data error:', e); }
 }
 
@@ -1130,7 +1184,7 @@ async function loadCashflowData() {
       '<div style="margin-bottom:10px"><b style="color:#7c3aed">Net Cash Position:</b> ' + fmtFull(netCF) + ' — ' + (netCF>=0?'<span style="color:#10b981">Positive cash generation</span>':'<span style="color:#ef4444">Cash burn — monitor closely</span>') + '</div>'
     ].join('');
     document.getElementById('cfInsights').innerHTML = '<div style="padding:18px 22px;font-size:11px;color:#64748b;line-height:1.8">' + insights + '</div>';
-    setTimeout(updatePlotlyBlur, 100);
+    setTimeout(() => { updatePlotlyBlur(); if(_editMode) markEditables(); }, 100);
   } catch(e) { console.error('Cash flow data error:', e); }
 }
 
@@ -1183,7 +1237,135 @@ setInterval(function(){ if (document.body.classList.contains('blur-mode')) updat
 
 document.querySelector('#blurToggle i').className = _blurred ? 'fas fa-eye-slash' : 'fas fa-eye';
 
-loadData();
+// ---- Edit Mode ----
+let _editMode = false;
+let _overrides = {values:{}, labels:{}, notes:{}, layout:{}};
+let _editTarget = null;
+
+async function loadOverrides() {
+  try {
+    const r = await authFetch('/api/overrides');
+    if (r.ok) { _overrides = await r.json(); }
+  } catch(e) {}
+}
+
+function toggleEditMode() {
+  _editMode = !_editMode;
+  document.body.classList.toggle('edit-mode', _editMode);
+  document.getElementById('editToggle').style.background = _editMode ? '#7c3aed' : '';
+  document.getElementById('editToggle').style.color = _editMode ? '#fff' : '';
+  if (_editMode) {
+    markEditables();
+  } else {
+    document.querySelectorAll('.editable').forEach(el => {
+      el.contentEditable = 'false';
+      el.classList.remove('editable','editing');
+      el.removeAttribute('data-key');
+      el.removeAttribute('data-type');
+    });
+  }
+}
+
+function markEditables() {
+  document.querySelectorAll('.kpi-value, .kpi-label, .chart-header h5, .pnl-label, td.num, td:not(:first-child)').forEach(el => {
+    if (el.closest('.edit-save-bar') || el.closest('.edit-overlay')) return;
+    el.classList.add('editable');
+    el.contentEditable = 'false';
+    const key = el.closest('[id]') ? el.closest('[id]').id : '';
+    const type = el.classList.contains('kpi-value') ? 'value' : el.classList.contains('kpi-label') || el.classList.contains('pnl-label') ? 'label' : 'value';
+    el.setAttribute('data-key', key + '|' + (el.textContent||'').trim().substring(0,40));
+    el.setAttribute('data-type', type);
+    el.onclick = function(e) {
+      if (!_editMode) return;
+      e.stopPropagation();
+      document.querySelectorAll('.editable.editing').forEach(x => x.classList.remove('editing'));
+      el.classList.add('editing');
+      const edType = el.getAttribute('data-type');
+      const edKey = el.getAttribute('data-key');
+      const currentVal = el.textContent.trim();
+      _editTarget = {el, type: edType, key: edKey, original: currentVal};
+      openEditModal(edType, currentVal, el);
+    };
+  });
+}
+
+function openEditModal(type, currentVal, el) {
+  const overlay = document.getElementById('editOverlay');
+  const title = document.getElementById('editModalTitle');
+  const input = document.getElementById('editModalInput');
+  const textarea = document.getElementById('editModalTextarea');
+  if (type === 'label') {
+    title.textContent = 'Edit Label';
+    input.style.display = 'block';
+    textarea.style.display = 'none';
+    input.value = currentVal;
+    input.focus();
+  } else {
+    title.textContent = 'Edit Value';
+    input.style.display = 'block';
+    textarea.style.display = 'none';
+    input.value = currentVal;
+    input.focus();
+  }
+  overlay.classList.add('active');
+  input.onkeydown = function(e) { if (e.key === 'Enter') confirmEdit(); if (e.key === 'Escape') closeEditModal(); };
+}
+
+function closeEditModal() {
+  document.getElementById('editOverlay').classList.remove('active');
+  if (_editTarget && _editTarget.el) _editTarget.el.classList.remove('editing');
+  _editTarget = null;
+}
+
+function confirmEdit() {
+  if (!_editTarget) return;
+  const val = document.getElementById('editModalInput').value.trim();
+  if (!val && val !== '0') { closeEditModal(); return; }
+  _editTarget.el.textContent = val;
+  const edKey = _editTarget.key;
+  const edType = _editTarget.type;
+  if (edType === 'value') {
+    _overrides.values[edKey] = val;
+  } else {
+    _overrides.labels[edKey] = val;
+  }
+  _editTarget.el.classList.remove('editing');
+  closeEditModal();
+  highlightDirty();
+}
+
+function highlightDirty() {
+  document.querySelectorAll('.editable').forEach(el => {
+    const k = el.getAttribute('data-key');
+    const isDirty = _overrides.values[k] || _overrides.labels[k];
+    el.style.borderBottom = isDirty ? '2px solid #f59e0b' : '';
+  });
+}
+
+async function saveAllEdits() {
+  try {
+    const r = await authFetch('/api/overrides', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(_overrides)
+    });
+    if (r.ok) { alert('Changes saved!'); }
+  } catch(e) { alert('Error saving: ' + e.message); }
+}
+
+async function clearAllEdits() {
+  if (!confirm('Clear all edits? This cannot be undone.')) return;
+  try {
+    const r = await authFetch('/api/overrides/clear', {method:'POST'});
+    if (r.ok) {
+      _overrides = {values:{}, labels:{}, notes:{}, layout:{}};
+      document.querySelectorAll('.editable').forEach(el => { el.style.borderBottom = ''; });
+      alert('All edits cleared. Refresh page to reload data.');
+    }
+  } catch(e) { alert('Error: ' + e.message); }
+}
+
+loadOverrides().then(() => { loadData(); });
 
 // ---- Tab Switching ----
 function switchTab(tab) {
@@ -1201,7 +1383,7 @@ function switchTab(tab) {
   if (tab === 'style' && !window._styleLoaded) { window._styleLoaded = true; loadStyleAnalysis(); }
   if (tab === 'investment' && !window._invLoaded) { window._invLoaded = true; loadInvestmentData(); }
   if (tab === 'cashflow' && !window._cfLoaded) { window._cfLoaded = true; loadCashflowData(); }
-  setTimeout(updatePlotlyBlur, 300);
+  setTimeout(() => { updatePlotlyBlur(); if (_editMode) markEditables(); }, 300);
 }
 
 // ---- P&L Actual vs Forecast ----
@@ -1343,7 +1525,7 @@ async function loadPnlData() {
         '<td class="num" style="padding:6px 12px;text-align:right;color:' + (isGood ? 'var(--green)' : 'var(--red)') + '">' +
         (varPct !== 'N/A' ? (varAmt >= 0 ? '+' : '') + varPct + '%' : 'N/A') + '</td></tr>';
     }).join('') + '</table></div>';
-  setTimeout(updatePlotlyBlur, 100);
+  setTimeout(() => { updatePlotlyBlur(); if(_editMode) markEditables(); }, 100);
 }
 
 function buildGroupedBar(divId, labels, series, title) {
@@ -1461,7 +1643,7 @@ async function loadSalesData() {
       yaxis:{ticksuffix:'%', gridcolor:'rgba(0,0,0,0.06)', rangemode:'tozero'}, height:300,
       hovermode:'x unified', legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#475569'}}},
     {responsive:true, displayModeBar:false});
-  setTimeout(updatePlotlyBlur, 100);
+  setTimeout(() => { updatePlotlyBlur(); if(_editMode) markEditables(); }, 100);
 }
 
 // ---- Expenses Tab ----
@@ -1568,7 +1750,7 @@ async function loadExpensesData() {
     '<td class="num" style="padding:6px 10px;text-align:right;font-weight:700;color:' + (ytd.actual<=ytd.forecast?'var(--green)':'var(--red)') + '">' + (ytd.actual>ytd.forecast?'+':'') + expFmt((ytd.actual-ytd.forecast)*cr.rate) + '</td>' +
     '<td class="num" style="padding:6px 10px;text-align:right;color:' + (ytd.actual<=ytd.forecast?'var(--green)':'var(--red)') + '">' + (ytd.forecast>0?((ytd.actual-ytd.forecast)/ytd.forecast*100).toFixed(1):'N/A') + '%</td>' +
     '<td class="num" style="padding:6px 10px;text-align:right;color:#64748b">100%</td></tr></table></div>';
-  setTimeout(updatePlotlyBlur, 100);
+  setTimeout(() => { updatePlotlyBlur(); if(_editMode) markEditables(); }, 100);
 }
 </script>
 </body>
@@ -2218,6 +2400,33 @@ def upload_excel():
             os.remove(p)
     get_data_cached()
     return jsonify({"ok": True, "msg": "Data updated. Refresh the page."})
+
+@app.route("/api/overrides", methods=["GET"])
+@auth.login_required
+def get_overrides():
+    return jsonify(_load_overrides())
+
+@app.route("/api/overrides", methods=["POST"])
+@auth.login_required
+def save_overrides():
+    data = request.get_json(force=True)
+    _save_overrides(data)
+    _cache["data"] = None
+    _pnl_cache["data"] = None
+    _sales_cache["data"] = None
+    _style_cache["data"] = None
+    _inv_cache["data"] = None
+    _cf_cache["data"] = None
+    return jsonify({"ok": True})
+
+@app.route("/api/overrides/clear", methods=["POST"])
+@auth.login_required
+def clear_overrides():
+    _save_overrides({"values": {}, "labels": {}, "notes": {}, "layout": {}})
+    _cache["data"] = None
+    _pnl_cache["data"] = None
+    _sales_cache["data"] = None
+    return jsonify({"ok": True})
 
 PORT = int(os.environ.get("PORT", 8765))
 ON_RENDER = os.environ.get("RENDER", "").lower() == "true"
