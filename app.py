@@ -167,6 +167,7 @@ body.edit-mode .edit-save-bar{display:flex}
 .edit-save-bar .btn-save{background:#fff;color:#7c3aed}
 .edit-save-bar .btn-cancel{background:rgba(255,255,255,0.2);color:#fff}
 .edit-save-bar .btn-clear{background:#ef4444;color:#fff}
+.edit-save-bar .btn-undo{background:rgba(255,255,255,0.2);color:#fff}
 .edit-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.3);z-index:10000;align-items:center;justify-content:center}
 .edit-overlay.active{display:flex}
 .edit-modal{background:#fff;border-radius:12px;padding:24px;min-width:320px;max-width:500px;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
@@ -453,6 +454,8 @@ body.edit-mode .edit-save-bar{display:flex}
 
 <div class="edit-save-bar">
   <span><i class="fas fa-pen"></i> Edit Mode Active</span>
+  <button class="btn-undo" onclick="undoEdit()" title="Undo (Ctrl+Z)"><i class="fas fa-undo"></i> Undo</button>
+  <button class="btn-undo" onclick="redoEdit()" title="Redo (Ctrl+Y)"><i class="fas fa-redo"></i> Redo</button>
   <button class="btn-save" onclick="saveAllEdits()"><i class="fas fa-check"></i> Save</button>
   <button class="btn-cancel" onclick="toggleEditMode()">Cancel</button>
   <button class="btn-clear" onclick="clearAllEdits()"><i class="fas fa-trash"></i> Clear All</button>
@@ -1241,6 +1244,19 @@ document.querySelector('#blurToggle i').className = _blurred ? 'fas fa-eye-slash
 let _editMode = false;
 let _overrides = {values:{}, labels:{}, notes:{}, layout:{}};
 let _editTarget = null;
+let _undoStack = [];
+let _redoStack = [];
+const MAX_UNDO = 50;
+
+function _snapshotOverrides() {
+  return JSON.parse(JSON.stringify(_overrides));
+}
+
+function _pushUndo() {
+  _undoStack.push(_snapshotOverrides());
+  if (_undoStack.length > MAX_UNDO) _undoStack.shift();
+  _redoStack = [];
+}
 
 function loadOverrides() {
   try {
@@ -1270,6 +1286,11 @@ function toggleEditMode() {
   }
 }
 
+function getActiveTabId() {
+  var el = document.querySelector('.tab-content.active');
+  return el ? el.id.replace('tab-','') : 'dashboard';
+}
+
 function generateEditId(el) {
   const tab = el.closest('.tab-content');
   const tabId = tab ? tab.id.replace('tab-','') : 'global';
@@ -1280,9 +1301,16 @@ function generateEditId(el) {
   return tabId + '/' + parentId + '/' + field + '.' + sibIdx;
 }
 
+function _scopeQuery(selector) {
+  var active = document.querySelector('.tab-content.active');
+  if (!active) return document.querySelectorAll(selector);
+  return active.querySelectorAll(selector);
+}
+
 function markEditables() {
-  let idx = 0;
-  document.querySelectorAll('.kpi-value, .kpi-label, .chart-header h5, .pnl-label, td.num').forEach(el => {
+  var activeTab = document.querySelector('.tab-content.active');
+  if (!activeTab) return;
+  activeTab.querySelectorAll('.kpi-value, .kpi-label, .chart-header h5, .pnl-label, td.num').forEach(el => {
     if (el.closest('.edit-save-bar') || el.closest('.edit-overlay')) return;
     el.classList.add('editable');
     el.contentEditable = _editMode ? 'false' : 'false';
@@ -1303,13 +1331,16 @@ function markEditables() {
 }
 
 function applyAllOverrides() {
-  if (!_overrides || !_overrides.values) return;
-  document.querySelectorAll('.editable').forEach(el => {
+  if (!_overrides) return;
+  var activeTab = document.querySelector('.tab-content.active');
+  if (!activeTab) return;
+  activeTab.querySelectorAll('.editable').forEach(el => {
     const editId = el.getAttribute('data-edit-id');
     if (!editId) return;
-    if (_overrides.values[editId] !== undefined) { el.textContent = _overrides.values[editId]; el.style.borderBottom = '2px solid #f59e0b'; }
-    if (_overrides.labels[editId] !== undefined) { el.textContent = _overrides.labels[editId]; el.style.borderBottom = '2px solid #f59e0b'; }
+    if (_overrides.values && _overrides.values[editId] !== undefined) { el.textContent = _overrides.values[editId]; el.style.borderBottom = '2px solid #f59e0b'; }
+    if (_overrides.labels && _overrides.labels[editId] !== undefined) { el.textContent = _overrides.labels[editId]; el.style.borderBottom = '2px solid #f59e0b'; }
   });
+  highlightDirty();
 }
 
 function openEditModal(type, currentVal, el) {
@@ -1317,19 +1348,11 @@ function openEditModal(type, currentVal, el) {
   const title = document.getElementById('editModalTitle');
   const input = document.getElementById('editModalInput');
   const textarea = document.getElementById('editModalTextarea');
-  if (type === 'label') {
-    title.textContent = 'Edit Label';
-    input.style.display = 'block';
-    textarea.style.display = 'none';
-    input.value = currentVal;
-    input.focus();
-  } else {
-    title.textContent = 'Edit Value';
-    input.style.display = 'block';
-    textarea.style.display = 'none';
-    input.value = currentVal;
-    input.focus();
-  }
+  title.textContent = type === 'label' ? 'Edit Label' : 'Edit Value';
+  input.style.display = 'block';
+  textarea.style.display = 'none';
+  input.value = currentVal;
+  input.focus();
   overlay.classList.add('active');
   input.onkeydown = function(e) { if (e.key === 'Enter') confirmEdit(); if (e.key === 'Escape') closeEditModal(); };
 }
@@ -1344,19 +1367,55 @@ function confirmEdit() {
   if (!_editTarget) return;
   const val = document.getElementById('editModalInput').value.trim();
   if (!val && val !== '0') { closeEditModal(); return; }
+  _pushUndo();
   _editTarget.el.textContent = val;
   const editId = _editTarget.editId;
   const edType = _editTarget.type;
   if (edType === 'value') {
+    if (!_overrides.values) _overrides.values = {};
     _overrides.values[editId] = val;
   } else {
+    if (!_overrides.labels) _overrides.labels = {};
     _overrides.labels[editId] = val;
   }
   _editTarget.el.classList.remove('editing');
   closeEditModal();
   highlightDirty();
+  _persistOverrides();
+}
+
+function _persistOverrides() {
   localStorage.setItem('viva_overrides', JSON.stringify(_overrides));
   authFetch('/api/overrides', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(_overrides)}).catch(()=>{});
+}
+
+function undoEdit() {
+  if (_undoStack.length === 0) return;
+  _redoStack.push(_snapshotOverrides());
+  _overrides = _undoStack.pop();
+  localStorage.setItem('viva_overrides', JSON.stringify(_overrides));
+  authFetch('/api/overrides', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(_overrides)}).catch(()=>{});
+  _refreshCurrentTab();
+}
+
+function redoEdit() {
+  if (_redoStack.length === 0) return;
+  _undoStack.push(_snapshotOverrides());
+  _overrides = _redoStack.pop();
+  localStorage.setItem('viva_overrides', JSON.stringify(_overrides));
+  authFetch('/api/overrides', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(_overrides)}).catch(()=>{});
+  _refreshCurrentTab();
+}
+
+function _refreshCurrentTab() {
+  var tab = getActiveTabId();
+  if (tab === 'dashboard') { loadData(); }
+  else if (tab === 'pnl') { window._pnlLoaded = false; loadPnlData(); }
+  else if (tab === 'sales') { window._salesLoaded = false; loadSalesData(); }
+  else if (tab === 'expenses') { window._expLoaded = false; loadExpensesData(); }
+  else if (tab === 'style') { window._styleLoaded = false; loadStyleAnalysis(); }
+  else if (tab === 'investment') { window._invLoaded = false; loadInvestmentData(); }
+  else if (tab === 'cashflow') { window._cfLoaded = false; loadCashflowData(); }
 }
 
 function highlightDirty() {
@@ -1384,12 +1443,20 @@ async function clearAllEdits() {
     const r = await authFetch('/api/overrides/clear', {method:'POST'});
     if (r.ok) {
       _overrides = {values:{}, labels:{}, notes:{}, layout:{}};
+      _undoStack = [];
+      _redoStack = [];
       localStorage.removeItem('viva_overrides');
       document.querySelectorAll('.editable').forEach(el => { el.style.borderBottom = ''; });
       location.reload();
     }
   } catch(e) { alert('Error: ' + e.message); }
 }
+
+document.addEventListener('keydown', function(e) {
+  if (!_editMode) return;
+  if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); undoEdit(); }
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { e.preventDefault(); redoEdit(); }
+});
 
 loadOverrides();
 loadData();
