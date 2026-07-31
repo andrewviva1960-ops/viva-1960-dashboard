@@ -427,8 +427,7 @@ body.edit-mode .edit-save-bar{display:flex}
     <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-exchange-alt" style="color:#7c3aed;margin-right:6px"></i>Monthly Cash In vs Out vs Net</h5></div><div class="chart-body" id="cfMonthlyChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-building" style="color:#7c3aed;margin-right:6px"></i>Collections by Business Unit</h5></div><div class="chart-body" id="cfBuChart"></div></div>
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-credit-card" style="color:#a78bfa;margin-right:6px"></i>Payment Status Breakdown</h5></div><div class="chart-body" id="cfPayChart"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-building" style="color:#7c3aed;margin-right:6px"></i>Collections by Business Unit</h5></div><div class="chart-body" id="cfBuChart"></div></div>
   </div>
   <div class="chart-grid">
     <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-sitemap" style="color:#5a8a5e;margin-right:6px"></i>Spending by Department</h5></div><div class="chart-body" id="cfDeptChart"></div></div>
@@ -1091,25 +1090,6 @@ async function loadCashflowData() {
       showlegend:true, legend:{orientation:'h',y:-0.1,font:{size:11,color:'#475569'}}
     }, {responsive:true, displayModeBar:false});
     } catch(e) { console.error('BuChart error:', e); }
-    // Payment status
-    try {
-      const payKeys = Object.keys(s.payment_status||{}).filter(k=>s.payment_status[k]>0);
-      console.log('payKeys:', payKeys, 'pay_status:', s.payment_status);
-      const payDefaultColors = ['#7c3aed','#10b981','#a78bfa','#ef4444','#3b82f6'];
-      if (payKeys.length > 0) {
-        Plotly.newPlot('cfPayChart', [{
-          type:'doughnut', labels:payKeys, values:payKeys.map(k=>Number(s.payment_status[k])*c.rate),
-          textinfo:'label+percent', textfont:{size:11,color:'#1e293b',family:'Arial Black'},
-          marker:{colors:payKeys.map((_,i)=>payDefaultColors[i%payDefaultColors.length]),line:{color:'#e5e7eb',width:3}},
-          hole:0.5, hovertemplate:'%{label}<br>'+c.symbol+' %{value:,.0f}<br>%{percent}<extra></extra>'
-        }], {
-          margin:{t:10,b:10,l:10,r:10}, paper_bgcolor:'rgba(0,0,0,0)', height:300,
-          showlegend:true, legend:{orientation:'h',y:-0.1,font:{size:11,color:'#475569'}}
-        }, {responsive:true, displayModeBar:false});
-      } else {
-        document.getElementById('cfPayChart').innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8">No payment data</div>';
-      }
-    } catch(e) { console.error('PayChart error:', e); }
     // Spending by department (from dashboard - authoritative)
     const deptKeys = Object.keys(s.dept_spending_actual).filter(k=>k!=='TOTAL');
     const deptColors = {'Production':'#a78bfa','G&A':'#7c3aed','Assets':'#7c3aed','Financing Expenses':'#ef4444','S&M':'#10b981','R&D':'#6d28d9'};
