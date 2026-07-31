@@ -1048,7 +1048,7 @@ async function loadCashflowData() {
     if (s.error) { console.error(s.error); return; }
     const c = getCurrency();
     const fmtM = v => { const a = Math.abs(v*c.rate); if (a >= 1e6) return (v*c.rate/1e6).toFixed(2) + 'M'; if (a >= 1e3) return (v*c.rate/1e3).toFixed(1) + 'K'; return (v*c.rate).toFixed(2); };
-    const fmtFull = v => (v * c.rate).toLocaleString(c.locale, {minimumFractionDigits: 0, maximumFractionDigits: 0}) + ' ' + c.symbol;
+    const fmtFull = v => { const n = Math.abs(v*c.rate); if (n >= 1e6) return (v*c.rate/1e6).toFixed(2) + 'M ' + c.symbol; if (n >= 1e3) return (v*c.rate/1e3).toFixed(1) + 'K ' + c.symbol; return (v*c.rate).toFixed(2) + ' ' + c.symbol; };
     const monthNames = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const months = Object.keys(s.monthly_collections).sort((a,b)=>Number(a)-Number(b));
     // KPIs
