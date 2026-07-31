@@ -1078,28 +1078,38 @@ async function loadCashflowData() {
       yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
     // Collections by BU (from dashboard - authoritative)
+    try {
     const buKeys = Object.keys(s.bu_collections_actual).filter(k=>k!=='TOTAL');
+    const buPalette = ['#7c3aed','#10b981','#a78bfa','#ef4444','#3b82f6'];
     Plotly.newPlot('cfBuChart', [{
       type:'pie', labels:buKeys, values:buKeys.map(k=>s.bu_collections_actual[k]*c.rate),
       textinfo:'label+percent', textfont:{size:11,color:'#1e293b',family:'Arial Black'},
-      marker:{colors:['#7c3aed','#7c3aed','#10b981','#a78bfa'],line:{color:'#e5e7eb',width:3}},
+      marker:{colors:buKeys.map((_,i)=>buPalette[i%buPalette.length]),line:{color:'#e5e7eb',width:3}},
       hovertemplate:'%{label}<br>'+c.symbol+' %{value:,.0f}<br>%{percent}<extra></extra>'
     }], {
       margin:{t:10,b:10,l:10,r:10}, paper_bgcolor:'rgba(0,0,0,0)', height:300,
       showlegend:true, legend:{orientation:'h',y:-0.1,font:{size:11,color:'#475569'}}
     }, {responsive:true, displayModeBar:false});
+    } catch(e) { console.error('BuChart error:', e); }
     // Payment status
-    const payKeys = Object.keys(s.payment_status).filter(k=>s.payment_status[k]>0);
-    const payColors = {'Bank Transfer':'#7c3aed','Bank transfer':'#7c3aed','Cash':'#10b981','Cheque':'#a78bfa'};
-    Plotly.newPlot('cfPayChart', [{
-      type:'doughnut', labels:payKeys, values:payKeys.map(k=>Number(s.payment_status[k])*c.rate),
-      textinfo:'label+percent', textfont:{size:11,color:'#1e293b',family:'Arial Black'},
-      marker:{colors:payKeys.map(k=>payColors[k.trim()]||payColors[k]||'#7c3aed'),line:{color:'#e5e7eb',width:3}},
-      hole:0.5, hovertemplate:'%{label}<br>'+c.symbol+' %{value:,.0f}<br>%{percent}<extra></extra>'
-    }], {
-      margin:{t:10,b:10,l:10,r:10}, paper_bgcolor:'rgba(0,0,0,0)', height:300,
-      showlegend:true, legend:{orientation:'h',y:-0.1,font:{size:11,color:'#475569'}}
-    }, {responsive:true, displayModeBar:false});
+    try {
+      const payKeys = Object.keys(s.payment_status||{}).filter(k=>s.payment_status[k]>0);
+      console.log('payKeys:', payKeys, 'pay_status:', s.payment_status);
+      const payDefaultColors = ['#7c3aed','#10b981','#a78bfa','#ef4444','#3b82f6'];
+      if (payKeys.length > 0) {
+        Plotly.newPlot('cfPayChart', [{
+          type:'doughnut', labels:payKeys, values:payKeys.map(k=>Number(s.payment_status[k])*c.rate),
+          textinfo:'label+percent', textfont:{size:11,color:'#1e293b',family:'Arial Black'},
+          marker:{colors:payKeys.map((_,i)=>payDefaultColors[i%payDefaultColors.length]),line:{color:'#e5e7eb',width:3}},
+          hole:0.5, hovertemplate:'%{label}<br>'+c.symbol+' %{value:,.0f}<br>%{percent}<extra></extra>'
+        }], {
+          margin:{t:10,b:10,l:10,r:10}, paper_bgcolor:'rgba(0,0,0,0)', height:300,
+          showlegend:true, legend:{orientation:'h',y:-0.1,font:{size:11,color:'#475569'}}
+        }, {responsive:true, displayModeBar:false});
+      } else {
+        document.getElementById('cfPayChart').innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8">No payment data</div>';
+      }
+    } catch(e) { console.error('PayChart error:', e); }
     // Spending by department (from dashboard - authoritative)
     const deptKeys = Object.keys(s.dept_spending_actual).filter(k=>k!=='TOTAL');
     const deptColors = {'Production':'#a78bfa','G&A':'#7c3aed','Assets':'#7c3aed','Financing Expenses':'#ef4444','S&M':'#10b981','R&D':'#6d28d9'};
