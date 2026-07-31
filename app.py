@@ -67,17 +67,17 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f1f5f
 .sidebar .nav-item.active{background:#ede9fe;color:var(--accent);border-left-color:var(--accent);font-weight:600}
 .sidebar .nav-item i{width:18px;text-align:center;font-size:14px;color:var(--accent)}
 .sidebar .nav-section{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:#94a3b8;padding:16px 20px 5px;font-weight:600}
-.main{margin-left:var(--sidebar-width);margin-top:64px;padding:20px 24px;min-height:calc(100vh - 64px)}
-.page-title{font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:16px}
-.kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:18px}
+.main{margin-left:var(--sidebar-width);margin-top:64px;padding:12px 16px;min-height:calc(100vh - 64px)}
+.page-title{font-size:15px;font-weight:700;color:var(--text-primary);margin-bottom:10px}
+.kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:14px}
 @media(max-width:1200px){.kpi-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:600px){.kpi-grid{grid-template-columns:1fr 1fr}}
-.kpi-card{background:var(--card-bg);border-radius:12px;padding:16px 14px;border:1px solid var(--card-border);box-shadow:0 1px 3px rgba(0,0,0,0.06);display:flex;flex-direction:row;align-items:center;gap:12px;transition:.2s}
+.kpi-card{background:var(--card-bg);border-radius:8px;padding:10px 10px;border:1px solid var(--card-border);box-shadow:0 1px 3px rgba(0,0,0,0.06);display:flex;flex-direction:row;align-items:center;gap:8px;transition:.2s}
 .kpi-card:hover{box-shadow:0 4px 12px rgba(0,0,0,0.1);transform:translateY(-2px)}
-.kpi-card .kpi-icon{width:40px;height:40px;min-width:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff}
-.kpi-card .kpi-label{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary);margin-bottom:2px;font-weight:500}
-.kpi-card .kpi-value{font-size:20px;font-weight:700;color:var(--text-primary);line-height:1.1}
-.kpi-card .kpi-sub{font-size:10px;color:var(--text-secondary);margin-top:2px}
+.kpi-card .kpi-icon{width:30px;height:30px;min-width:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff}
+.kpi-card .kpi-label{font-size:9px;text-transform:uppercase;letter-spacing:.4px;color:var(--text-secondary);margin-bottom:1px;font-weight:500}
+.kpi-card .kpi-value{font-size:15px;font-weight:700;color:var(--text-primary);line-height:1.1}
+.kpi-card .kpi-sub{font-size:9px;color:var(--text-secondary);margin-top:1px}
 .kpi-card.kpi-gs{border-left:4px solid var(--green)}.kpi-card.kpi-gs .kpi-icon{background:linear-gradient(135deg,#10b981,#059669)}
 .kpi-card.kpi-ns{border-left:4px solid var(--blue)}.kpi-card.kpi-ns .kpi-icon{background:linear-gradient(135deg,#3b82f6,#2563eb)}
 .kpi-card.kpi-cogs{border-left:4px solid var(--orange)}.kpi-card.kpi-cogs .kpi-icon{background:linear-gradient(135deg,#f59e0b,#d97706)}
@@ -90,23 +90,23 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f1f5f
 #pnlKpiGrid .kpi-icon{width:26px!important;height:26px!important;min-width:26px!important;font-size:12px!important}
 #pnlKpiGrid .kpi-card .kpi-value{font-size:14px!important}
 #pnlKpiGrid .kpi-card .kpi-sub{font-size:8px!important}
-.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
-.chart-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.chart-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px}
 @media(max-width:1100px){.chart-grid-3{grid-template-columns:1fr 1fr}}
 @media(max-width:900px){.chart-grid,.chart-grid-3{grid-template-columns:1fr}}
-.chart-card{background:var(--card-bg);border-radius:12px;border:1px solid var(--card-border);box-shadow:0 1px 3px rgba(0,0,0,0.06);overflow:hidden}
-.chart-card .chart-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 0}
-.chart-card .chart-header h5{font-size:13px;font-weight:600;color:var(--text-primary);margin:0}
-.chart-card .chart-body{padding:4px 4px 6px;min-height:260px}
-.chart-card .pnl-body{padding:0;min-height:220px;display:flex;align-items:stretch}
+.chart-card{background:var(--card-bg);border-radius:8px;border:1px solid var(--card-border);box-shadow:0 1px 3px rgba(0,0,0,0.06);overflow:hidden}
+.chart-card .chart-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 0}
+.chart-card .chart-header h5{font-size:12px;font-weight:600;color:var(--text-primary);margin:0}
+.chart-card .chart-body{padding:2px 2px 4px;min-height:220px}
+.chart-card .pnl-body{padding:0;min-height:200px;display:flex;align-items:stretch}
 .chart-card.full{grid-column:1/-1}
-.pnl-card{background:var(--card-bg);border-radius:12px;border:1px solid var(--card-border);box-shadow:0 1px 3px rgba(0,0,0,0.06);padding:0;height:100%;display:flex;flex-direction:column;width:100%}
-.pnl-card .pnl-header{padding:12px 20px 0;display:flex;align-items:center;justify-content:space-between}
-.pnl-card .pnl-header h5{font-size:13px;font-weight:600;color:var(--text-primary);margin:0}
-.pnl-card .pnl-header .pnl-period{font-size:11px;color:var(--text-secondary)}
+.pnl-card{background:var(--card-bg);border-radius:8px;border:1px solid var(--card-border);box-shadow:0 1px 3px rgba(0,0,0,0.06);padding:0;height:100%;display:flex;flex-direction:column;width:100%}
+.pnl-card .pnl-header{padding:8px 14px 0;display:flex;align-items:center;justify-content:space-between}
+.pnl-card .pnl-header h5{font-size:12px;font-weight:600;color:var(--text-primary);margin:0}
+.pnl-card .pnl-header .pnl-period{font-size:10px;color:var(--text-secondary)}
 .pnl-card .pnl-inner{padding:0;flex:1;overflow-x:auto}
-.pnl-card table{width:100%;border-collapse:collapse;font-size:13px}
-.pnl-card td{padding:7px 20px;border:0}
+.pnl-card table{width:100%;border-collapse:collapse;font-size:12px}
+.pnl-card td{padding:5px 14px;border:0}
 .pnl-card td:last-child{text-align:right;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.3px;width:170px;padding-right:24px}
 .pnl-card .pnl-label{color:var(--text-secondary);padding-left:22px}
 .pnl-card .pnl-label.sub{padding-left:40px;font-size:12px}
@@ -236,7 +236,7 @@ body:not(.blur-mode) .main .js-plotly-plot svg text{filter:blur(0);transition:fi
   </div>
   <div class="kpi-grid" id="kpiGrid"></div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-university" style="color:var(--accent);margin-right:6px"></i>CBE Official Exchange Rates</h5><span style="font-size:11px;color:var(--text-secondary)">Base: EGP</span></div><div class="chart-body" id="currencyRateChart" style="min-height:350px"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-university" style="color:var(--accent);margin-right:6px"></i>CBE Official Exchange Rates</h5><span style="font-size:11px;color:var(--text-secondary)">Base: EGP</span></div><div class="chart-body" id="currencyRateChart" style="min-height:280px"></div></div>
   </div>
   <div class="chart-grid">
     <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:var(--accent);margin-right:6px"></i>Monthly Gross Sales</h5></div><div class="chart-body" id="salesChart"></div></div>
@@ -541,7 +541,7 @@ function renderTopChart(d, c) {
     marker:{color:['#7c3aed','#8b5cf6','#a78bfa','#c4b5fd','#ddd6fe']},
     text:vals.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false}],
     {margin:{t:50,b:55,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-     font:{size:14,color:'#475569'}, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}, height:350,
+     font:{size:14,color:'#475569'}, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}, height:300,
      hovermode:'x unified', showlegend:false}, {responsive:true, displayModeBar:false});
 }
 
@@ -580,14 +580,14 @@ async function loadData() {
   Plotly.newPlot('salesChart', [{type:'bar', x:months, y:gsV, marker:{color:'#7c3aed'}, text:gsV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false}],
     {margin:{t:40,b:45,l:65,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
      font:{size:14,color:'#475569'}, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'},
-     height:350, hovermode:'x unified', showlegend:false},
+     height:300, hovermode:'x unified', showlegend:false},
     {responsive:true, displayModeBar:false});
 
   const expV = months.map((_,i) => M[i].exp * c.rate);
   Plotly.newPlot('expChart', [{type:'bar', x:months, y:expV, marker:{color:'#ef4444'},     text:expV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false}],
     {margin:{t:40,b:45,l:65,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
      font:{size:14,color:'#475569'}, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'},
-     height:350, hovermode:'x unified', showlegend:false},
+     height:300, hovermode:'x unified', showlegend:false},
     {responsive:true, displayModeBar:false});
 
   const nsV = months.map((_,i) => M[i].ns * c.rate);
@@ -595,7 +595,7 @@ async function loadData() {
     {type:'bar', name:'Net Sales', x:months, y:nsV, marker:{color:'#7c3aed'}, text:nsV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false},
     {type:'bar', name:'Expenses', x:months, y:expV, marker:{color:'#ef4444'}, text:expV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false}
   ], {margin:{t:50,b:45,l:65,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-       font:{size:14,color:'#475569'}, barmode:'group', height:350, hovermode:'x unified',
+       font:{size:14,color:'#475569'}, barmode:'group', height:300, hovermode:'x unified',
       legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:14,color:'#475569'}},
       yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}}, {responsive:true, displayModeBar:false});
 
@@ -641,7 +641,7 @@ async function loadData() {
     text:buSalesPct.map(v => v.toFixed(1) + '%'), textinfo:'label+percent', textfont:{size:16,color:'#1e293b',family:'Arial Black'},
     marker:{colors:buColors.slice(0,buNames.length),line:{color:'#e5e7eb',width:3}},
     hovertemplate:'%{label}<br>%{value:.1f}%<extra></extra>'}],
-    {margin:{t:5,b:5,l:5,r:5}, paper_bgcolor:'rgba(0,0,0,0)', height:350, showlegend:true,
+    {margin:{t:5,b:5,l:5,r:5}, paper_bgcolor:'rgba(0,0,0,0)', height:300, showlegend:true,
      legend:{orientation:'h',y:-0.12,font:{size:14,color:'#475569'}}},
     {responsive:true, displayModeBar:false});
 
@@ -651,7 +651,7 @@ async function loadData() {
     marker:{color:'#10b981'}, text:qtyVals.map(v => v > 0 ? v.toLocaleString() : ''), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false}],
     {margin:{t:50,b:50,l:80,r:30}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
      font:{size:15,color:'#475569'}, yaxis:{rangemode:'tozero',gridcolor:'rgba(0,0,0,0.06)',automargin:true},
-     height:350, hovermode:'x unified', showlegend:false, bargap:0.3},
+     height:300, hovermode:'x unified', showlegend:false, bargap:0.3},
     {responsive:true, displayModeBar:false});
 
   // Monthly Net Sales vs COGS
@@ -664,7 +664,7 @@ async function loadData() {
     {type:'bar', name:'Net Sales', x:months, y:nnsV, marker:{color:'#7c3aed'}, text:nsLabels, textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false},
     {type:'bar', name:'COGS', x:months, y:ncogsV, marker:{color:'#6d28d9'}, text:cogsLabels, textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false}
   ], {margin:{t:60,b:50,l:80,r:30}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:15,color:'#475569'}, barmode:'group', height:350, hovermode:'x unified', bargap:0.25, bargroupgap:0.1,
+      font:{size:15,color:'#475569'}, barmode:'group', height:300, hovermode:'x unified', bargap:0.25, bargroupgap:0.1,
       legend:{orientation:'h',y:1.12,x:.5,xanchor:'center',font:{size:15,color:'#475569'}},
       yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)',automargin:true}}, {responsive:true, displayModeBar:false});
   renderCurrencyChart();
@@ -715,7 +715,7 @@ async function loadStyleAnalysis() {
       textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false
     }], {
       margin:{t:40,b:70,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#475569'}, height:400, showlegend:false,
+      font:{size:12,color:'#475569'}, height:280, showlegend:false,
       yaxis:{ticksuffix:' '+c.symbol, gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
     // Net Profit by PO (bar chart)
@@ -726,7 +726,7 @@ async function loadStyleAnalysis() {
       text:npVals.map(v=>fmtS(v)+' '+c.symbol), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false
     }], {
       margin:{t:40,b:45,l:65,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#475569'}, height:350, showlegend:false, xaxis:{tickangle:-30},
+      font:{size:12,color:'#475569'}, height:300, showlegend:false, xaxis:{tickangle:-30},
       yaxis:{ticksuffix:' '+c.symbol, gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
     // COGS % pie
@@ -737,7 +737,7 @@ async function loadStyleAnalysis() {
       marker:{colors:['#7c3aed','#a78bfa','#10b981','#7c3aed','#ef4444'],line:{color:'#e5e7eb',width:2}},
       hovertemplate:'%{label}<br>'+c.symbol+': %{text}<br>%{percent}<extra></extra>'
     }], {
-      margin:{t:10,b:10,l:10,r:10}, paper_bgcolor:'rgba(0,0,0,0)', height:350,
+      margin:{t:10,b:10,l:10,r:10}, paper_bgcolor:'rgba(0,0,0,0)', height:300,
       showlegend:true, legend:{orientation:'h',y:-0.1,font:{size:12,color:'#475569'}}
     }, {responsive:true, displayModeBar:false});
     // Table
@@ -775,7 +775,7 @@ async function loadStyleAnalysis() {
       {type:'scatter', mode:'lines+markers', name:'NP Margin', x:po, y:npMargins, line:{color:'#10b981',width:3}, marker:{size:10,color:'#10b981'}, text:npMargins.map(v=>v.toFixed(1)+'%'), textposition:'top center', textfont:{size:16,color:'#1e293b',family:'Arial Black'}}
     ], {
       margin:{t:50,b:50,l:60,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#475569'}, height:350, showlegend:true, xaxis:{tickangle:-30},
+      font:{size:12,color:'#475569'}, height:300, showlegend:true, xaxis:{tickangle:-30},
       legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#475569'}},
       yaxis:{ticksuffix:'%', gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
@@ -789,7 +789,7 @@ async function loadStyleAnalysis() {
       {type:'bar', name:'Packing', x:po, y:packV, marker:{color:'#10b981'}}
     ], {
       margin:{t:40,b:45,l:60,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#475569'}, barmode:'stack', height:350, xaxis:{tickangle:-30},
+      font:{size:12,color:'#475569'}, barmode:'stack', height:300, xaxis:{tickangle:-30},
       legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#475569'}},
       yaxis:{gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
@@ -849,7 +849,7 @@ async function loadInvestmentData() {
     });
     Plotly.newPlot('invReturnChart', traces_return, {
       margin:{t:50,b:70,l:70,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#475569'}, barmode:'group', height:400,
+      font:{size:12,color:'#475569'}, barmode:'group', height:280,
       legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#475569'}},
       yaxis:{ticksuffix:'%',gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
@@ -866,7 +866,7 @@ async function loadInvestmentData() {
     });
     Plotly.newPlot('invRiskChart', traces_risk, {
       margin:{t:50,b:60,l:60,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#475569'}, height:380,
+      font:{size:12,color:'#475569'}, height:280,
       legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#475569'}},
       yaxis:{gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
@@ -886,7 +886,7 @@ async function loadInvestmentData() {
     });
     Plotly.newPlot('invRiskMetrics', traces_rm, {
       margin:{t:50,b:60,l:60,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#475569'}, barmode:'group', height:380,
+      font:{size:12,color:'#475569'}, barmode:'group', height:280,
       legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#475569'}},
       yaxis:{ticksuffix:'%',gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
@@ -905,7 +905,7 @@ async function loadInvestmentData() {
       hovertemplate:'%{x} vs %{y}<br>Correlation: %{z:.3f}<extra></extra>'
     }], {
       margin:{t:30,b:50,l:80,r:30}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#475569'}, height:350,
+      font:{size:12,color:'#475569'}, height:300,
       xaxis:{side:'bottom'}, yaxis:{autorange:'reversed'}
     }, {responsive:true, displayModeBar:false});
     const pw = s.portfolio.weights || {gold:0.3,silver:0.2,swiss:0.5};
@@ -917,7 +917,7 @@ async function loadInvestmentData() {
       marker:{colors:['#a78bfa','#94a3b8','#7c3aed'],line:{color:'#e5e7eb',width:3}},
       hovertemplate:'%{label}<br>%{value:.0f}%<extra></extra>'
     }], {
-      margin:{t:10,b:10,l:10,r:10}, paper_bgcolor:'rgba(0,0,0,0)', height:350,
+      margin:{t:10,b:10,l:10,r:10}, paper_bgcolor:'rgba(0,0,0,0)', height:300,
       showlegend:true, legend:{orientation:'h',y:-0.1,font:{size:13,color:'#475569'}}
     }, {responsive:true, displayModeBar:false});
     const perfLabels = ['Annual Return','Return After Loss','Present Value'];
@@ -930,7 +930,7 @@ async function loadInvestmentData() {
        text:perfForecast.map(v=>fmtM(v*c.rate)+' '+c.symbol), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false}
     ], {
       margin:{t:50,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#475569'}, barmode:'group', height:380,
+      font:{size:12,color:'#475569'}, barmode:'group', height:280,
       legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#475569'}},
       yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
@@ -974,7 +974,7 @@ async function loadCashflowData() {
       {type:'scatter', mode:'lines+markers', name:'Net Cash Flow', x:months.map(m=>monthNames[m]), y:netVals, line:{color:'#7c3aed',width:3}, marker:{size:10}}
     ], {
       margin:{t:50,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#475569'}, barmode:'relative', height:400,
+      font:{size:12,color:'#475569'}, barmode:'relative', height:280,
       legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#475569'}},
       yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
@@ -986,7 +986,7 @@ async function loadCashflowData() {
       marker:{colors:['#7c3aed','#7c3aed','#10b981','#a78bfa'],line:{color:'#e5e7eb',width:3}},
       hovertemplate:'%{label}<br>'+c.symbol+' %{value:,.0f}<br>%{percent}<extra></extra>'
     }], {
-      margin:{t:10,b:10,l:10,r:10}, paper_bgcolor:'rgba(0,0,0,0)', height:350,
+      margin:{t:10,b:10,l:10,r:10}, paper_bgcolor:'rgba(0,0,0,0)', height:300,
       showlegend:true, legend:{orientation:'h',y:-0.1,font:{size:13,color:'#475569'}}
     }, {responsive:true, displayModeBar:false});
     // Payment status
@@ -998,7 +998,7 @@ async function loadCashflowData() {
       marker:{colors:payKeys.map(k=>payColors[k]||'#7c3aed'),line:{color:'#e5e7eb',width:3}},
       hole:0.5, hovertemplate:'%{label}<br>'+c.symbol+' %{value:,.0f}<br>%{percent}<extra></extra>'
     }], {
-      margin:{t:10,b:10,l:10,r:10}, paper_bgcolor:'rgba(0,0,0,0)', height:350,
+      margin:{t:10,b:10,l:10,r:10}, paper_bgcolor:'rgba(0,0,0,0)', height:300,
       showlegend:true, legend:{orientation:'h',y:-0.1,font:{size:13,color:'#475569'}}
     }, {responsive:true, displayModeBar:false});
     // Spending by department (from dashboard - authoritative)
@@ -1011,7 +1011,7 @@ async function loadCashflowData() {
       textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false
     }], {
       margin:{t:30,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#475569'}, height:350,
+      font:{size:12,color:'#475569'}, height:300,
       xaxis:{tickangle:-30}, yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
     // Top spending categories
@@ -1023,7 +1023,7 @@ async function loadCashflowData() {
       textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false
     }], {
       margin:{t:10,b:40,l:120,r:60}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#475569'}, height:380,
+      font:{size:12,color:'#475569'}, height:280,
       xaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
     // Stacked collection vs spending by month
@@ -1050,7 +1050,7 @@ async function loadCashflowData() {
     });
     Plotly.newPlot('cfStackChart', stackTraces, {
       margin:{t:50,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#475569'}, barmode:'relative', height:420,
+      font:{size:12,color:'#475569'}, barmode:'relative', height:280,
       legend:{orientation:'h',y:1.2,x:.5,xanchor:'center',font:{size:12,color:'#475569'}},
       yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
@@ -1064,7 +1064,7 @@ async function loadCashflowData() {
         textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false
       }], {
         margin:{t:30,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-        font:{size:12,color:'#475569'}, height:350,
+        font:{size:12,color:'#475569'}, height:300,
         yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}
       }, {responsive:true, displayModeBar:false});
     }
@@ -1077,7 +1077,7 @@ async function loadCashflowData() {
       textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false
     }], {
       margin:{t:10,b:40,l:120,r:60}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#475569'}, height:400,
+      font:{size:12,color:'#475569'}, height:280,
       xaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
     // Top 10 spending categories bar
@@ -1089,7 +1089,7 @@ async function loadCashflowData() {
       textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false
     }], {
       margin:{t:30,b:80,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#475569'}, height:400,
+      font:{size:12,color:'#475569'}, height:280,
       xaxis:{tickangle:-40}, yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
     // Collections vs Forecast
@@ -1101,7 +1101,7 @@ async function loadCashflowData() {
        marker:{color:'#a78bfa'}, text:cfBUs.map(bu=>fmtFull(s.bu_collections_forecast[bu])), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false}
     ], {
       margin:{t:50,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#475569'}, barmode:'group', height:380,
+      font:{size:12,color:'#475569'}, barmode:'group', height:280,
       legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#475569'}},
       yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
@@ -1114,7 +1114,7 @@ async function loadCashflowData() {
        marker:{color:'#a78bfa'}, text:cfDepts.map(d=>fmtFull(s.dept_spending_forecast[d])), textposition:'outside', textfont:{size:16,color:'#1e293b',family:'Arial Black'}, cliponaxis:false}
     ], {
       margin:{t:50,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{size:12,color:'#475569'}, barmode:'group', height:380,
+      font:{size:12,color:'#475569'}, barmode:'group', height:280,
       legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:13,color:'#475569'}},
       yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.06)'}
     }, {responsive:true, displayModeBar:false});
@@ -1422,7 +1422,7 @@ async function loadSalesData() {
     text:bu.map(x=>x.sales_pct.toFixed(1)+'%'), textinfo:'label+percent', textfont:{size:16,color:'#1e293b',family:'Arial Black'},
     marker:{colors:buColors.slice(0,bu.length),line:{color:'#e5e7eb',width:2}},
     hovertemplate:'%{label}<br>%{value:.1f}%<extra></extra>'}],
-    {margin:{t:5,b:5,l:5,r:5}, paper_bgcolor:'rgba(0,0,0,0)', height:290, showlegend:true,
+    {margin:{t:5,b:5,l:5,r:5}, paper_bgcolor:'rgba(0,0,0,0)', height:280, showlegend:true,
      legend:{orientation:'h',y:-0.08,font:{size:12,color:'#475569'}}},
     {responsive:true, displayModeBar:false});
 
