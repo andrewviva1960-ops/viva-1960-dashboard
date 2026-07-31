@@ -416,7 +416,7 @@ body.edit-mode .edit-save-bar{display:flex}
     <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-lightbulb" style="color:#10b981;margin-right:6px"></i>Recommendation</h5></div><div class="pnl-body" id="invRecommendation"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-trophy" style="color:#f59e0b;margin-right:6px"></i>Top 3 Optimal Portfolio Allocations</h5><span style="font-size:11px;color:var(--text-secondary)">Max Return / Min Risk — Based on 2026A Data</span></div><div class="pnl-body" id="invOptimal"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-trophy" style="color:#f59e0b;margin-right:6px"></i>Top 3 Optimal Portfolio Allocations</h5><div style="display:flex;gap:6px;align-items:center"><select id="invOptYear" onchange="renderOptimal(this.value)" style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:6px;padding:4px 10px;color:#334155;font-size:12px;cursor:pointer"><option value="y2025">2025</option><option value="y2026a" selected>2026 Actual</option><option value="y2026f">2026 Forecast</option></select></div></div><div class="pnl-body" id="invOptimal"></div></div>
   </div>
 </div>
 
@@ -1000,34 +1000,44 @@ async function loadInvestmentData() {
     if (s.recommendation) {
       document.getElementById('invRecommendation').innerHTML = '<div style="padding:18px 22px;font-size:11px;color:#64748b;line-height:1.8;white-space:pre-line">'+s.recommendation+'</div>';
     }
-    if (s.optimal_portfolios && s.optimal_portfolios.length > 0) {
-      const medals = ['🥇','🥈','🥉'];
-      const labels = ['Highest Sharpe (Best Risk-Adjusted)','Second Best','Third Best'];
-      document.getElementById('invOptimal').innerHTML = '<div style="padding:16px 22px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px">' +
-        s.optimal_portfolios.map((p, i) =>
-          '<div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:16px;position:relative">' +
-            '<div style="font-size:20px;margin-bottom:6px">'+medals[i]+'</div>' +
-            '<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:10px">'+labels[i]+'</div>' +
-            '<div style="display:flex;gap:4px;height:18px;border-radius:9px;overflow:hidden;margin-bottom:10px">' +
-              '<div style="width:'+p.gold+'%;background:#a78bfa" title="Gold '+p.gold+'%"></div>' +
-              '<div style="width:'+p.silver+'%;background:#94a3b8" title="Silver '+p.silver+'%"></div>' +
-              '<div style="width:'+p.swiss+'%;background:#7c3aed" title="Swiss Frank '+p.swiss+'%"></div>' +
-            '</div>' +
-            '<div style="font-size:11px;color:#64748b;line-height:2">' +
-              '<div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#a78bfa;margin-right:4px"></span>Gold <b>'+p.gold+'%</b></div>' +
-              '<div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#94a3b8;margin-right:4px"></span>Silver <b>'+p.silver+'%</b></div>' +
-              '<div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#7c3aed;margin-right:4px"></span>Swiss Frank <b>'+p.swiss+'%</b></div>' +
-            '</div>' +
-            '<div style="border-top:1px solid #e5e7eb;margin-top:10px;padding-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px">' +
-              '<div><span style="color:#64748b">Return</span><br><b style="color:#10b981">'+p.return+'%</b></div>' +
-              '<div><span style="color:#64748b">Risk</span><br><b style="color:#ef4444">'+p.risk+'%</b></div>' +
-              '<div style="grid-column:1/-1"><span style="color:#64748b">Sharpe Ratio</span><br><b style="color:#7c3aed">'+p.sharpe+'</b></div>' +
-            '</div>' +
-          '</div>'
-        ).join('') + '</div>';
+    if (s.optimal_portfolios) {
+      window._optimalData = s.optimal_portfolios;
+      renderOptimal(document.getElementById('invOptYear').value);
     }
     setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
   } catch(e) { console.error('Investment data error:', e); }
+}
+
+function renderOptimal(yr) {
+  var data = window._optimalData;
+  if (!data || !data[yr]) { document.getElementById('invOptimal').innerHTML = '<div style="padding:22px;color:#64748b;font-size:12px">No data available for this period.</div>'; return; }
+  var list = data[yr];
+  var medals = ['1st','2nd','3rd'];
+  var labels = ['Highest Sharpe (Best Risk-Adjusted)','Second Best','Third Best'];
+  var colors = {'gold':'#a78bfa','silver':'#94a3b8','swiss':'#7c3aed'};
+  document.getElementById('invOptimal').innerHTML = '<div style="padding:16px 22px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px">' +
+    list.map(function(p, i) {
+      var total = p.gold + p.silver + p.swiss;
+      return '<div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:16px;position:relative;border-top:3px solid '+(i===0?'#f59e0b':i===1?'#94a3b8':'#cd7f32')+'">' +
+        '<div style="font-size:11px;font-weight:700;color:'+(i===0?'#f59e0b':i===1?'#94a3b8':'#cd7f32')+';margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">'+medals[i]+'</div>' +
+        '<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:10px">'+labels[i]+'</div>' +
+        '<div style="display:flex;gap:2px;height:18px;border-radius:9px;overflow:hidden;margin-bottom:10px">' +
+          '<div style="width:'+p.gold+'%;background:#a78bfa" title="Gold '+p.gold+'%"></div>' +
+          '<div style="width:'+p.silver+'%;background:#94a3b8" title="Silver '+p.silver+'%"></div>' +
+          '<div style="width:'+p.swiss+'%;background:#7c3aed" title="Swiss Frank '+p.swiss+'%"></div>' +
+        '</div>' +
+        '<div style="font-size:11px;color:#64748b;line-height:2">' +
+          '<div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#a78bfa;margin-right:4px"></span>Gold <b>'+p.gold+'%</b></div>' +
+          '<div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#94a3b8;margin-right:4px"></span>Silver <b>'+p.silver+'%</b></div>' +
+          '<div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#7c3aed;margin-right:4px"></span>Swiss Frank <b>'+p.swiss+'%</b></div>' +
+        '</div>' +
+        '<div style="border-top:1px solid #e5e7eb;margin-top:10px;padding-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px">' +
+          '<div><span style="color:#64748b">Return</span><br><b style="color:#10b981">'+p.return+'%</b></div>' +
+          '<div><span style="color:#64748b">Risk</span><br><b style="color:#ef4444">'+p.risk+'%</b></div>' +
+          '<div style="grid-column:1/-1"><span style="color:#64748b">Sharpe Ratio</span><br><b style="color:#7c3aed">'+p.sharpe+'</b></div>' +
+        '</div>' +
+      '</div>';
+    }).join('') + '</div>';
 }
 
 async function loadCashflowData() {
@@ -2503,33 +2513,37 @@ def api_investment():
             "hedge_pct": {"actual": safe_float(97, 1), "forecast": safe_float(97, 2)}
         }
         result["recommendation"] = safe_str(99, 0)
-        # Optimal portfolio allocations (top 3 by Sharpe ratio)
+        # Optimal portfolio allocations (top 3 by Sharpe ratio for each year)
         try:
             rfr = portfolio.get("risk_free_rate", {}).get("y2026a", 0)
-            asset_returns = [gold["return_rate"]["y2026a"], silver["return_rate"]["y2026a"], swiss["return_rate"]["y2026a"]]
-            asset_risks = [gold["monthly_risk"]["y2026a"], silver["monthly_risk"]["y2026a"], swiss["monthly_risk"]["y2026a"]]
-            rho_gs = result["correlations"]["gold_silver"]
-            rho_gsw = result["correlations"]["gold_swiss"]
-            rho_ssw = result["correlations"]["silver_swiss"]
-            best = []
-            step = 5
-            for w1 in range(0, 101, step):
-                for w2 in range(0, 101 - w1, step):
-                    w3 = 100 - w1 - w2
-                    wg, ws, wsw = w1/100, w2/100, w3/100
-                    pr = wg*asset_returns[0] + ws*asset_returns[1] + wsw*asset_returns[2]
-                    pv = (wg*asset_risks[0])**2 + (ws*asset_risks[1])**2 + (wsw*asset_risks[2])**2 + \
-                         2*wg*ws*rho_gs*asset_risks[0]*asset_risks[1] + \
-                         2*wg*wsw*rho_gsw*asset_risks[0]*asset_risks[2] + \
-                         2*ws*wsw*rho_ssw*asset_risks[1]*asset_risks[2]
-                    prisk = pv**0.5
-                    sharpe = (pr - rfr) / prisk if prisk > 0 else 0
-                    best.append({"gold": round(wg*100), "silver": round(ws*100), "swiss": round(wsw*100),
-                                 "return": round(pr*100, 2), "risk": round(prisk*100, 2), "sharpe": round(sharpe, 3)})
-            best.sort(key=lambda x: x["sharpe"], reverse=True)
-            result["optimal_portfolios"] = best[:3]
+            optimal_all = {}
+            for yr_label, yr_key in [("2025","y2025"),("2026 Actual","y2026a"),("2026 Forecast","y2026f")]:
+                ar = [gold["return_rate"][yr_key], silver["return_rate"][yr_key], swiss["return_rate"][yr_key]]
+                arisk = [gold["monthly_risk"][yr_key], silver["monthly_risk"][yr_key], swiss["monthly_risk"][yr_key]]
+                rfr_yr = portfolio.get("risk_free_rate", {}).get(yr_key, 0)
+                rho_gs = result["correlations"]["gold_silver"]
+                rho_gsw = result["correlations"]["gold_swiss"]
+                rho_ssw = result["correlations"]["silver_swiss"]
+                best = []
+                step = 5
+                for w1 in range(0, 101, step):
+                    for w2 in range(0, 101 - w1, step):
+                        w3 = 100 - w1 - w2
+                        wg, ws, wsw = w1/100, w2/100, w3/100
+                        pr = wg*ar[0] + ws*ar[1] + wsw*ar[2]
+                        pv = (wg*arisk[0])**2 + (ws*arisk[1])**2 + (wsw*arisk[2])**2 + \
+                             2*wg*ws*rho_gs*arisk[0]*arisk[1] + \
+                             2*wg*wsw*rho_gsw*arisk[0]*arisk[2] + \
+                             2*ws*wsw*rho_ssw*arisk[1]*arisk[2]
+                        prisk = pv**0.5
+                        sharpe = (pr - rfr_yr) / prisk if prisk > 0 else 0
+                        best.append({"gold": round(wg*100), "silver": round(ws*100), "swiss": round(wsw*100),
+                                     "return": round(pr*100, 2), "risk": round(prisk*100, 2), "sharpe": round(sharpe, 3)})
+                best.sort(key=lambda x: x["sharpe"], reverse=True)
+                optimal_all[yr_key] = best[:3]
+            result["optimal_portfolios"] = optimal_all
         except Exception:
-            result["optimal_portfolios"] = []
+            result["optimal_portfolios"] = {}
         _inv_cache["data"] = result
         _inv_cache["ts"] = time.time()
         return jsonify(result)
