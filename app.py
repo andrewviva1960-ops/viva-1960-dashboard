@@ -1242,11 +1242,17 @@ let _editMode = false;
 let _overrides = {values:{}, labels:{}, notes:{}, layout:{}};
 let _editTarget = null;
 
-async function loadOverrides() {
+function loadOverrides() {
   try {
-    const r = await authFetch('/api/overrides');
-    if (r.ok) { _overrides = await r.json(); }
+    const saved = localStorage.getItem('viva_overrides');
+    if (saved) { _overrides = JSON.parse(saved); }
   } catch(e) {}
+  authFetch('/api/overrides').then(r => r.ok ? r.json() : null).then(server => {
+    if (server && server.values && Object.keys(server.values).length > Object.keys(_overrides.values||{}).length) {
+      _overrides = server;
+      localStorage.setItem('viva_overrides', JSON.stringify(_overrides));
+    }
+  }).catch(() => {});
 }
 
 function toggleEditMode() {
@@ -1349,7 +1355,8 @@ function confirmEdit() {
   _editTarget.el.classList.remove('editing');
   closeEditModal();
   highlightDirty();
-  authFetch('/api/overrides', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(_overrides)});
+  localStorage.setItem('viva_overrides', JSON.stringify(_overrides));
+  authFetch('/api/overrides', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(_overrides)}).catch(()=>{});
 }
 
 function highlightDirty() {
@@ -1377,13 +1384,15 @@ async function clearAllEdits() {
     const r = await authFetch('/api/overrides/clear', {method:'POST'});
     if (r.ok) {
       _overrides = {values:{}, labels:{}, notes:{}, layout:{}};
+      localStorage.removeItem('viva_overrides');
       document.querySelectorAll('.editable').forEach(el => { el.style.borderBottom = ''; });
-      alert('All edits cleared. Refresh page to reload data.');
+      location.reload();
     }
   } catch(e) { alert('Error: ' + e.message); }
 }
 
-loadOverrides().then(() => { loadData(); });
+loadOverrides();
+loadData();
 
 // ---- Tab Switching ----
 function switchTab(tab) {
