@@ -895,16 +895,16 @@ async function loadInvestmentData() {
     const yrLabels = ['2025','2026 Actual','2026 Forecast'];
     const traces_return = [];
     const colors = {'Gold':'#a78bfa','Silver':'#94a3b8','Swiss Frank':'#7c3aed'};
+    const yrKeys = ['y2025','y2026a','y2026f'];
     assets.forEach((asset, ai) => {
       const data = asset === 'Gold' ? s.gold : asset === 'Silver' ? s.silver : s.swiss;
       traces_return.push({
-        type:'bar', name:asset+' Return',
+        type:'bar', name:asset,
         x:yrLabels,
-        y:metrics.map(m => data[m].y2025*100),
+        y:yrKeys.map(yr => data['return_rate'][yr]*100),
         marker:{color:colors[asset],opacity:0.9},
-        text:metrics.map(m => pct(data[m].y2025)),
-        textposition:'outside', textfont:{size:11,color:'#1e293b',family:'Arial Black'}, cliponaxis:false,
-        offset: ai * 0.25
+        text:yrKeys.map(yr => pct(data['return_rate'][yr])),
+        textposition:'outside', textfont:{size:11,color:'#1e293b',family:'Arial Black'}, cliponaxis:false
       });
     });
     Plotly.newPlot('invReturnChart', traces_return, {
@@ -920,7 +920,7 @@ async function loadInvestmentData() {
       const data = asset === 'Gold' ? s.gold : asset === 'Silver' ? s.silver : s.swiss;
       traces_risk.push({
         type:'scatter', mode:'lines+markers', name:asset,
-        x:yrLabels, y:riskMetrics.map(m => data[m].y2026a),
+        x:yrLabels, y:yrKeys.map(yr => data['sharpe_ratio'][yr]),
         line:{color:colors[asset],width:3}, marker:{size:10}
       });
     });
@@ -2425,14 +2425,16 @@ def api_investment():
         for row_idx, key in gold_labels.items():
             gold[key] = {"y2025": safe_float(row_idx, 1), "y2026a": safe_float(row_idx, 2), "y2026f": safe_float(row_idx, 3)}
         result["gold"] = gold
-        # Silver metrics (rows 21-38)
+        # Silver metrics (rows 21-38, offset +17 from gold)
         silver = {}
-        for row_idx, key in gold_labels.items():
+        silver_labels = {k+17: v for k, v in gold_labels.items()}
+        for row_idx, key in silver_labels.items():
             silver[key] = {"y2025": safe_float(row_idx, 1), "y2026a": safe_float(row_idx, 2), "y2026f": safe_float(row_idx, 3)}
         result["silver"] = silver
-        # Swiss Frank metrics (rows 40-57)
+        # Swiss Frank metrics (rows 40-57, offset +36 from gold)
         swiss = {}
-        for row_idx, key in gold_labels.items():
+        swiss_labels = {k+36: v for k, v in gold_labels.items()}
+        for row_idx, key in swiss_labels.items():
             swiss[key] = {"y2025": safe_float(row_idx, 1), "y2026a": safe_float(row_idx, 2), "y2026f": safe_float(row_idx, 3)}
         result["swiss"] = swiss
         # Correlations (rows 59-65)
@@ -2454,7 +2456,12 @@ def api_investment():
         for row_idx, key in portfolio_labels.items():
             portfolio[key] = {"y2025": safe_float(row_idx, 1), "y2026a": safe_float(row_idx, 2), "y2026f": safe_float(row_idx, 3)}
         result["portfolio"] = portfolio
-        result["portfolio"]["weights"] = {"gold": 0.3, "silver": 0.2, "swiss": 0.5}
+        w_g = safe_float(68, 1); w_s = safe_float(68, 2); w_sw = safe_float(68, 3)
+        w_total = w_g + w_s + w_sw
+        if w_total > 0:
+            result["portfolio"]["weights"] = {"gold": w_g/w_total, "silver": w_s/w_total, "swiss": w_sw/w_total}
+        else:
+            result["portfolio"]["weights"] = {"gold": 0.3, "silver": 0.2, "swiss": 0.5}
         result["portfolio"]["prices"] = {"current": safe_float(69, 6), "prev": safe_float(69, 7)}
         result["portfolio"]["growth"] = safe_float(70, 7)
         # Investment results (rows 89-96)
