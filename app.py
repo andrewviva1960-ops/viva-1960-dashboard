@@ -76,8 +76,10 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f1f5f
 .header .currency-selector select{background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:4px 28px 4px 10px;color:#334155;font-size:12px;font-weight:500;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
 .sidebar{position:fixed;top:64px;left:0;bottom:0;width:var(--sidebar-width);background:var(--sidebar-bg);color:var(--text-secondary);overflow-y:auto;z-index:999;padding-top:8px;border-right:1px solid #e5e7eb;box-shadow:1px 0 3px rgba(0,0,0,0.04);transition:transform .25s ease,opacity .25s ease}
 .sidebar.hidden{transform:translateX(-100%);opacity:0;pointer-events:none}
-.sidebar-toggle{background:none;border:none;font-size:18px;color:var(--text-secondary);cursor:pointer;padding:4px 8px;border-radius:6px;transition:.15s}
+.sidebar-toggle{background:none;border:none;font-size:14px;color:var(--text-secondary);cursor:pointer;padding:0 6px;border-radius:4px;transition:.15s;margin-left:auto}
 .sidebar-toggle:hover{color:var(--accent)}
+.sidebar-toggle-float{display:none;position:fixed;left:8px;top:420px;z-index:1001;font-size:16px;padding:8px 10px;background:var(--accent);color:#fff;border-radius:0 8px 8px 0;box-shadow:2px 2px 6px rgba(0,0,0,0.15)}
+body.sidebar-hidden .sidebar-toggle-float{display:block}
 .sidebar .nav-item{padding:10px 20px;display:flex;align-items:center;gap:11px;cursor:pointer;font-size:13px;transition:.15s;border-left:3px solid transparent;border-radius:0 8px 8px 0;margin-right:8px}
 .sidebar .nav-item:hover{background:#f1f5f9;color:var(--text-primary)}
 .sidebar .nav-item.active{background:#ede9fe;color:var(--accent);border-left-color:var(--accent);font-weight:600}
@@ -191,7 +193,6 @@ body.edit-mode .edit-save-bar{display:flex}
 
 <!-- Header -->
 <div class="header">
-    <button class="sidebar-toggle" onclick="toggleSidebar()" title="Toggle navigation"><i class="fas fa-bars"></i></button>
     <div class="brand"><img src="/static/logo.png" alt="VIVA 1960">VIVA 1960 Dashboard</div>
   <div class="top-right">
     <span><span class="status-dot"></span>Live</span>
@@ -227,11 +228,12 @@ body.edit-mode .edit-save-bar{display:flex}
   <div class="nav-item" onclick="switchTab('style')"><i class="fas fa-tshirt"></i> Style Analysis</div>
   <div class="nav-item" onclick="switchTab('investment')"><i class="fas fa-coins"></i> Investment Insights</div>
   <div class="nav-item" onclick="switchTab('cashflow')"><i class="fas fa-money-bill-wave"></i> Cash Flow</div>
-  <div class="nav-section">Data</div>
+  <div class="nav-section" style="display:flex;align-items:center">Data <button class="sidebar-toggle" onclick="toggleSidebar()" title="Toggle sidebar"><i class="fas fa-bars"></i></button></div>
   <div class="nav-item"><i class="fas fa-table"></i> Raw Data</div>
   <div class="nav-item" style="cursor:pointer" onclick="document.getElementById('fileInput').click()"><i class="fas fa-upload"></i> Upload Excel</div>
   <input type="file" id="fileInput" accept=".xlsx" style="display:none" onchange="uploadExcel(this)">
 </div>
+<button class="sidebar-toggle sidebar-toggle-float" onclick="toggleSidebar()" title="Toggle sidebar"><i class="fas fa-bars"></i></button>
 
 <!-- Main -->
 <div class="main">
