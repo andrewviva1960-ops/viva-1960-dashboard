@@ -74,13 +74,17 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f1f5f
 .header .currency-selector{display:flex;align-items:center;gap:6px;margin-left:14px;padding-left:14px;border-left:1px solid #e5e7eb}
 .header .currency-selector label{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary)}
 .header .currency-selector select{background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:4px 28px 4px 10px;color:#334155;font-size:12px;font-weight:500;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
-.sidebar{position:fixed;top:64px;left:0;bottom:0;width:var(--sidebar-width);background:var(--sidebar-bg);color:var(--text-secondary);overflow-y:auto;z-index:999;padding-top:8px;border-right:1px solid #e5e7eb;box-shadow:1px 0 3px rgba(0,0,0,0.04)}
+.sidebar{position:fixed;top:64px;left:0;bottom:0;width:var(--sidebar-width);background:var(--sidebar-bg);color:var(--text-secondary);overflow-y:auto;z-index:999;padding-top:8px;border-right:1px solid #e5e7eb;box-shadow:1px 0 3px rgba(0,0,0,0.04);transition:transform .25s ease,opacity .25s ease}
+.sidebar.hidden{transform:translateX(-100%);opacity:0;pointer-events:none}
+.sidebar-toggle{background:none;border:none;font-size:18px;color:var(--text-secondary);cursor:pointer;padding:4px 8px;border-radius:6px;transition:.15s}
+.sidebar-toggle:hover{background:#f1f5f9;color:var(--accent)}
 .sidebar .nav-item{padding:10px 20px;display:flex;align-items:center;gap:11px;cursor:pointer;font-size:13px;transition:.15s;border-left:3px solid transparent;border-radius:0 8px 8px 0;margin-right:8px}
 .sidebar .nav-item:hover{background:#f1f5f9;color:var(--text-primary)}
 .sidebar .nav-item.active{background:#ede9fe;color:var(--accent);border-left-color:var(--accent);font-weight:600}
 .sidebar .nav-item i{width:18px;text-align:center;font-size:14px;color:var(--accent)}
 .sidebar .nav-section{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:#94a3b8;padding:16px 20px 5px;font-weight:600}
-.main{margin-left:var(--sidebar-width);margin-top:64px;padding:12px 16px;min-height:calc(100vh - 64px)}
+.main{margin-left:var(--sidebar-width);margin-top:64px;padding:12px 16px;min-height:calc(100vh - 64px);transition:margin-left .25s ease}
+body.sidebar-hidden .main{margin-left:0}
 .page-title{font-size:15px;font-weight:700;color:var(--text-primary);margin-bottom:10px}
 .kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:14px}
 @media(max-width:1200px){.kpi-grid{grid-template-columns:repeat(3,1fr)}}
@@ -187,6 +191,7 @@ body.edit-mode .edit-save-bar{display:flex}
 
 <!-- Header -->
 <div class="header">
+    <button class="sidebar-toggle" onclick="toggleSidebar()" title="Toggle navigation"><i class="fas fa-bars"></i></button>
     <div class="brand"><img src="/static/logo.png" alt="VIVA 1960">VIVA 1960 Dashboard</div>
   <div class="top-right">
     <span><span class="status-dot"></span>Live</span>
@@ -1242,7 +1247,16 @@ async function refreshData() {
 
 // ---- Blur Toggle ----
 let _blurred = localStorage.getItem('dashBlur') === 'true';
+let _sidebarHidden = localStorage.getItem('dashSidebarHidden') === 'true';
 if (_blurred) document.body.classList.add('blur-mode');
+if (_sidebarHidden) { document.body.classList.add('sidebar-hidden'); document.querySelector('.sidebar').classList.add('hidden'); }
+function toggleSidebar() {
+  _sidebarHidden = !_sidebarHidden;
+  document.body.classList.toggle('sidebar-hidden', _sidebarHidden);
+  document.querySelector('.sidebar').classList.toggle('hidden', _sidebarHidden);
+  localStorage.setItem('dashSidebarHidden', _sidebarHidden);
+  setTimeout(() => { document.querySelectorAll('.js-plotly-plot').forEach(el => Plotly.Plots.resize(el)); }, 350);
+}
 function toggleBlur() {
   _blurred = !_blurred;
   document.body.classList.toggle('blur-mode', _blurred);
