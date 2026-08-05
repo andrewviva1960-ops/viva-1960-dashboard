@@ -167,10 +167,10 @@ body.sidebar-hidden .main{margin-left:0}
 .kpi-card.kpi-ni{border-left:4px solid var(--teal)}.kpi-card.kpi-ni .kpi-icon{background:linear-gradient(135deg,#95b8d0,#0891b2)}
 .kpi-card .kpi-value.green{color:var(--green)}.kpi-card .kpi-value.red{color:var(--red)}
 #pnlKpiGrid{grid-template-columns:repeat(5,1fr)!important;gap:6px!important;margin-bottom:10px!important}
-#pnlKpiGrid .kpi-card{padding:6px 6px!important}
-#pnlKpiGrid .kpi-icon{width:22px!important;height:22px!important;min-width:22px!important;font-size:10px!important}
-#pnlKpiGrid .kpi-card .kpi-value{font-size:12px!important}
-#pnlKpiGrid .kpi-card .kpi-sub{font-size:8px!important}
+#pnlKpiGrid .kpi-card{padding:8px 8px!important}
+#pnlKpiGrid .kpi-icon{width:24px!important;height:24px!important;min-width:24px!important;font-size:11px!important}
+#pnlKpiGrid .kpi-card .kpi-value{font-size:15px!important}
+#pnlKpiGrid .kpi-card .kpi-sub{font-size:10px!important}
 .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
 .chart-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
 @media(max-width:1100px){.chart-grid-3{grid-template-columns:1fr 1fr}}
@@ -1623,12 +1623,12 @@ async function loadPnlData() {
      decreasing:{marker:{color:'#d4b0b0'}}, increasing:{marker:{color:'#b8d8b0'}}, totals:{marker:{color:'#d8b4fe'}},
      connector:{line:{color:'rgba(255,255,255,0.2)', width:2}},
      cliponaxis:false,
-     text:pnlActText, textposition:'outside', textfont:{size:10,color:'#475569',family:'Inter'}},
+     text:pnlActText, textposition:'outside', textfont:{size:11,color:'#475569',family:'Inter'}},
     {type:'waterfall', name:'Forecast', x:pnlLabels, y:pnlFctVals, measure:waterfallMeasures,
      decreasing:{marker:{color:'#d4b0b0'}}, increasing:{marker:{color:'#b8d8b0'}}, totals:{marker:{color:'#b8c8a8'}},
      connector:{line:{color:'rgba(255,255,255,0.1)', width:1}},
      cliponaxis:false,
-     text:pnlFctText, textposition:'outside', textfont:{size:10,color:'#475569',family:'Inter'},
+     text:pnlFctText, textposition:'outside', textfont:{size:11,color:'#475569',family:'Inter'},
      opacity:0.7}
   ], {margin:{t:55,b:70,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
       autosize:true, height:380, hovermode:'x unified',
@@ -1644,22 +1644,22 @@ async function loadPnlData() {
     {label:'Net Income', a:ytd.net_income.actual*cr.rate, f:ytd.net_income.forecast*cr.rate, bold:true}
   ];
   document.getElementById('pnlSummaryTable').innerHTML =
-    '<div style="padding:12px 18px;width:100%"><table style="width:100%;border-collapse:collapse;font-size:11px">' +
+    '<div style="padding:12px 18px;width:100%"><table style="width:100%;border-collapse:collapse;font-size:12px">' +
     '<tr style="color:var(--text-secondary);font-size:11px;text-transform:uppercase;letter-spacing:.5px">' +
-    '<td style="padding:6px 12px">Line Item</td><td style="padding:6px 12px;text-align:right">Actual</td>' +
-    '<td style="padding:6px 12px;text-align:right">Forecast</td><td style="padding:6px 12px;text-align:right">Variance</td>' +
-    '<td style="padding:6px 12px;text-align:right">Var %</td></tr>' +
+    '<td style="padding:8px 12px">Line Item</td><td style="padding:8px 12px;text-align:right">Actual</td>' +
+    '<td style="padding:8px 12px;text-align:right">Forecast</td><td style="padding:8px 12px;text-align:right">Variance</td>' +
+    '<td style="padding:8px 12px;text-align:right">Var %</td></tr>' +
     pnlLines.map(l => {
       const varAmt = l.a - (l.neg ? -l.f : l.f);
       const varPct = l.f !== 0 ? ((l.a - (l.neg ? -l.f : l.f)) / (l.neg ? -l.f : l.f) * 100).toFixed(1) : 'N/A';
       const isGood = l.neg ? (varAmt >= 0) : (varAmt >= 0);
       return '<tr' + (l.bold ? ' style="border-top:2px solid #475569;font-weight:700"' : '') + '>' +
-        '<td style="padding:6px 12px;color:' + (l.bold ? '#1e293b' : 'var(--text-secondary)') + '">' + l.label + '</td>' +
-        '<td class="num" style="padding:6px 12px;text-align:right;font-weight:600">' + pnlFmt(l.a) + '</td>' +
-        '<td class="num" style="padding:6px 12px;text-align:right;color:#64748b">' + pnlFmt(l.neg ? -l.f : l.f) + '</td>' +
-        '<td class="num" style="padding:6px 12px;text-align:right;color:' + (isGood ? 'var(--green)' : 'var(--red)') + ';font-weight:600">' +
+        '<td style="padding:8px 12px;color:' + (l.bold ? '#1e293b' : 'var(--text-secondary)') + ';font-weight:' + (l.bold ? '700' : '500') + '">' + l.label + '</td>' +
+        '<td class="num" style="padding:8px 12px;text-align:right;font-weight:600;font-size:13px">' + pnlFmt(l.a) + '</td>' +
+        '<td class="num" style="padding:8px 12px;text-align:right;color:#64748b;font-size:13px">' + pnlFmt(l.neg ? -l.f : l.f) + '</td>' +
+        '<td class="num" style="padding:8px 12px;text-align:right;color:' + (isGood ? 'var(--green)' : 'var(--red)') + ';font-weight:600;font-size:13px">' +
         (varAmt >= 0 ? '+' : '') + pnlFmt(varAmt) + '</td>' +
-        '<td class="num" style="padding:6px 12px;text-align:right;color:' + (isGood ? 'var(--green)' : 'var(--red)') + '">' +
+        '<td class="num" style="padding:8px 12px;text-align:right;color:' + (isGood ? 'var(--green)' : 'var(--red)') + ';font-size:12px">' +
         (varPct !== 'N/A' ? (varAmt >= 0 ? '+' : '') + varPct + '%' : 'N/A') + '</td></tr>';
     }).join('') + '</table></div>';
   setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
