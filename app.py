@@ -696,8 +696,6 @@ async function loadData() {
   const r = await authFetch('/api/data?period=' + encodeURIComponent(period) + '&bu=' + encodeURIComponent(bu) + '&month=' + encodeURIComponent(month));
   const d = await r.json();
   _data = d;
-  const now = new Date();
-  document.getElementById('timestamp').textContent = now.toLocaleString();
   const T = d.totals;
   document.getElementById('kpiGrid').innerHTML =
     buildKPI('Gross Sales', T.gs, 'chart-line', '#2ecc71', 'gs', 'Total Revenue') +
@@ -1457,6 +1455,18 @@ function applyLayoutOverrides() {
 }
 
 loadOverrides();
+(function _liveClock() {
+  function tick() {
+    var el = document.getElementById('timestamp');
+    if (el) {
+      var now = new Date();
+      var h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+      el.textContent = (h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+    }
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
 loadData();
 
 // ---- Tab Switching ----
