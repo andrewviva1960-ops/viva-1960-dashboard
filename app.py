@@ -50,8 +50,8 @@ Plotly.setPlotConfig({
   displayModeBar:false,
   responsive:true,
   layout:{paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',margin:{t:30,b:50,l:60,r:20},
-    xaxis:{gridcolor:'rgba(0,0,0,0.04)',linecolor:'rgba(0,0,0,0.06)',zerolinecolor:'rgba(0,0,0,0.06)',tickfont:{size:11,color:'#94a3b8'}},
-    yaxis:{gridcolor:'rgba(0,0,0,0.04)',linecolor:'rgba(0,0,0,0.06)',zerolinecolor:'rgba(0,0,0,0.06)',tickfont:{size:11,color:'#94a3b8'}},
+    xaxis:{gridcolor:'transparent',linecolor:'rgba(0,0,0,0.06)',zerolinecolor:'rgba(0,0,0,0.06)',tickfont:{size:11,color:'#94a3b8'}},
+    yaxis:{gridcolor:'transparent',linecolor:'rgba(0,0,0,0.06)',zerolinecolor:'rgba(0,0,0,0.06)',tickfont:{size:11,color:'#94a3b8'}},
     font:{family:'Inter, system-ui, sans-serif',size:12,color:'#64748b'}
   }
 });
@@ -69,8 +69,8 @@ function _calmLayout(extra) {
   return Object.assign({
     paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
     font:{family:'Inter, system-ui, sans-serif',size:12,color:_CALM.txtDark},
-    xaxis:{gridcolor:_CALM.grid,linecolor:_CALM.zero,zerolinecolor:_CALM.zero,tickfont:{size:11,color:_CALM.txt}},
-    yaxis:{gridcolor:_CALM.grid,linecolor:_CALM.zero,zerolinecolor:_CALM.zero,tickfont:{size:11,color:_CALM.txt}},
+    xaxis:{gridcolor:'transparent',linecolor:_CALM.zero,zerolinecolor:_CALM.zero,tickfont:{size:11,color:_CALM.txt}},
+    yaxis:{gridcolor:'transparent',linecolor:_CALM.zero,zerolinecolor:_CALM.zero,tickfont:{size:11,color:_CALM.txt}},
     margin:{t:30,b:50,l:60,r:20}
   }, extra||{});
 }
@@ -341,7 +341,7 @@ body.edit-mode .edit-save-bar{display:flex}
   </div>
   <div class="kpi-grid" id="kpiGrid"></div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-university" style="color:var(--accent);margin-right:6px"></i>CBE Official Exchange Rates</h5><span style="font-size:11px;color:var(--text-secondary)">Base: EGP</span></div><div class="chart-body" id="currencyRateChart" style="min-height:280px"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-university" style="color:var(--accent);margin-right:6px"></i>CBE Official Exchange Rates</h5><span style="font-size:11px;color:var(--text-secondary)">Base: EGP</span></div><div class="chart-body" id="currencyRateChart" style="min-height:240px"></div></div>
   </div>
   <div class="chart-grid">
     <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:var(--accent);margin-right:6px"></i>Monthly Gross Sales</h5></div><div class="chart-body" id="salesChart"></div></div>
@@ -644,13 +644,13 @@ function renderCurrencyChart() {
     type: 'bar', x: allCurs, y: vals,
     marker: {color: barColors, line: {color: '#7c3aed', width: allCurs.map(n => n === sel ? 2 : 0)}},
     text: vals.map(v => v.toFixed(2) + ' EGP'),
-    textposition: 'outside', textfont: {size: 11, color: '#1e293b', family: 'Arial Black'}, cliponaxis: false
+    textposition: 'outside', textfont: {size: 11, color: '#475569', family: 'Inter'}, cliponaxis: false
   }], {
-    margin: {t: 30, b: 45, l: 70, r: 25},
+    margin: {t: 25, b: 40, l: 65, r: 20},
     paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
-    font: {size: 14, color: '#475569'},
-    yaxis: {title: 'EGP per 1 unit', gridcolor: 'rgba(0,0,0,0.06)', rangemode: 'tozero'},
-    height: 280, hovermode: 'x unified', showlegend: false
+    font: {size: 11, color: '#94a3b8', family: 'Inter'},
+    yaxis: {title: 'EGP per 1 unit', titlefont:{size:11,color:'#94a3b8'}, gridcolor: 'transparent', rangemode: 'tozero', tickfont:{size:11}},
+    height: 240, hovermode: 'x unified', showlegend: false
   }, {responsive: true, displayModeBar: false});
   const ts = document.getElementById('rateTimestamp');
   if (ts) ts.textContent = 'Last updated: ' + new Date().toLocaleString();
@@ -669,7 +669,7 @@ function renderTopChart(d, c) {
     marker:{color:['#7c3aed','#8b5cf6','#a78bfa','#c4b5fd','#ddd6fe']},
     text:vals.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:11,color:'#64748b',family:'Inter'}, cliponaxis:false}],
     {margin:{t:50,b:55,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-     font:{size:11,color:'#94a3b8'}, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.03)'}, height:300,
+     font:{size:11,color:'#94a3b8'}, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:'transparent'}, height:300,
      hovermode:'x unified', showlegend:false}, {responsive:true, displayModeBar:false});
 }
 
@@ -706,12 +706,12 @@ async function loadData() {
   const c = getCurrency();
   const gsV = months.map((_,i) => M[i].gs * c.rate);
   Plotly.newPlot('salesChart', [{type:'bar', x:months, y:gsV, marker:{color:_CALM.palette[0],line:{width:0},opacity:0.85}, text:gsV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:10,color:_CALM.txtDark,family:'Inter'}, cliponaxis:false, marker_line:{width:0}}],
-    _calmLayout({height:300, hovermode:'x unified', showlegend:false, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:_CALM.grid}}),
+    _calmLayout({height:300, hovermode:'x unified', showlegend:false, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:'transparent'}}),
     {responsive:true, displayModeBar:false});
 
   const expV = months.map((_,i) => M[i].exp * c.rate);
   Plotly.newPlot('expChart', [{type:'bar', x:months, y:expV, marker:{color:_CALM.palette[3],opacity:0.85}, text:expV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:10,color:_CALM.txtDark,family:'Inter'}, cliponaxis:false}],
-    _calmLayout({height:300, hovermode:'x unified', showlegend:false, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:_CALM.grid}}),
+    _calmLayout({height:300, hovermode:'x unified', showlegend:false, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:'transparent'}}),
     {responsive:true, displayModeBar:false});
 
   const nsV = months.map((_,i) => M[i].ns * c.rate);
@@ -720,14 +720,14 @@ async function loadData() {
     {type:'bar', name:'Expenses', x:months, y:expV, marker:{color:_CALM.palette[3],opacity:0.85}, text:expV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:10,color:_CALM.txtDark,family:'Inter'}, cliponaxis:false}
   ], _calmLayout({barmode:'group', height:300, hovermode:'x unified',
       legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:11,color:_CALM.txtDark}},
-      yaxis:{ticksuffix:' '+c.symbol,gridcolor:_CALM.grid}}), {responsive:true, displayModeBar:false});
+      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'transparent'}}), {responsive:true, displayModeBar:false});
 
   const depts = Object.keys(d.depts);
   const dVals = Object.values(d.depts).map(v => v * c.rate);
   Plotly.newPlot('deptChart', [{type:'bar', orientation:'h', x:dVals, y:depts,
     marker:{color:_CALM.palette.slice(0,depts.length),opacity:0.85}, text:dVals.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:10,color:_CALM.txtDark,family:'Inter'}, cliponaxis:false}],
     _calmLayout({height:Math.max(300, depts.length*45), hovermode:'y unified', showlegend:false,
-     xaxis:{ticksuffix:' '+c.symbol,gridcolor:_CALM.grid}}), {responsive:true, displayModeBar:false});
+     xaxis:{ticksuffix:' '+c.symbol,gridcolor:'transparent'}}), {responsive:true, displayModeBar:false});
 
   document.getElementById('pnlCard').innerHTML =
     '<table>' +
@@ -772,7 +772,7 @@ async function loadData() {
   Plotly.newPlot('qtyChart', [{type:'bar', x:months, y:qtyVals,
     marker:{color:_CALM.palette[2],opacity:0.85}, text:qtyVals.map(v => v > 0 ? v.toLocaleString() : ''), textposition:'outside', textfont:{size:10,color:_CALM.txtDark,family:'Inter'}, cliponaxis:false}],
     _calmLayout({height:300, hovermode:'x unified', showlegend:false, bargap:0.3,
-     yaxis:{rangemode:'tozero',gridcolor:_CALM.grid,automargin:true}}),
+     yaxis:{rangemode:'tozero',gridcolor:'transparent',automargin:true}}),
     {responsive:true, displayModeBar:false});
 
   // Monthly Net Sales vs COGS
@@ -786,7 +786,7 @@ async function loadData() {
     {type:'bar', name:'COGS', x:months, y:ncogsV, marker:{color:_CALM.palette[1],opacity:0.85}, text:cogsLabels, textposition:'outside', textfont:{size:10,color:_CALM.txtDark,family:'Inter'}, cliponaxis:false}
   ], _calmLayout({barmode:'group', height:300, hovermode:'x unified', bargap:0.25, bargroupgap:0.1,
       legend:{orientation:'h',y:1.12,x:.5,xanchor:'center',font:{size:11,color:_CALM.txtDark}},
-      yaxis:{ticksuffix:' '+c.symbol,gridcolor:_CALM.grid,automargin:true}}), {responsive:true, displayModeBar:false});
+      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'transparent',automargin:true}}), {responsive:true, displayModeBar:false});
   renderCurrencyChart();
   setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
 }
@@ -836,7 +836,7 @@ async function loadStyleAnalysis() {
     }], {
       margin:{t:40,b:70,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:11,color:'#94a3b8'}, height:280, showlegend:false,
-      yaxis:{ticksuffix:' '+c.symbol, gridcolor:'rgba(0,0,0,0.03)'}
+      yaxis:{ticksuffix:' '+c.symbol, gridcolor:'transparent'}
     }, {responsive:true, displayModeBar:false});
     // Net Profit by PO (bar chart)
     const npVals = pf.total_net_profit.values.map(v => v * c.rate);
@@ -847,7 +847,7 @@ async function loadStyleAnalysis() {
     }], {
       margin:{t:40,b:45,l:65,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:11,color:'#94a3b8'}, height:300, showlegend:false, xaxis:{tickangle:-30},
-      yaxis:{ticksuffix:' '+c.symbol, gridcolor:'rgba(0,0,0,0.03)'}
+      yaxis:{ticksuffix:' '+c.symbol, gridcolor:'transparent'}
     }, {responsive:true, displayModeBar:false});
     // COGS % pie
     Plotly.newPlot('styleCogsPie', [{
@@ -897,7 +897,7 @@ async function loadStyleAnalysis() {
       margin:{t:50,b:50,l:60,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:11,color:'#94a3b8'}, height:300, showlegend:true, xaxis:{tickangle:-30},
       legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:11,color:'#94a3b8'}},
-      yaxis:{ticksuffix:'%', gridcolor:'rgba(0,0,0,0.03)'}
+      yaxis:{ticksuffix:'%', gridcolor:'transparent'}
     }, {responsive:true, displayModeBar:false});
     // Cost per item stacked bar
     const laborV = cb.labor_cost_per_item.values;
@@ -911,7 +911,7 @@ async function loadStyleAnalysis() {
       margin:{t:40,b:45,l:60,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:11,color:'#94a3b8'}, barmode:'stack', height:300, xaxis:{tickangle:-30},
       legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:11,color:'#94a3b8'}},
-      yaxis:{gridcolor:'rgba(0,0,0,0.03)'}
+      yaxis:{gridcolor:'transparent'}
     }, {responsive:true, displayModeBar:false});
     // Variance text
     if (s.variance_detail) {
@@ -971,7 +971,7 @@ async function loadInvestmentData() {
       margin:{t:50,b:70,l:70,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:11,color:'#94a3b8'}, barmode:'group', height:280,
       legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:11,color:'#94a3b8'}},
-      yaxis:{ticksuffix:'%',gridcolor:'rgba(0,0,0,0.03)'}
+      yaxis:{ticksuffix:'%',gridcolor:'transparent'}
     }, {responsive:true, displayModeBar:false});
     const riskMetrics = ['sharpe_ratio','sortino','calmar'];
     const riskNames = ['Sharpe Ratio','Sortino Ratio','Calmar Ratio'];
@@ -988,7 +988,7 @@ async function loadInvestmentData() {
       margin:{t:50,b:60,l:60,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:11,color:'#94a3b8'}, height:280,
       legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:11,color:'#94a3b8'}},
-      yaxis:{gridcolor:'rgba(0,0,0,0.03)'}
+      yaxis:{gridcolor:'transparent'}
     }, {responsive:true, displayModeBar:false});
     const riskLabels2 = ['Max Drawdown','Downside Deviation','Monthly Volatility'];
     const riskKeys = ['mdd','downside_dev','monthly_risk'];
@@ -1008,7 +1008,7 @@ async function loadInvestmentData() {
       margin:{t:50,b:60,l:60,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:11,color:'#94a3b8'}, barmode:'group', height:280,
       legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:11,color:'#94a3b8'}},
-      yaxis:{ticksuffix:'%',gridcolor:'rgba(0,0,0,0.03)'}
+      yaxis:{ticksuffix:'%',gridcolor:'transparent'}
     }, {responsive:true, displayModeBar:false});
     const corrLabels = ['Gold','Silver','Swiss Frank'];
     const corrMatrix = [
@@ -1052,7 +1052,7 @@ async function loadInvestmentData() {
       margin:{t:50,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:11,color:'#94a3b8'}, barmode:'group', height:280,
       legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:11,color:'#94a3b8'}},
-      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.03)'}
+      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'transparent'}
     }, {responsive:true, displayModeBar:false});
     if (s.recommendation) {
       document.getElementById('invRecommendation').innerHTML = '<div style="padding:18px 22px;font-size:11px;color:#64748b;line-height:1.8;white-space:pre-line">'+s.recommendation+'</div>';
@@ -1132,7 +1132,7 @@ async function loadCashflowData() {
       margin:{t:50,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:11,color:'#94a3b8'}, barmode:'relative', height:280,
       legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:11,color:'#94a3b8'}},
-      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.03)'}
+      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'transparent'}
     }, {responsive:true, displayModeBar:false});
     // Collections by BU (from dashboard - authoritative)
     try {
@@ -1159,7 +1159,7 @@ async function loadCashflowData() {
     }], {
       margin:{t:30,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:11,color:'#94a3b8'}, height:300,
-      xaxis:{tickangle:-30}, yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.03)'}
+      xaxis:{tickangle:-30}, yaxis:{ticksuffix:' '+c.symbol,gridcolor:'transparent'}
     }, {responsive:true, displayModeBar:false});
     // Top spending categories
     const catKeys = Object.keys(s.category_spending).slice().reverse();
@@ -1171,7 +1171,7 @@ async function loadCashflowData() {
     }], {
       margin:{t:10,b:40,l:120,r:60}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:11,color:'#94a3b8'}, height:280,
-      xaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.03)'}
+      xaxis:{ticksuffix:' '+c.symbol,gridcolor:'transparent'}
     }, {responsive:true, displayModeBar:false});
     // Stacked collection vs spending by month
     const buList = [...new Set(Object.values(s.monthly_bu).flatMap(v=>Object.keys(v)))];
@@ -1199,7 +1199,7 @@ async function loadCashflowData() {
       margin:{t:50,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:11,color:'#94a3b8'}, barmode:'relative', height:280,
       legend:{orientation:'h',y:1.2,x:.5,xanchor:'center',font:{size:11,color:'#94a3b8'}},
-      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.03)'}
+      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'transparent'}
     }, {responsive:true, displayModeBar:false});
     // Aging chart
     const agingKeys = Object.keys(s.aging);
@@ -1212,7 +1212,7 @@ async function loadCashflowData() {
       }], {
         margin:{t:30,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
         font:{size:11,color:'#94a3b8'}, height:300,
-        yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.03)'}
+        yaxis:{ticksuffix:' '+c.symbol,gridcolor:'transparent'}
       }, {responsive:true, displayModeBar:false});
     }
     // Top 10 customers
@@ -1225,7 +1225,7 @@ async function loadCashflowData() {
     }], {
       margin:{t:10,b:40,l:120,r:60}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:11,color:'#94a3b8'}, height:280,
-      xaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.03)'}
+      xaxis:{ticksuffix:' '+c.symbol,gridcolor:'transparent'}
     }, {responsive:true, displayModeBar:false});
     // Top 10 spending categories bar
     const catKeysBar = Object.keys(s.category_spending).sort((a,b)=>s.category_spending[b]-s.category_spending[a]).slice(0,10);
@@ -1237,7 +1237,7 @@ async function loadCashflowData() {
     }], {
       margin:{t:30,b:80,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:11,color:'#94a3b8'}, height:280,
-      xaxis:{tickangle:-40}, yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.03)'}
+      xaxis:{tickangle:-40}, yaxis:{ticksuffix:' '+c.symbol,gridcolor:'transparent'}
     }, {responsive:true, displayModeBar:false});
     // Collections vs Forecast
     const cfBUs = Object.keys(s.bu_collections_forecast).filter(k=>k!=='TOTAL');
@@ -1250,7 +1250,7 @@ async function loadCashflowData() {
       margin:{t:50,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:11,color:'#94a3b8'}, barmode:'group', height:280,
       legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:11,color:'#94a3b8'}},
-      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.03)'}
+      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'transparent'}
     }, {responsive:true, displayModeBar:false});
     // Spending vs Forecast
     const cfDepts = Object.keys(s.dept_spending_forecast).filter(k=>k!=='TOTAL');
@@ -1263,7 +1263,7 @@ async function loadCashflowData() {
       margin:{t:50,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{size:11,color:'#94a3b8'}, barmode:'group', height:280,
       legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:11,color:'#94a3b8'}},
-      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.03)'}
+      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'transparent'}
     }, {responsive:true, displayModeBar:false});
     // Insights
     const collVar = s.total_forecast_coll ? ((s.total_collections - s.total_forecast_coll)/s.total_forecast_coll*100) : 0;
@@ -1731,7 +1731,7 @@ async function loadPnlData() {
     {type:'scatter', mode:'lines+markers', name:'Actual Margin', x:pnlMonths, y:gpMarginAct, line:{color:'#86efac', width:3}, marker:{size:8, color:'#86efac'}},
     {type:'scatter', mode:'lines+markers', name:'Forecast Margin', x:pnlMonths, y:gpMarginFct, line:{color:'#94a3b8', width:3, dash:'dot'}, marker:{size:8, color:'#94a3b8'}}
   ], {margin:{t:15,b:35,l:50,r:15}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
-      yaxis:{ticksuffix:'%', gridcolor:'rgba(0,0,0,0.03)', rangemode:'tozero'}, height:260,
+      yaxis:{ticksuffix:'%', gridcolor:'transparent', rangemode:'tozero'}, height:260,
       hovermode:'x unified', legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#94a3b8'}}},
     {responsive:true, displayModeBar:false});
 
@@ -1753,7 +1753,7 @@ async function loadPnlData() {
   ], {margin:{t:15,b:25,l:160,r:180}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
       barmode:'group', bargap:0.25, bargroupgap:0.1, height:Math.max(280, depts.length*45), hovermode:'y unified',
       legend:{orientation:'h',y:1.05,x:.5,xanchor:'center',font:{size:11,color:'#94a3b8'}},
-      xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.03)',automargin:true}}, {responsive:true, displayModeBar:false});
+      xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true}}, {responsive:true, displayModeBar:false});
   document.getElementById('pnlDeptChart').on('plotly_click', function(data) {
     if (!_editMode) return;
     const pt = data.points[0];
@@ -1787,7 +1787,7 @@ async function loadPnlData() {
   ], {margin:{t:55,b:70,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
       autosize:true, height:420, hovermode:'x unified',
       legend:{orientation:'h',y:1.08,x:.5,xanchor:'center',font:{size:11,color:'#94a3b8'}},
-      yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.03)',automargin:true}}, {responsive:true, displayModeBar:false, cliponaxis:false});
+      yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true}}, {responsive:true, displayModeBar:false, cliponaxis:false});
 
   // 7. P&L Summary Table
   const pnlLines = [
@@ -1829,7 +1829,7 @@ function buildGroupedBar(divId, labels, series, title) {
     margin:{t:50,b:35,l:55,r:15}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
     font:{color:'#94a3b8',size:11}, barmode:'group', height:280, hovermode:'x unified',
     legend:{orientation:'h',y:1.12,x:.5,xanchor:'center',font:{size:11,color:'#94a3b8'}},
-    yaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.03)',automargin:true}
+    yaxis:{ticksuffix:' '+c.symbol,gridcolor:'transparent',automargin:true}
   }, {responsive:true, displayModeBar:false});
 }
 
@@ -1877,13 +1877,13 @@ async function loadSalesData() {
   ], {margin:{t:45,b:40,l:60,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
       barmode:'group', height:300, hovermode:'x unified',
       legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#94a3b8'}},
-      yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.03)'}}, {responsive:true, displayModeBar:false});
+      yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent'}}, {responsive:true, displayModeBar:false});
 
   // 3. Quantity Sold
   const qtyV = months.map((_,i)=>M[i].qty);
   Plotly.newPlot('salesQtyChart', [{type:'bar', x:months, y:qtyV, marker:{color:'#c4b5fd',opacity:0.85}, text:qtyV.map(v=>v.toLocaleString()), textposition:'outside', textfont:{size:11,color:'#475569',family:'Inter'}, cliponaxis:false}],
     {margin:{t:45,b:40,l:60,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
-     yaxis:{rangemode:'tozero',gridcolor:'rgba(0,0,0,0.03)'}, height:320, hovermode:'x unified', showlegend:false},
+     yaxis:{rangemode:'tozero',gridcolor:'transparent'}, height:320, hovermode:'x unified', showlegend:false},
     {responsive:true, displayModeBar:false});
 
   // 4. Sales by BU (pie)
@@ -1905,7 +1905,7 @@ async function loadSalesData() {
     text:tc.map(x=>salesFmtShort(x.sales*cr.rate)), textposition:'outside', textfont:{size:11,color:'#475569',family:'Inter'}, cliponaxis:false}],
     {margin:{t:10,b:20,l:120,r:160}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
      height:Math.max(240, tc.length*45), hovermode:'y unified', showlegend:false,
-     xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.03)'}}, {responsive:true, displayModeBar:false});
+     xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent'}}, {responsive:true, displayModeBar:false});
 
   // 6. Top Types
   const tt = d.top_types;
@@ -1913,7 +1913,7 @@ async function loadSalesData() {
     marker:{color:'#a78bfa',opacity:0.9}, text:tt.map(x=>salesFmtShort(x.sales*cr.rate)), textposition:'outside', textfont:{size:11,color:'#475569',family:'Inter'}, cliponaxis:false}],
     {margin:{t:10,b:20,l:120,r:160}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
      height:Math.max(240, tt.length*45), hovermode:'y unified', showlegend:false,
-     xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.03)'}}, {responsive:true, displayModeBar:false});
+     xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent'}}, {responsive:true, displayModeBar:false});
 
   // 7. Top Fabrics
   const tf = d.top_fabrics;
@@ -1921,7 +1921,7 @@ async function loadSalesData() {
     marker:{color:'#93c5fd',opacity:0.9}, text:tf.map(x=>salesFmtShort(x.sales*cr.rate)), textposition:'outside', textfont:{size:11,color:'#475569',family:'Inter'}, cliponaxis:false}],
     {margin:{t:10,b:20,l:120,r:160}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
      height:Math.max(240, tf.length*45), hovermode:'y unified', showlegend:false,
-     xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.03)'}}, {responsive:true, displayModeBar:false});
+     xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent'}}, {responsive:true, displayModeBar:false});
 
   // 8. Net Sales Conversion Rate %
   const convAct = sf.monthly.map(m=>m.gross_sales.actual > 0 ? ((m.net_sales.actual / m.gross_sales.actual) * 100) : 0);
@@ -1930,7 +1930,7 @@ async function loadSalesData() {
     {type:'scatter', mode:'lines+markers', name:'Actual', x:months, y:convAct, line:{color:'#7c3aed', width:3}, marker:{size:10, color:'#7c3aed', symbol:'circle'}, fill:'tozeroy', fillcolor:'rgba(124,58,237,0.08)'},
     {type:'scatter', mode:'lines+markers', name:'Budget', x:months, y:convFct, line:{color:'#94a3b8', width:3, dash:'dot'}, marker:{size:10, color:'#94a3b8', symbol:'diamond'}}
   ], {margin:{t:20,b:40,l:55,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
-      yaxis:{ticksuffix:'%', gridcolor:'rgba(0,0,0,0.03)', rangemode:'tozero'}, height:320,
+      yaxis:{ticksuffix:'%', gridcolor:'transparent', rangemode:'tozero'}, height:320,
       hovermode:'x unified', legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#64748b'}}},
     {responsive:true, displayModeBar:false});
   setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
@@ -1988,7 +1988,7 @@ async function loadExpensesData() {
   ], {margin:{t:25,b:30,l:170,r:180}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
       barmode:'group', bargap:0.25, bargroupgap:0.1, height:Math.max(280, depts.length*45), hovermode:'y unified',
       legend:{orientation:'h',y:1.08,x:.5,xanchor:'center',font:{size:11,color:'#94a3b8'}},
-      xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.03)',automargin:true}}, {responsive:true, displayModeBar:false});
+      xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true}}, {responsive:true, displayModeBar:false});
   document.getElementById('expDeptChart').on('plotly_click', function(data) {
     if (!_editMode) return;
     const pt = data.points[0];
@@ -2006,7 +2006,7 @@ async function loadExpensesData() {
   Plotly.newPlot('expVarChart', [{type:'bar', x:months, y:varVals, marker:{color:varColors},
     text:varVals.map(v=>(v<=0?'':'+')+expFmtShort(v)), textposition:'outside', textfont:{size:11,color:'#64748b',family:'Inter'}, cliponaxis:false}],
     {margin:{t:45,b:40,l:60,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
-     yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.03)'}, height:300, hovermode:'x unified', showlegend:false},
+     yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent'}, height:300, hovermode:'x unified', showlegend:false},
     {responsive:true, displayModeBar:false});
 
   // 4. Expense Distribution Pie
@@ -2030,7 +2030,7 @@ async function loadExpensesData() {
   }));
   Plotly.newPlot('expTrendChart', trendTraces,
     {margin:{t:45,b:40,l:60,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
-     yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.03)'}, height:300, hovermode:'x unified',
+     yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent'}, height:300, hovermode:'x unified',
      legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#94a3b8'}}},
     {responsive:true, displayModeBar:false});
 
