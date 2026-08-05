@@ -1838,39 +1838,37 @@ function salesFmt(v) { const c=getCurrency(); const n=Math.abs(v);
 function salesFmtShort(v) { return salesFmt(v); }
 
 async function loadSalesData() {
-  const [d, sf] = await Promise.all([
-    authFetch('/api/data').then(r=>r.json()),
-    authFetch('/api/sales_forecast').then(r=>r.json())
-  ]);
-  const T = d.totals;
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const M = d.months;
-  const actMonths = months.slice(0,6);
+  const sf = await authFetch('/api/sales_forecast').then(r=>r.json());
+  const d = await authFetch('/api/data').then(r=>r.json());
+  const T_gs = sf.ytd.gross_sales.actual;
+  const T_ret = sf.ytd.returns.actual;
+  const T_disc = sf.ytd.discounts.actual;
+  const T_ns = sf.ytd.net_sales.actual;
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul'];
   const cr = getCurrency();
 
-  // KPI cards
-  const nsPct = T.gs > 0 ? ((T.ns / T.gs) * 100).toFixed(1) : '0';
+  const nsPct = T_gs > 0 ? ((T_ns / T_gs) * 100).toFixed(1) : '0';
   document.getElementById('salesKpiGrid').innerHTML =
-    '<div class="kpi-card kpi-gs"><div class="kpi-icon"><i class="fas fa-chart-line"></i></div><div class="kpi-label">Gross Sales</div><div class="kpi-value">'+salesFmt(T.gs*cr.rate)+'</div><div class="kpi-sub">Budget: '+salesFmt(sf.ytd.gross_sales.forecast*cr.rate)+'</div></div>' +
-    '<div class="kpi-card kpi-ns"><div class="kpi-icon"><i class="fas fa-shopping-cart"></i></div><div class="kpi-label">Net Sales</div><div class="kpi-value">'+salesFmt(T.ns*cr.rate)+'</div><div class="kpi-sub">'+nsPct+'% of Gross</div></div>' +
-    '<div class="kpi-card kpi-cogs"><div class="kpi-icon"><i class="fas fa-undo"></i></div><div class="kpi-label">Returns</div><div class="kpi-value" style="color:var(--red)">'+salesFmt(T.ret*cr.rate)+'</div><div class="kpi-sub">'+(T.gs>0?((T.ret/T.gs)*100).toFixed(2):'0')+'% of Sales</div></div>' +
-    '<div class="kpi-card kpi-gp"><div class="kpi-icon"><i class="fas fa-percent"></i></div><div class="kpi-label">Discounts</div><div class="kpi-value" style="color:var(--red)">'+salesFmt(T.disc*cr.rate)+'</div><div class="kpi-sub">'+(T.gs>0?((T.disc/T.gs)*100).toFixed(2):'0')+'% of Sales</div></div>' +
+    '<div class="kpi-card kpi-gs"><div class="kpi-icon"><i class="fas fa-chart-line"></i></div><div class="kpi-label">Gross Sales</div><div class="kpi-value">'+salesFmt(T_gs*cr.rate)+'</div><div class="kpi-sub">Budget: '+salesFmt(sf.ytd.gross_sales.forecast*cr.rate)+'</div></div>' +
+    '<div class="kpi-card kpi-ns"><div class="kpi-icon"><i class="fas fa-shopping-cart"></i></div><div class="kpi-label">Net Sales</div><div class="kpi-value">'+salesFmt(T_ns*cr.rate)+'</div><div class="kpi-sub">'+nsPct+'% of Gross</div></div>' +
+    '<div class="kpi-card kpi-cogs"><div class="kpi-icon"><i class="fas fa-undo"></i></div><div class="kpi-label">Returns</div><div class="kpi-value" style="color:var(--red)">'+salesFmt(T_ret*cr.rate)+'</div><div class="kpi-sub">'+(T_gs>0?((T_ret/T_gs)*100).toFixed(2):'0')+'% of Sales</div></div>' +
+    '<div class="kpi-card kpi-gp"><div class="kpi-icon"><i class="fas fa-percent"></i></div><div class="kpi-label">Discounts</div><div class="kpi-value" style="color:var(--red)">'+salesFmt(T_disc*cr.rate)+'</div><div class="kpi-sub">'+(T_gs>0?((T_disc/T_gs)*100).toFixed(2):'0')+'% of Sales</div></div>' +
     '<div class="kpi-card kpi-ni"><div class="kpi-icon"><i class="fas fa-box"></i></div><div class="kpi-label">Qty Sold</div><div class="kpi-value">'+d.months.slice(0,7).reduce((s,m)=>s+m.qty,0).toLocaleString()+'</div><div class="kpi-sub">Jan-Jul total</div></div>';
 
-  // 1. Gross Sales Actual vs Budget
-  const gsAct = actMonths.map((_,i)=>M[i].gs*cr.rate);
+  const gsAct = sf.monthly.map(m=>m.gross_sales.actual*cr.rate);
   const gsFct = sf.monthly.map(m=>m.gross_sales.forecast*cr.rate);
-  buildGroupedBar('salesGSChart', actMonths, [
+  buildGroupedBar('salesGSChart', months, [
     {name:'Actual', y:gsAct, color:'#5b21b6'},
     {name:'Budget', y:gsFct, color:'#94a3b8'}
   ]);
 
-  // 2. Returns & Discounts
-  const retVals = sf.monthly.map(m=>m.returns * cr.rate);
-  const discVals = sf.monthly.map(m=>m.discounts * cr.rate);
+  const retAct = sf.monthly.map(m=>m.returns.actual*cr.rate);
+  const retFct = sf.monthly.map(m=>m.returns.forecast*cr.rate);
+  const discAct = sf.monthly.map(m=>m.discounts.actual*cr.rate);
+  const discFct = sf.monthly.map(m=>m.discounts.forecast*cr.rate);
   Plotly.newPlot('salesDedChart', [
-    {type:'bar', name:'Returns', x:actMonths, y:retVals, marker:{color:'#fca5a5'}, text:retVals.map(v=>salesFmtShort(v)), textposition:'outside', textfont:{size:11,color:'#64748b',family:'Inter'}},
-    {type:'bar', name:'Discounts', x:actMonths, y:discVals, marker:{color:'#d8b4fe'}, text:discVals.map(v=>salesFmtShort(v)), textposition:'outside', textfont:{size:11,color:'#64748b',family:'Inter'}}
+    {type:'bar', name:'Returns Actual', x:months, y:retAct, marker:{color:'#fca5a5'}, text:retAct.map(v=>salesFmtShort(v)), textposition:'outside', textfont:{size:11,color:'#64748b',family:'Inter'}},
+    {type:'bar', name:'Discounts Actual', x:months, y:discAct, marker:{color:'#d8b4fe'}, text:discAct.map(v=>salesFmtShort(v)), textposition:'outside', textfont:{size:11,color:'#64748b',family:'Inter'}}
   ], {margin:{t:45,b:40,l:60,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
       barmode:'group', height:300, hovermode:'x unified',
       legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#94a3b8'}},
@@ -1921,11 +1919,11 @@ async function loadSalesData() {
      xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.03)'}}, {responsive:true, displayModeBar:false});
 
   // 8. Net Sales Conversion Rate %
-  const convAct = actMonths.map((_,i)=>M[i].gs > 0 ? ((M[i].ns / M[i].gs) * 100) : 0);
-  const convFct = sf.monthly.map(m=>m.gross_sales.forecast > 0 ? ((m.net_sales / m.gross_sales.forecast) * 100) : 0);
+  const convAct = sf.monthly.map(m=>m.gross_sales.actual > 0 ? ((m.net_sales.actual / m.gross_sales.actual) * 100) : 0);
+  const convFct = sf.monthly.map(m=>m.gross_sales.forecast > 0 ? ((m.net_sales.forecast / m.gross_sales.forecast) * 100) : 0);
   Plotly.newPlot('salesConversionChart', [
-    {type:'scatter', mode:'lines+markers', name:'Actual', x:actMonths, y:convAct, line:{color:'#86efac', width:3}, marker:{size:8, color:'#86efac'}},
-    {type:'scatter', mode:'lines+markers', name:'Budget', x:actMonths, y:convFct, line:{color:'#94a3b8', width:3, dash:'dot'}, marker:{size:8, color:'#94a3b8'}}
+    {type:'scatter', mode:'lines+markers', name:'Actual', x:months, y:convAct, line:{color:'#86efac', width:3}, marker:{size:8, color:'#86efac'}},
+    {type:'scatter', mode:'lines+markers', name:'Budget', x:months, y:convFct, line:{color:'#94a3b8', width:3, dash:'dot'}, marker:{size:8, color:'#94a3b8'}}
   ], {margin:{t:15,b:40,l:55,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
       yaxis:{ticksuffix:'%', gridcolor:'rgba(0,0,0,0.03)', rangemode:'tozero'}, height:300,
       hovermode:'x unified', legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#94a3b8'}}},
@@ -2279,21 +2277,28 @@ def get_sales_forecast():
     sections = {"ytd": 0, "jan": 18, "feb": 27, "mar": 36, "apr": 54, "may": 63, "jun": 72, "jul": 81}
     months_order = ["jan", "feb", "mar", "apr", "may", "jun", "jul"]
     a_val = lambda r, c: float(df.iloc[r, c+1]) if c+1 < df.shape[1] and pd.notna(df.iloc[r, c+1]) else 0
+    f_val = lambda r, c: float(df.iloc[r, c+2]) if c+2 < df.shape[1] and pd.notna(df.iloc[r, c+2]) else 0
+    ret_val = lambda r, c: float(df.iloc[r, c+4]) if c+4 < df.shape[1] and pd.notna(df.iloc[r, c+4]) else 0
+    disc_val = lambda r, c: float(df.iloc[r, c+5]) if c+5 < df.shape[1] and pd.notna(df.iloc[r, c+5]) else 0
     ns_val = lambda r, c: float(df.iloc[r, c+6]) if c+6 < df.shape[1] and pd.notna(df.iloc[r, c+6]) else 0
     rev_data = _read_rev_forecast()
     ytd_col = sections["ytd"]
     ytd = {
         "gross_sales": {"actual": a_val(6, ytd_col), "forecast": rev_data["yearly_rev"] / 2},
-        "returns": 0, "discounts": 0, "net_sales": ns_val(6, ytd_col),
+        "returns": {"actual": ret_val(6, ytd_col), "forecast": 0},
+        "discounts": {"actual": disc_val(6, ytd_col), "forecast": 0},
+        "net_sales": {"actual": ns_val(6, ytd_col), "forecast": 0},
     }
     monthly = []
     for i, m in enumerate(months_order):
         col = sections[m]
         gs_a = a_val(6, col)
         gs_f = rev_data["monthly"][i]["gross_sales"]["forecast"]
+        ret_a = ret_val(6, col)
+        disc_a = disc_val(6, col)
         ns_a = ns_val(6, col)
         ns_f = rev_data["monthly"][i]["net_sales"]
-        monthly.append({"month": months_order.index(m)+1, "gross_sales": {"actual": gs_a, "forecast": gs_f}, "returns": 0, "discounts": 0, "net_sales": ns_a, "net_sales_forecast": ns_f})
+        monthly.append({"month": months_order.index(m)+1, "gross_sales": {"actual": gs_a, "forecast": gs_f}, "returns": {"actual": ret_a, "forecast": 0}, "discounts": {"actual": disc_a, "forecast": 0}, "net_sales": {"actual": ns_a, "forecast": ns_f}})
     return {"ytd": ytd, "monthly": monthly}
 
 def get_sales_cached():
