@@ -1107,8 +1107,11 @@ async function uploadExcel(input) {
 }
 
 async function refreshData() {
-  await authFetch('/api/refresh');
-  loadData();
+  var btn = document.querySelector('.btn-outline-light');
+  if (btn) btn.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> Refreshing...';
+  try { await authFetch('/api/refresh'); } catch(e) {}
+  _refreshCurrentTab();
+  if (btn) setTimeout(function(){ btn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh'; }, 1000);
 }
 
 // ---- Blur Toggle ----
