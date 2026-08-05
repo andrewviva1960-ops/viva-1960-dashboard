@@ -2238,27 +2238,24 @@ def get_pnl_forecast():
     sections = {"ytd": 0, "q1": 9, "jan": 18, "feb": 27, "mar": 36, "q2": 45, "apr": 54, "may": 63, "jun": 72, "jul": 81}
     months_order = ["jan", "feb", "mar", "apr", "may", "jun", "jul"]
     a_val = lambda r, c: float(df.iloc[r, c+1]) if c+1 < df.shape[1] and pd.notna(df.iloc[r, c+1]) else 0
-    f_val = lambda r, c: float(df.iloc[r, c+2]) if c+2 < df.shape[1] and pd.notna(df.iloc[r, c+2]) else 0
+    rev_data = _read_rev_forecast()
+    exp_data = _read_exp_forecast()
     ytd_col = sections["ytd"]
-    ns_a = a_val(45, ytd_col); ns_f = f_val(45, ytd_col)
-    cogs_a = a_val(46, ytd_col); cogs_f = f_val(46, ytd_col)
-    exp_a = a_val(40, ytd_col); exp_f = f_val(40, ytd_col)
-    gp_a = ns_a - abs(cogs_a); gp_f = ns_f - abs(cogs_f)
-    ni_a = gp_a - abs(exp_a); ni_f = gp_f - abs(exp_f)
+    total_exp_ytd = sum(exp_data["ytd_totals"].values())
     ytd = {
-        "net_sales": {"actual": ns_a, "forecast": ns_f},
-        "cogs": {"actual": cogs_a, "forecast": cogs_f},
-        "gross_profit": {"actual": gp_a, "forecast": gp_f},
-        "expenses": {"actual": exp_a, "forecast": exp_f},
-        "net_income": {"actual": ni_a, "forecast": ni_f},
+        "net_sales": {"actual": a_val(45, ytd_col), "forecast": rev_data["yearly_rev"] / 2},
+        "cogs": {"actual": a_val(46, ytd_col), "forecast": 0},
+        "expenses": {"actual": a_val(40, ytd_col), "forecast": total_exp_ytd / 2},
     }
+    ytd["gross_profit"] = {"actual": ytd["net_sales"]["actual"] - abs(ytd["cogs"]["actual"]), "forecast": ytd["net_sales"]["forecast"]}
+    ytd["net_income"] = {"actual": ytd["gross_profit"]["actual"] - abs(ytd["expenses"]["actual"]), "forecast": ytd["gross_profit"]["forecast"] - abs(ytd["expenses"]["forecast"])}
     monthly = []
     for i, m in enumerate(months_order):
         col = sections[m]
-        ns_a = a_val(45, col); ns_f = f_val(45, col)
-        cogs_a = a_val(46, col); cogs_f = f_val(46, col)
-        exp_a = a_val(40, col); exp_f = f_val(40, col)
-        gp_a = ns_a - abs(cogs_a); gp_f = ns_f - abs(cogs_f)
+        ns_a = a_val(45, col); ns_f = rev_data["monthly"][i]["net_sales"]
+        cogs_a = a_val(46, col); cogs_f = 0
+        exp_a = a_val(40, col); exp_f = sum(exp_data["monthly"][i].values()) if i < len(exp_data["monthly"]) else 0
+        gp_a = ns_a - abs(cogs_a); gp_f = ns_f
         ni_a = gp_a - abs(exp_a); ni_f = gp_f - abs(exp_f)
         monthly.append({"month": i+1, "net_sales": {"actual": ns_a, "forecast": ns_f}, "cogs": {"actual": cogs_a, "forecast": cogs_f}, "gross_profit": {"actual": gp_a, "forecast": gp_f}, "expenses": {"actual": exp_a, "forecast": exp_f}, "net_income": {"actual": ni_a, "forecast": ni_f}})
     dept_names = ["G&A", "Marketing", "Financing Expenses", "Sales Export", "Sales Stores Expenses", "Sales B2B", "R&D"]
@@ -2266,11 +2263,11 @@ def get_pnl_forecast():
     for i, d in enumerate(dept_names):
         r = 33 + i
         actual = a_val(r, ytd_col)
-        forecast = f_val(r, ytd_col)
+        forecast = exp_data["ytd_totals"].get(d, 0)
         monthly_dept = []
         for m_idx in range(len(months_order)):
             ma = a_val(r, sections[months_order[m_idx]])
-            mf = f_val(r, sections[months_order[m_idx]])
+            mf = exp_data["monthly"][m_idx].get(d, 0) if m_idx < len(exp_data["monthly"]) else 0
             monthly_dept.append({"actual": ma, "forecast": mf})
         dept_expenses[d] = {"actual": actual, "forecast": forecast, "monthly": monthly_dept}
     return {"ytd": ytd, "monthly": monthly, "dept_expenses": dept_expenses}
@@ -2282,19 +2279,18 @@ def get_sales_forecast():
     sections = {"ytd": 0, "jan": 18, "feb": 27, "mar": 36, "apr": 54, "may": 63, "jun": 72, "jul": 81}
     months_order = ["jan", "feb", "mar", "apr", "may", "jun", "jul"]
     a_val = lambda r, c: float(df.iloc[r, c+1]) if c+1 < df.shape[1] and pd.notna(df.iloc[r, c+1]) else 0
-    f_val = lambda r, c: float(df.iloc[r, c+2]) if c+2 < df.shape[1] and pd.notna(df.iloc[r, c+2]) else 0
-    ns_val = lambda r, c: float(df.iloc[r, c+6]) if c+6 < df.shape[1] and pd.notna(df.iloc[r, c+6]) else 0
+    rev_data = _read_rev_forecast()
     ytd_col = sections["ytd"]
     ytd = {
-        "gross_sales": {"actual": a_val(6, ytd_col), "forecast": f_val(6, ytd_col)},
-        "returns": 0, "discounts": 0, "net_sales": ns_val(6, ytd_col),
+        "gross_sales": {"actual": a_val(6, ytd_col), "forecast": rev_data["yearly_rev"] / 2},
+        "returns": 0, "discounts": 0, "net_sales": a_val(6, ytd_col + 6),
     }
     monthly = []
     for i, m in enumerate(months_order):
         col = sections[m]
         gs_a = a_val(6, col)
-        gs_f = f_val(6, col)
-        ns = ns_val(6, col)
+        gs_f = rev_data["monthly"][i]["gross_sales"]["forecast"]
+        ns = rev_data["monthly"][i]["net_sales"]
         monthly.append({"month": months_order.index(m)+1, "gross_sales": {"actual": gs_a, "forecast": gs_f}, "returns": 0, "discounts": 0, "net_sales": ns})
     return {"ytd": ytd, "monthly": monthly}
 
