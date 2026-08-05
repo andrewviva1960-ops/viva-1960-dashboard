@@ -2246,19 +2246,19 @@ def get_pnl_forecast():
     rev_ytd = sum(rev_data["monthly"][i]["gross_sales"]["forecast"] for i in range(min(num_months, len(rev_data["monthly"]))))
     ytd = {
         "net_sales": {"actual": gs_val(6, ytd_col), "forecast": rev_ytd},
-        "cogs": {"actual": a_val(46, ytd_col), "forecast": f_val(46, ytd_col)},
+        "cogs": {"actual": abs(a_val(46, ytd_col)), "forecast": abs(f_val(46, ytd_col))},
         "expenses": {"actual": a_val(40, ytd_col), "forecast": f_val(40, ytd_col)},
     }
-    ytd["gross_profit"] = {"actual": ytd["net_sales"]["actual"] - abs(ytd["cogs"]["actual"]), "forecast": ytd["net_sales"]["forecast"] - abs(ytd["cogs"]["forecast"])}
-    ytd["net_income"] = {"actual": ytd["gross_profit"]["actual"] - abs(ytd["expenses"]["actual"]), "forecast": ytd["gross_profit"]["forecast"] - abs(ytd["expenses"]["forecast"])}
+    ytd["gross_profit"] = {"actual": ytd["net_sales"]["actual"] - ytd["cogs"]["actual"], "forecast": ytd["net_sales"]["forecast"] - ytd["cogs"]["forecast"]}
+    ytd["net_income"] = {"actual": ytd["gross_profit"]["actual"] - ytd["expenses"]["actual"], "forecast": ytd["gross_profit"]["forecast"] - ytd["expenses"]["forecast"]}
     monthly = []
     for i, m in enumerate(months_order):
         col = sections[m]
         ns_a = gs_val(6, col); ns_f = rev_data["monthly"][i]["net_sales"]
-        cogs_a = a_val(46, col); cogs_f = f_val(46, col)
+        cogs_a = abs(a_val(46, col)); cogs_f = abs(f_val(46, col))
         exp_a = a_val(40, col); exp_f = sum(exp_data["monthly"][i].values()) if i < len(exp_data["monthly"]) else 0
-        gp_a = ns_a - abs(cogs_a); gp_f = ns_f - abs(cogs_f)
-        ni_a = gp_a - abs(exp_a); ni_f = gp_f - abs(exp_f)
+        gp_a = ns_a - cogs_a; gp_f = ns_f - cogs_f
+        ni_a = gp_a - exp_a; ni_f = gp_f - exp_f
         monthly.append({"month": i+1, "net_sales": {"actual": ns_a, "forecast": ns_f}, "cogs": {"actual": cogs_a, "forecast": cogs_f}, "gross_profit": {"actual": gp_a, "forecast": gp_f}, "expenses": {"actual": exp_a, "forecast": exp_f}, "net_income": {"actual": ni_a, "forecast": ni_f}})
     dept_names = ["G&A", "Marketing", "Financing Expenses", "Sales Export", "Sales Stores Expenses", "Sales B2B", "R&D"]
     dept_expenses = {}
