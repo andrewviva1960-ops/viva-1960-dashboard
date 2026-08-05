@@ -1044,9 +1044,9 @@ async function loadInvestmentData() {
     const perfActual = [inv.annual_return.actual, inv.return_after_loss.actual, inv.pv.actual];
     const perfForecast = [inv.annual_return.forecast, inv.return_after_loss.forecast, inv.pv.forecast];
     Plotly.newPlot('invPerfChart', [
-      {type:'bar', name:'2026 Actual', x:perfLabels, y:perfActual, marker:{color:'#d8b4fe'},
+      {type:'bar', name:'2026 Actual', x:perfLabels, y:perfActual, marker:{color:'#93c5fd',line:{width:0}},
        text:perfActual.map(v=>fmtM(v*c.rate)+' '+c.symbol), textposition:'outside', textfont:{size:11,color:'#64748b',family:'Inter'}, cliponaxis:false},
-      {type:'bar', name:'2026 Forecast', x:perfLabels, y:perfForecast, marker:{color:'#d8b4fe'},
+      {type:'bar', name:'2026 Forecast', x:perfLabels, y:perfForecast, marker:{color:'#a78bfa',line:{width:0}},
        text:perfForecast.map(v=>fmtM(v*c.rate)+' '+c.symbol), textposition:'outside', textfont:{size:11,color:'#64748b',family:'Inter'}, cliponaxis:false}
     ], {
       margin:{t:50,b:60,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
