@@ -2204,7 +2204,7 @@ def _read_rev_forecast():
     for m in range(12):
         total = 0
         for r in bu_rows:
-            val = float(df.iloc[r, 6+m]) if 6+m < df.shape[1] and pd.notna(df.iloc[r, 6+m]) else 0
+            val = float(df.iloc[r, 5+m]) if 5+m < df.shape[1] and pd.notna(df.iloc[r, 5+m]) else 0
             total += val
         monthly.append(total)
     grand_total = float(df.iloc[101, 17]) if pd.notna(df.iloc[101, 17]) else sum(monthly)
