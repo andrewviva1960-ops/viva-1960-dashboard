@@ -743,21 +743,21 @@ async function loadData() {
     '<table>' +
     '<tr class="section-divider"><td colspan="2"></td></tr>' +
     '<tr class="revenue-header"><td class="pnl-label section-title">Revenue</td><td></td></tr>' +
-    '<tr><td class="pnl-label">Gross Sales</td><td class="pos num">' + fmt(T.gs) + '</td></tr>' +
-    '<tr class="deduction"><td class="pnl-label sub">Less: Returns</td><td class="neg num">' + fmt(-T.ret) + '</td></tr>' +
-    '<tr class="deduction"><td class="pnl-label sub">Less: Discounts</td><td class="neg num">' + fmt(-T.disc) + '</td></tr>' +
+    '<tr><td class="pnl-label">Gross Sales</td><td class="pos num">' + fmtShort(T.gs) + '</td></tr>' +
+    '<tr class="deduction"><td class="pnl-label sub">Less: Returns</td><td class="neg num">' + fmtShort(-T.ret) + '</td></tr>' +
+    '<tr class="deduction"><td class="pnl-label sub">Less: Discounts</td><td class="neg num">' + fmtShort(-T.disc) + '</td></tr>' +
     '<tr class="section-row"><td colspan="2"></td></tr>' +
-    '<tr class="subtotal"><td class="pnl-label">Net Sales</td><td class="num">' + fmt(T.ns) + '</td></tr>' +
+    '<tr class="subtotal"><td class="pnl-label">Net Sales</td><td class="num">' + fmtShort(T.ns) + '</td></tr>' +
     '<tr class="section-divider"><td colspan="2"></td></tr>' +
     '<tr class="revenue-header"><td class="pnl-label section-title">Cost of Goods Sold</td><td></td></tr>' +
-    '<tr class="deduction"><td class="pnl-label sub">Less: COGS</td><td class="neg num">' + fmt(-T.cogs) + '</td></tr>' +
+    '<tr class="deduction"><td class="pnl-label sub">Less: COGS</td><td class="neg num">' + fmtShort(-T.cogs) + '</td></tr>' +
     '<tr class="section-row"><td colspan="2"></td></tr>' +
-    '<tr class="subtotal"><td class="pnl-label">Gross Profit</td><td class="pos num">' + fmt(T.gp) + '</td></tr>' +
+    '<tr class="subtotal"><td class="pnl-label">Gross Profit</td><td class="pos num">' + fmtShort(T.gp) + '</td></tr>' +
     '<tr class="section-divider"><td colspan="2"></td></tr>' +
     '<tr class="revenue-header"><td class="pnl-label section-title">Operating Expenses</td><td></td></tr>' +
-    '<tr class="deduction"><td class="pnl-label sub">Operating Expenses</td><td class="neg num">' + fmt(-T.exp) + '</td></tr>' +
+    '<tr class="deduction"><td class="pnl-label sub">Operating Expenses</td><td class="neg num">' + fmtShort(-T.exp) + '</td></tr>' +
     '<tr class="section-row"><td colspan="2"></td></tr>' +
-    '<tr class="grand-total"><td class="pnl-label">Net Income</td><td class="pos num">' + fmt(T.ni) + '</td></tr>' +
+    '<tr class="grand-total"><td class="pnl-label">Net Income</td><td class="pos num">' + fmtShort(T.ni) + '</td></tr>' +
     '</table>';
 
   renderTopChart(d, c);
