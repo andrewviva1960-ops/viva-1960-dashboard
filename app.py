@@ -1769,16 +1769,18 @@ async function loadPnlData() {
   const pnlLabels = ['Net Sales', 'COGS', 'Gross Profit', 'Expenses', 'Net Income'];
   const pnlActVals = [ytd.net_sales.actual, -ytd.cogs.actual, 0, -ytd.expenses.actual, 0].map(v=>v*cr.rate);
   const pnlFctVals = [ytd.net_sales.forecast, -ytd.cogs.forecast, 0, -ytd.expenses.forecast, 0].map(v=>v*cr.rate);
+  const pnlActText = [ytd.net_sales.actual, -ytd.cogs.actual, ytd.gross_profit.actual, -ytd.expenses.actual, ytd.net_income.actual].map(v=>pnlFmtShort(v*cr.rate));
+  const pnlFctText = [ytd.net_sales.forecast, -ytd.cogs.forecast, ytd.gross_profit.forecast, -ytd.expenses.forecast, ytd.net_income.forecast].map(v=>pnlFmtShort(v*cr.rate));
   const waterfallMeasures = ['relative', 'relative', 'total', 'relative', 'total'];
   Plotly.newPlot('pnlWaterfallChart', [
     {type:'waterfall', name:'Actual', x:pnlLabels, y:pnlActVals, measure:waterfallMeasures,
      decreasing:{marker:{color:'#fca5a5'}}, increasing:{marker:{color:'#86efac'}}, totals:{marker:{color:'#d8b4fe'}},
      connector:{line:{color:'rgba(255,255,255,0.2)', width:2}},
-     text:pnlActVals.map(v => pnlFmtShort(v)), textposition:'outside', textfont:{size:11,color:'#64748b',family:'Inter'}},
+     text:pnlActText, textposition:'outside', textfont:{size:11,color:'#64748b',family:'Inter'}},
     {type:'waterfall', name:'Forecast', x:pnlLabels, y:pnlFctVals, measure:waterfallMeasures,
      decreasing:{marker:{color:'#fca5a5'}}, increasing:{marker:{color:'#86efac'}}, totals:{marker:{color:'#c4b5fd'}},
      connector:{line:{color:'rgba(255,255,255,0.1)', width:1}},
-     text:pnlFctVals.map(v => pnlFmtShort(v)), textposition:'outside', textfont:{size:11,color:'#64748b',family:'Inter'},
+     text:pnlFctText, textposition:'outside', textfont:{size:11,color:'#64748b',family:'Inter'},
      opacity:0.7}
   ], {margin:{t:50,b:60,l:70,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
       height:360, hovermode:'x unified',
