@@ -1767,8 +1767,8 @@ async function loadPnlData() {
 
   // 6. P&L Waterfall
   const pnlLabels = ['Net Sales', 'COGS', 'Gross Profit', 'Expenses', 'Net Income'];
-  const pnlActVals = [ytd.net_sales.actual, -ytd.cogs.actual, ytd.gross_profit.actual, -ytd.expenses.actual, ytd.net_income.actual].map(v=>v*cr.rate);
-  const pnlFctVals = [ytd.net_sales.forecast, -ytd.cogs.forecast, ytd.gross_profit.forecast, -ytd.expenses.forecast, ytd.net_income.forecast].map(v=>v*cr.rate);
+  const pnlActVals = [ytd.net_sales.actual, -ytd.cogs.actual, 0, -ytd.expenses.actual, 0].map(v=>v*cr.rate);
+  const pnlFctVals = [ytd.net_sales.forecast, -ytd.cogs.forecast, 0, -ytd.expenses.forecast, 0].map(v=>v*cr.rate);
   const waterfallMeasures = ['relative', 'relative', 'total', 'relative', 'total'];
   Plotly.newPlot('pnlWaterfallChart', [
     {type:'waterfall', name:'Actual', x:pnlLabels, y:pnlActVals, measure:waterfallMeasures,
@@ -1780,10 +1780,10 @@ async function loadPnlData() {
      connector:{line:{color:'rgba(255,255,255,0.1)', width:1}},
      text:pnlFctVals.map(v => pnlFmtShort(v)), textposition:'outside', textfont:{size:11,color:'#64748b',family:'Inter'},
      opacity:0.7}
-  ], {margin:{t:50,b:40,l:55,r:15}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
-      height:280, hovermode:'x unified',
+  ], {margin:{t:50,b:60,l:70,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
+      height:360, hovermode:'x unified',
       legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#94a3b8'}},
-      yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.03)'}}, {responsive:true, displayModeBar:false});
+      yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.03)',automargin:true}}, {responsive:true, displayModeBar:false});
 
   // 7. P&L Summary Table
   const pnlLines = [
