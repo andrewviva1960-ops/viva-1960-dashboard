@@ -1656,7 +1656,7 @@ function switchTab(tab) {
 }
 
 // ---- P&L Actual vs Forecast ----
-const pnlMonths = ['Jan','Feb','Mar','Apr','May','Jun'];
+const pnlMonths = ['Jan','Feb','Mar','Apr','May','Jun','Jul'];
 
 function pnlFmt(v) { const c=getCurrency(); const n=Math.abs(v);
   if (n >= 1e6) return (n/1e6).toFixed(1)+'M '+c.symbol;
@@ -1855,7 +1855,7 @@ async function loadSalesData() {
     '<div class="kpi-card kpi-ns"><div class="kpi-icon"><i class="fas fa-shopping-cart"></i></div><div class="kpi-label">Net Sales</div><div class="kpi-value">'+salesFmt(T.ns*cr.rate)+'</div><div class="kpi-sub">'+nsPct+'% of Gross</div></div>' +
     '<div class="kpi-card kpi-cogs"><div class="kpi-icon"><i class="fas fa-undo"></i></div><div class="kpi-label">Returns</div><div class="kpi-value" style="color:var(--red)">'+salesFmt(T.ret*cr.rate)+'</div><div class="kpi-sub">'+(T.gs>0?((T.ret/T.gs)*100).toFixed(2):'0')+'% of Sales</div></div>' +
     '<div class="kpi-card kpi-gp"><div class="kpi-icon"><i class="fas fa-percent"></i></div><div class="kpi-label">Discounts</div><div class="kpi-value" style="color:var(--red)">'+salesFmt(T.disc*cr.rate)+'</div><div class="kpi-sub">'+(T.gs>0?((T.disc/T.gs)*100).toFixed(2):'0')+'% of Sales</div></div>' +
-    '<div class="kpi-card kpi-ni"><div class="kpi-icon"><i class="fas fa-box"></i></div><div class="kpi-label">Qty Sold</div><div class="kpi-value">'+d.months.slice(0,6).reduce((s,m)=>s+m.qty,0).toLocaleString()+'</div><div class="kpi-sub">Jan-Jun total</div></div>';
+    '<div class="kpi-card kpi-ni"><div class="kpi-icon"><i class="fas fa-box"></i></div><div class="kpi-label">Qty Sold</div><div class="kpi-value">'+d.months.slice(0,7).reduce((s,m)=>s+m.qty,0).toLocaleString()+'</div><div class="kpi-sub">Jan-Jul total</div></div>';
 
   // 1. Gross Sales Actual vs Budget
   const gsAct = actMonths.map((_,i)=>M[i].gs*cr.rate);
@@ -1944,7 +1944,7 @@ function expFmtShort(v) { return expFmt(v); }
 async function loadExpensesData() {
   const p = await authFetch('/api/pnl_forecast').then(r=>r.json());
   const d = await authFetch('/api/data').then(r=>r.json());
-  const months = ['Jan','Feb','Mar','Apr','May','Jun'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul'];
   const ytd = p.ytd.expenses;
   const depts = Object.keys(p.dept_expenses);
   const monthly = p.monthly;
@@ -1952,12 +1952,12 @@ async function loadExpensesData() {
 
   // KPI cards
   const topDept = depts.reduce((a,b)=>p.dept_expenses[a].actual > p.dept_expenses[b].actual ? a : b);
-  const avgMonthly = ytd.actual * cr.rate / 6;
+  const avgMonthly = ytd.actual * cr.rate / 7;
   const budgetUtil = ytd.forecast > 0 ? ((ytd.actual / ytd.forecast) * 100).toFixed(1) : 'N/A';
   document.getElementById('expKpiGrid').innerHTML =
     '<div class="kpi-card kpi-exp"><div class="kpi-icon"><i class="fas fa-receipt"></i></div><div class="kpi-label">Total Expenses</div><div class="kpi-value">'+expFmt(ytd.actual*cr.rate)+'</div><div class="kpi-sub">Budget: '+expFmt(ytd.forecast*cr.rate)+'</div></div>' +
     '<div class="kpi-card kpi-ni"><div class="kpi-icon"><i class="fas fa-building"></i></div><div class="kpi-label">Largest Dept</div><div class="kpi-value" style="font-size:15px">'+topDept+'</div><div class="kpi-sub">'+expFmt(p.dept_expenses[topDept].actual*cr.rate)+'</div></div>' +
-    '<div class="kpi-card kpi-gs"><div class="kpi-icon"><i class="fas fa-calendar"></i></div><div class="kpi-label">Monthly Avg</div><div class="kpi-value">'+expFmt(avgMonthly)+'</div><div class="kpi-sub">Jan-Jun average</div></div>' +
+    '<div class="kpi-card kpi-gs"><div class="kpi-icon"><i class="fas fa-calendar"></i></div><div class="kpi-label">Monthly Avg</div><div class="kpi-value">'+expFmt(avgMonthly)+'</div><div class="kpi-sub">Jan-Jul average</div></div>' +
     '<div class="kpi-card kpi-gp"><div class="kpi-icon"><i class="fas fa-percent"></i></div><div class="kpi-label">Budget Util.</div><div class="kpi-value" style="color:'+(ytd.actual<=ytd.forecast?'var(--green)':'var(--red)')+'">'+budgetUtil+'%</div><div class="kpi-sub">of budget used</div></div>';
 
   // 1. Monthly Expenses Actual vs Budget
@@ -2225,7 +2225,7 @@ def _read_exp_forecast():
             val = float(df.iloc[r, 2+m]) if 2+m < df.shape[1] and pd.notna(df.iloc[r, 2+m]) else 0
             total += val
         ytd_totals[d] = total
-    for m in range(6):
+    for m in range(7):
         month_data = {}
         for d, r in dept_rows.items():
             val = float(df.iloc[r, 2+m]) if 2+m < df.shape[1] and pd.notna(df.iloc[r, 2+m]) else 0
@@ -2235,8 +2235,8 @@ def _read_exp_forecast():
 
 def get_pnl_forecast():
     df = pd.read_excel(_EXCEL_PATH, sheet_name="PNL Dashboard ", header=None)
-    sections = {"ytd": 0, "q1": 9, "jan": 18, "feb": 27, "mar": 36, "q2": 45, "apr": 54, "may": 63, "jun": 72}
-    months_order = ["jan", "feb", "mar", "apr", "may", "jun"]
+    sections = {"ytd": 0, "q1": 9, "jan": 18, "feb": 27, "mar": 36, "q2": 45, "apr": 54, "may": 63, "jun": 72, "jul": 81}
+    months_order = ["jan", "feb", "mar", "apr", "may", "jun", "jul"]
     a_val = lambda r, c: float(df.iloc[r, c+1]) if c+1 < df.shape[1] and pd.notna(df.iloc[r, c+1]) else 0
     rev_data = _read_rev_forecast()
     exp_data = _read_exp_forecast()
@@ -2254,7 +2254,7 @@ def get_pnl_forecast():
         col = sections[m]
         ns_a = a_val(45, col); ns_f = rev_data["monthly"][i]["net_sales"]
         cogs_a = a_val(46, col); cogs_f = 0
-        exp_a = a_val(40, col); exp_f = sum(exp_data["monthly"][i].values())
+        exp_a = a_val(40, col); exp_f = sum(exp_data["monthly"][i].values()) if i < len(exp_data["monthly"]) else 0
         gp_a = ns_a - abs(cogs_a); gp_f = ns_f
         ni_a = gp_a - abs(exp_a); ni_f = gp_f - abs(exp_f)
         monthly.append({"month": i+1, "net_sales": {"actual": ns_a, "forecast": ns_f}, "cogs": {"actual": cogs_a, "forecast": cogs_f}, "gross_profit": {"actual": gp_a, "forecast": gp_f}, "expenses": {"actual": exp_a, "forecast": exp_f}, "net_income": {"actual": ni_a, "forecast": ni_f}})
@@ -2265,9 +2265,9 @@ def get_pnl_forecast():
         actual = a_val(r, ytd_col)
         forecast = exp_data["ytd_totals"].get(d, 0)
         monthly_dept = []
-        for m_idx in range(6):
+        for m_idx in range(len(months_order)):
             ma = a_val(r, sections[months_order[m_idx]])
-            mf = exp_data["monthly"][m_idx].get(d, 0)
+            mf = exp_data["monthly"][m_idx].get(d, 0) if m_idx < len(exp_data["monthly"]) else 0
             monthly_dept.append({"actual": ma, "forecast": mf})
         dept_expenses[d] = {"actual": actual, "forecast": forecast, "monthly": monthly_dept}
     return {"ytd": ytd, "monthly": monthly, "dept_expenses": dept_expenses}
@@ -2276,8 +2276,8 @@ _sales_cache = {"data": None, "ts": 0}
 
 def get_sales_forecast():
     df = pd.read_excel(_EXCEL_PATH, sheet_name="PNL Dashboard ", header=None)
-    sections = {"ytd": 0, "jan": 18, "feb": 27, "mar": 36, "apr": 54, "may": 63, "jun": 72}
-    months_order = ["jan", "feb", "mar", "apr", "may", "jun"]
+    sections = {"ytd": 0, "jan": 18, "feb": 27, "mar": 36, "apr": 54, "may": 63, "jun": 72, "jul": 81}
+    months_order = ["jan", "feb", "mar", "apr", "may", "jun", "jul"]
     a_val = lambda r, c: float(df.iloc[r, c+1]) if c+1 < df.shape[1] and pd.notna(df.iloc[r, c+1]) else 0
     rev_data = _read_rev_forecast()
     ytd_col = sections["ytd"]
