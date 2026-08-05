@@ -278,7 +278,7 @@ body.edit-mode .edit-save-bar{display:flex}
         <option value="SAR">SAR — Saudi Riyal</option>
       </select>
     </div>
-    <button onclick="refreshData()" class="btn btn-sm btn-outline-light" style="font-size:12px;padding:3px 12px"><i class="fas fa-sync-alt"></i> Refresh</button>
+    <button id="refreshBtn" onclick="refreshData()" class="btn btn-sm btn-outline-light" style="font-size:12px;padding:3px 12px"><i class="fas fa-sync-alt"></i> Refresh</button>
     <button id="editToggle" onclick="toggleEditMode()" class="btn btn-sm btn-outline-light" style="font-size:12px;padding:3px 10px" title="Toggle edit mode"><i class="fas fa-pen"></i> Edit</button>
     <button id="blurToggle" onclick="toggleBlur()" class="btn btn-sm btn-outline-light" style="font-size:12px;padding:3px 10px" title="Toggle number visibility"><i class="fas fa-eye"></i></button>
   </div>
@@ -574,6 +574,10 @@ function authFetch(url, opts) {
   opts = opts || {};
   opts.headers = opts.headers || {};
   opts.headers['Authorization'] = AUTH;
+  opts.cache = 'no-store';
+  opts.headers['Cache-Control'] = 'no-cache';
+  if (url.indexOf('?') >= 0) url += '&_t=' + Date.now();
+  else url += '?_t=' + Date.now();
   return fetch(url, opts);
 }
 
@@ -1107,11 +1111,11 @@ async function uploadExcel(input) {
 }
 
 async function refreshData() {
-  var btn = document.querySelector('.btn-outline-light');
-  if (btn) btn.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> Refreshing...';
-  try { await authFetch('/api/refresh'); } catch(e) {}
+  var btn = document.getElementById('refreshBtn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i>'; }
+  try { await authFetch('/api/refresh?_=' + Date.now()); } catch(e) { console.error('refresh failed:', e); }
   _refreshCurrentTab();
-  if (btn) setTimeout(function(){ btn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh'; }, 1000);
+  if (btn) setTimeout(function(){ btn.disabled = false; btn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh'; }, 1500);
 }
 
 // ---- Blur Toggle ----
