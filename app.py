@@ -65,11 +65,27 @@ const _CALM = {
   txt:  '#94a3b8',
   txtDark: '#64748b'
 };
+Plotly.defaultConfig = Object.assign({}, Plotly.defaultConfig || {}, {
+  hoverlabel: {
+    bgcolor: '#ffffff',
+    bordercolor: '#e2e8f0',
+    font: { family: 'Inter, system-ui, sans-serif', size: 12, color: '#1e293b', weight: 600 },
+    align: 'left'
+  }
+});
+var _origPlotlyNewPlot = Plotly.newPlot;
+Plotly.newPlot = function(el, data, layout, config) {
+  layout = Object.assign({
+    hoverlabel:{bgcolor:'#ffffff',bordercolor:'#e2e8f0',font:{family:'Inter, system-ui, sans-serif',size:12,color:'#1e293b',weight:600},align:'left'}
+  }, layout || {});
+  return _origPlotlyNewPlot(el, data, layout, config);
+};
 function _calmLayout(extra) {
   return Object.assign({
     autosize:true,
     paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
     font:{family:'Inter, system-ui, sans-serif',size:12,color:_CALM.txtDark},
+    hoverlabel:{bgcolor:'#ffffff',bordercolor:'#e2e8f0',font:{family:'Inter, system-ui, sans-serif',size:12,color:'#1e293b',weight:600},align:'left',namefont:{size:11,color:'#64748b'}},
     xaxis:{gridcolor:'transparent',linecolor:_CALM.zero,zerolinecolor:_CALM.zero,tickfont:{size:11,color:_CALM.txt}},
     yaxis:{gridcolor:'transparent',linecolor:_CALM.zero,zerolinecolor:_CALM.zero,tickfont:{size:11,color:_CALM.txt}},
     margin:{t:30,b:50,l:60,r:20}
@@ -253,6 +269,9 @@ body:not(.blur-mode) .main .plotly-num,
 body:not(.blur-mode) .main .js-plotly-plot svg text{filter:blur(0);transition:filter .3s}
 .footer{text-align:center;padding:16px 0;font-size:11px;color:var(--text-secondary);animation:fadeIn .6s ease both}
 .loading-shimmer{background:linear-gradient(90deg,rgba(110,158,110,0.05) 25%,rgba(110,158,110,0.12) 50%,rgba(110,158,110,0.05) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:var(--radius-md)}
+.hoverlayer .hovertext rect{fill:#ffffff!important;stroke:#e2e8f0!important;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.1))!important}
+.hoverlayer .hovertext text{fill:#1e293b!important;font-family:'Inter',system-ui,sans-serif!important;font-size:12px!important}
+.hoverlayer .hovertext .legendtext{fill:#64748b!important;font-size:11px!important}
 body.edit-mode .editable{cursor:pointer;border-radius:var(--radius-sm);transition:all .2s}
 body.edit-mode .editable:hover{background:rgba(110,158,110,0.08);outline:2px dashed rgba(110,158,110,0.3)}
 body.edit-mode .editable.editing{background:rgba(110,158,110,0.06);outline:2px solid var(--accent)}
