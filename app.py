@@ -49,7 +49,7 @@ Plotly.setPlotConfig({
   font:{family:'Inter, system-ui, sans-serif',size:12,color:'#64748b'},
   displayModeBar:false,
   responsive:true,
-  layout:{paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',margin:{t:30,b:50,l:60,r:20},
+  layout:{autosize:true,paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',margin:{t:30,b:50,l:60,r:20},
     xaxis:{gridcolor:'transparent',linecolor:'rgba(0,0,0,0.06)',zerolinecolor:'rgba(0,0,0,0.06)',tickfont:{size:11,color:'#94a3b8'}},
     yaxis:{gridcolor:'transparent',linecolor:'rgba(0,0,0,0.06)',zerolinecolor:'rgba(0,0,0,0.06)',tickfont:{size:11,color:'#94a3b8'}},
     font:{family:'Inter, system-ui, sans-serif',size:12,color:'#64748b'}
@@ -67,6 +67,7 @@ const _CALM = {
 };
 function _calmLayout(extra) {
   return Object.assign({
+    autosize:true,
     paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
     font:{family:'Inter, system-ui, sans-serif',size:12,color:_CALM.txtDark},
     xaxis:{gridcolor:'transparent',linecolor:_CALM.zero,zerolinecolor:_CALM.zero,tickfont:{size:11,color:_CALM.txt}},
@@ -1308,7 +1309,15 @@ function toggleSidebar() {
   document.body.classList.toggle('sidebar-hidden', _sidebarHidden);
   document.querySelector('.sidebar').classList.toggle('hidden', _sidebarHidden);
   localStorage.setItem('dashSidebarHidden', _sidebarHidden);
-  setTimeout(() => { document.querySelectorAll('.js-plotly-plot').forEach(el => Plotly.Plots.resize(el)); }, 350);
+  const mainEl = document.querySelector('.main');
+  function _doResize() {
+    document.querySelectorAll('.js-plotly-plot').forEach(el => {
+      Plotly.relayout(el, {autosize:true}).then(()=>Plotly.Plots.resize(el));
+    });
+  }
+  _doResize();
+  setTimeout(_doResize, 100);
+  setTimeout(_doResize, 350);
 }
 function toggleBlur() {
   _blurred = !_blurred;
