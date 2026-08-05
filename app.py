@@ -118,8 +118,13 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:linear-gr
 .header .brand{display:flex;align-items:center;gap:12px;width:var(--sidebar-width);font-size:16px;font-weight:700;letter-spacing:.3px;color:var(--text-primary)}
 .header .brand img{height:40px;width:auto;flex-shrink:0;transition:transform .3s}
 .header .brand img:hover{transform:scale(1.05)}
-.header .top-right{margin-left:auto;display:flex;align-items:center;gap:12px;font-size:12px;color:var(--text-secondary)}
+.header .top-right{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text-secondary)}
 .header .top-right .status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:4px;animation:pulse 2s infinite}
+.hdr-btn{background:rgba(110,158,110,0.08);border:1px solid rgba(110,158,110,0.2);color:var(--accent);cursor:pointer;padding:5px 12px;border-radius:8px;font-size:12px;font-weight:500;display:inline-flex;align-items:center;gap:6px;transition:all .2s ease;font-family:Inter,system-ui,sans-serif}
+.hdr-btn:hover{background:rgba(110,158,110,0.15);border-color:rgba(110,158,110,0.35);transform:translateY(-1px);box-shadow:0 2px 8px rgba(110,158,110,0.15)}
+.hdr-btn:active{transform:translateY(0)}
+.hdr-btn i{font-size:13px}
+.hdr-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 .header .currency-selector{display:flex;align-items:center;gap:6px;margin-left:14px;padding-left:14px;border-left:1px solid rgba(0,0,0,0.06)}
 .header .currency-selector label{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary)}
 .header .currency-selector select{background:#f8fafc;border:1px solid rgba(0,0,0,0.08);border-radius:var(--radius-sm);padding:4px 28px 4px 10px;color:#334155;font-size:12px;font-weight:500;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;transition:border-color .2s,box-shadow .2s}
@@ -278,9 +283,9 @@ body.edit-mode .edit-save-bar{display:flex}
         <option value="SAR">SAR — Saudi Riyal</option>
       </select>
     </div>
-    <button id="refreshBtn" onclick="refreshData()" class="btn btn-sm btn-outline-light" style="font-size:12px;padding:3px 12px"><i class="fas fa-sync-alt"></i> Refresh</button>
-    <button id="editToggle" onclick="toggleEditMode()" class="btn btn-sm btn-outline-light" style="font-size:12px;padding:3px 10px" title="Toggle edit mode"><i class="fas fa-pen"></i> Edit</button>
-    <button id="blurToggle" onclick="toggleBlur()" class="btn btn-sm btn-outline-light" style="font-size:12px;padding:3px 10px" title="Toggle number visibility"><i class="fas fa-eye"></i></button>
+    <button id="refreshBtn" onclick="refreshData()" class="hdr-btn"><i class="fas fa-sync-alt"></i> Refresh</button>
+    <button id="editToggle" onclick="toggleEditMode()" class="hdr-btn" title="Toggle edit mode"><i class="fas fa-pen"></i> Edit</button>
+    <button id="blurToggle" onclick="toggleBlur()" class="hdr-btn" title="Toggle number visibility"><i class="fas fa-eye"></i></button>
   </div>
 </div>
 
@@ -1145,6 +1150,7 @@ function toggleBlur() {
   document.body.classList.toggle('blur-mode', _blurred);
   localStorage.setItem('dashBlur', _blurred);
   document.querySelector('#blurToggle i').className = _blurred ? 'fas fa-eye-slash' : 'fas fa-eye';
+  document.getElementById('blurToggle').classList.toggle('active', _blurred);
   updatePlotlyBlur();
 }
 function updatePlotlyBlur() {
@@ -1203,8 +1209,7 @@ function loadOverrides() {
 function toggleEditMode() {
   _editMode = !_editMode;
   document.body.classList.toggle('edit-mode', _editMode);
-  document.getElementById('editToggle').style.background = _editMode ? '#6e9e6e' : '';
-  document.getElementById('editToggle').style.color = _editMode ? '#fff' : '';
+  document.getElementById('editToggle').classList.toggle('active', _editMode);
   if (_editMode) {
     markEditables();
     initChartResize();
