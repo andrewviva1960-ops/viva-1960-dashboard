@@ -382,8 +382,8 @@ body.edit-mode .edit-save-bar{display:flex}
     <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-chart-line" style="color:#a78bfa;margin-right:6px"></i>Gross Profit Margin % Trend</h5></div><div class="chart-body" id="pnlMarginChart"></div></div>
     <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-sitemap" style="color:#7c3aed;margin-right:6px"></i>Department Expenses — Actual vs Forecast</h5></div><div class="chart-body" id="pnlDeptChart"></div></div>
   </div>
-  <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-arrows-alt" style="color:#7c3aed;margin-right:6px"></i>P&amp;L Waterfall — YTD Actual vs Forecast</h5></div><div class="chart-body" id="pnlWaterfallChart"></div></div>
+    <div class="chart-grid">
+    <div class="chart-card full" style="overflow:visible"><div class="chart-header"><h5><i class="fas fa-arrows-alt" style="color:#7c3aed;margin-right:6px"></i>P&amp;L Waterfall — YTD Actual vs Forecast</h5></div><div class="chart-body" id="pnlWaterfallChart" style="min-height:440px;overflow:visible"></div></div>
   </div>
   <div class="chart-grid">
     <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-file-invoice-dollar" style="color:#334155;margin-right:6px"></i>P&amp;L Summary — Actual vs Forecast</h5></div><div class="pnl-body" id="pnlSummaryTable"></div></div>
@@ -1776,16 +1776,18 @@ async function loadPnlData() {
     {type:'waterfall', name:'Actual', x:pnlLabels, y:pnlActVals, measure:waterfallMeasures,
      decreasing:{marker:{color:'#fca5a5'}}, increasing:{marker:{color:'#86efac'}}, totals:{marker:{color:'#d8b4fe'}},
      connector:{line:{color:'rgba(255,255,255,0.2)', width:2}},
-     text:pnlActText, textposition:'outside', textfont:{size:11,color:'#64748b',family:'Inter'}},
+     cliponaxis:false,
+     text:pnlActText, textposition:'outside', textfont:{size:10,color:'#475569',family:'Inter'}},
     {type:'waterfall', name:'Forecast', x:pnlLabels, y:pnlFctVals, measure:waterfallMeasures,
      decreasing:{marker:{color:'#fca5a5'}}, increasing:{marker:{color:'#86efac'}}, totals:{marker:{color:'#c4b5fd'}},
      connector:{line:{color:'rgba(255,255,255,0.1)', width:1}},
-     text:pnlFctText, textposition:'outside', textfont:{size:11,color:'#64748b',family:'Inter'},
+     cliponaxis:false,
+     text:pnlFctText, textposition:'outside', textfont:{size:10,color:'#475569',family:'Inter'},
      opacity:0.7}
-  ], {margin:{t:50,b:60,l:70,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
-      height:360, hovermode:'x unified',
-      legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#94a3b8'}},
-      yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.03)',automargin:true}}, {responsive:true, displayModeBar:false});
+  ], {margin:{t:55,b:70,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
+      autosize:true, height:420, hovermode:'x unified',
+      legend:{orientation:'h',y:1.08,x:.5,xanchor:'center',font:{size:11,color:'#94a3b8'}},
+      yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.03)',automargin:true}}, {responsive:true, displayModeBar:false, cliponaxis:false});
 
   // 7. P&L Summary Table
   const pnlLines = [
