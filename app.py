@@ -1228,7 +1228,7 @@ async function loadCashflowData() {
       xaxis:{ticksuffix:' '+c.symbol,gridcolor:'rgba(0,0,0,0.03)'}
     }, {responsive:true, displayModeBar:false});
     // Top 10 spending categories bar
-    const catKeysBar = Object.keys(s.category_spending).sort((a,b)=>s.category_spending[b]-s.category_spending[a]);
+    const catKeysBar = Object.keys(s.category_spending).sort((a,b)=>s.category_spending[b]-s.category_spending[a]).slice(0,10);
     Plotly.newPlot('cfCatBarChart', [{
       type:'bar', x:catKeysBar, y:catKeysBar.map(k=>s.category_spending[k]*c.rate),
       marker:{color:'#d8b4fe'},
@@ -2694,9 +2694,9 @@ def api_cashflow():
             amt = float(dash.iloc[i, 1]) if pd.notna(dash.iloc[i, 1]) else 0
             ag = str(dash.iloc[i, 2]).strip() if pd.notna(dash.iloc[i, 2]) else ""
             if bu: aging[bu] = {"amount": amt, "aging": ag}
-        # Top Spending Categories (rows 53-57, col 1=Amount)
+        # Top Spending Categories (rows 53-62, col 1=Amount)
         cat_spend = {}
-        for i in range(53, 58):
+        for i in range(53, 63):
             name = str(dash.iloc[i, 0]).strip() if pd.notna(dash.iloc[i, 0]) else ""
             amt = float(dash.iloc[i, 1]) if pd.notna(dash.iloc[i, 1]) else 0
             if name: cat_spend[name] = amt
