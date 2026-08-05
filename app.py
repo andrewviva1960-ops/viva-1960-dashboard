@@ -1460,12 +1460,11 @@ loadOverrides();
     var el = document.getElementById('timestamp');
     if (el) {
       var now = new Date();
-      var h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
-      el.textContent = (h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+      el.textContent = now.toLocaleDateString() + ', ' + now.toLocaleTimeString();
     }
-    requestAnimationFrame(tick);
   }
   tick();
+  setInterval(tick, 1000);
 })();
 loadData();
 
