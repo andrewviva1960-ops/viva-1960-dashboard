@@ -1700,7 +1700,7 @@ async function loadPnlData() {
   const colAct = '#7c3aed';
   const colFct = '#94a3b8';
 
-  // 1. Net Sales chart
+  // 1. Net Sales chart - use Sales Summary actuals from PNL Dashboard
   const nsAct = monthly.map(m => m.net_sales.actual * cr.rate);
   const nsFct = monthly.map(m => m.net_sales.forecast * cr.rate);
   buildGroupedBar('pnlSalesChart', pnlMonths, [
@@ -2239,9 +2239,10 @@ def get_pnl_forecast():
     rev_data = _read_rev_forecast()
     exp_data = _read_exp_forecast()
     ytd_col = sections["ytd"]
+    gs_val = lambda r, c: float(df.iloc[r, c+1]) if c+1 < df.shape[1] and pd.notna(df.iloc[r, c+1]) else 0
     total_exp_ytd = sum(exp_data["ytd_totals"].values())
     ytd = {
-        "net_sales": {"actual": a_val(45, ytd_col), "forecast": rev_data["yearly_rev"] / 2},
+        "net_sales": {"actual": gs_val(6, ytd_col), "forecast": rev_data["yearly_rev"] / 2},
         "cogs": {"actual": a_val(46, ytd_col), "forecast": 0},
         "expenses": {"actual": a_val(40, ytd_col), "forecast": total_exp_ytd / 2},
     }
@@ -2250,7 +2251,7 @@ def get_pnl_forecast():
     monthly = []
     for i, m in enumerate(months_order):
         col = sections[m]
-        ns_a = a_val(45, col); ns_f = rev_data["monthly"][i]["net_sales"]
+        ns_a = gs_val(6, col); ns_f = rev_data["monthly"][i]["net_sales"]
         cogs_a = a_val(46, col); cogs_f = 0
         exp_a = a_val(40, col); exp_f = sum(exp_data["monthly"][i].values()) if i < len(exp_data["monthly"]) else 0
         gp_a = ns_a - abs(cogs_a); gp_f = ns_f
