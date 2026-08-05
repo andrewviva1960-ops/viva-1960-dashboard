@@ -2197,47 +2197,82 @@ def get_data(period="ytd", bu="all", month="all"):
 
 _pnl_cache = {"data": None, "ts": 0}
 
+def _read_rev_forecast():
+    df = pd.read_excel(_EXCEL_PATH, sheet_name="Revenue breakdown", header=None)
+    yearly_rev = float(df.iloc[415, 7]) if pd.notna(df.iloc[415, 7]) else 0
+    yearly_ns = float(df.iloc[423, 7]) if pd.notna(df.iloc[423, 7]) else 0
+    discount_pct = float(df.iloc[422, 7]) if pd.notna(df.iloc[422, 7]) else 0.07
+    monthly_rev = yearly_rev / 6
+    monthly_ns = yearly_ns / 6
+    monthly_ret = monthly_rev - monthly_ns
+    monthly_disc = monthly_ret * (discount_pct / 0.07) if discount_pct else 0
+    monthly_gs_fct = monthly_rev
+    monthly_gs_a = monthly_gs_fct * 0.87
+    monthly_ns_a = monthly_gs_a * (1 - discount_pct)
+    return {"yearly_rev": yearly_rev, "yearly_ns": yearly_ns, "discount_pct": discount_pct,
+            "monthly": [{"month": i+1,
+                         "gross_sales": {"actual": monthly_gs_a, "forecast": monthly_gs_fct},
+                         "returns": monthly_ret * 0.5, "discounts": monthly_disc * 0.5,
+                         "net_sales": monthly_ns} for i in range(6)]}
+
+def _read_exp_forecast():
+    df = pd.read_excel(_EXCEL_PATH, sheet_name="Expenses Raw Data 2026", header=1)
+    df.columns = ['desc','dept','cat','amount','date','month','quarter']
+    df['amount'] = pd.to_numeric(df['amount'], errors='coerce').fillna(0)
+    df['month'] = pd.to_numeric(df['month'], errors='coerce')
+    dept_map = {'G&A':'G&A','R&D':'R&D','Sales Stores':'Sales Stores Expenses',
+                'Sales B2B':'Sales B2B','Sales Export ':'Sales Export',
+                'Financing expenses':'Financing Expenses','Marketing':'Marketing'}
+    monthly = []
+    for m in range(1, 7):
+        month_data = {}
+        sub = df[df['month']==m]
+        for orig, mapped in dept_map.items():
+            val = float(sub[sub['dept']==orig]['amount'].sum()) if len(sub[sub['dept']==orig]) else 0
+            month_data[mapped] = val
+        monthly.append(month_data)
+    ytd_totals = {}
+    for d in dept_map.values():
+        ytd_totals[d] = sum(m.get(d, 0) for m in monthly)
+    return {"ytd_totals": ytd_totals, "monthly": monthly}
+
 def get_pnl_forecast():
     df = pd.read_excel(_EXCEL_PATH, sheet_name="PNL Dashboard ", header=None)
-    # Column offsets: YTD(0), Q1(9), Jan(18), Feb(27), Mar(36), Q2(45), Apr(54), May(63), Jun(72)
     sections = {"ytd": 0, "q1": 9, "jan": 18, "feb": 27, "mar": 36, "q2": 45, "apr": 54, "may": 63, "jun": 72}
     months_order = ["jan", "feb", "mar", "apr", "may", "jun"]
     a_val = lambda r, c: float(df.iloc[r, c+1]) if c+1 < df.shape[1] and pd.notna(df.iloc[r, c+1]) else 0
     f_val = lambda r, c: float(df.iloc[r, c+2]) if c+2 < df.shape[1] and pd.notna(df.iloc[r, c+2]) else 0
-    # YTD totals (row 45=Net Sales, 46=COGS, 40=Expenses Total)
+    rev_data = _read_rev_forecast()
+    exp_data = _read_exp_forecast()
     ytd_col = sections["ytd"]
     ytd = {
-        "net_sales": {"actual": a_val(45, ytd_col), "forecast": f_val(45, ytd_col)},
+        "net_sales": {"actual": a_val(45, ytd_col), "forecast": rev_data["yearly_ns"]},
         "cogs": {"actual": a_val(46, ytd_col), "forecast": f_val(46, ytd_col)},
-        "expenses": {"actual": a_val(40, ytd_col), "forecast": f_val(40, ytd_col)},
+        "expenses": {"actual": a_val(40, ytd_col), "forecast": sum(exp_data["ytd_totals"].values())},
     }
     ytd["gross_profit"] = {"actual": ytd["net_sales"]["actual"] - abs(ytd["cogs"]["actual"]), "forecast": ytd["net_sales"]["forecast"] - abs(ytd["cogs"]["forecast"])}
     ytd["net_income"] = {"actual": ytd["gross_profit"]["actual"] - abs(ytd["expenses"]["actual"]), "forecast": ytd["gross_profit"]["forecast"] - abs(ytd["expenses"]["forecast"])}
-    # Monthly
     monthly = []
     for i, m in enumerate(months_order):
         col = sections[m]
-        ns_a = a_val(45, col); ns_f = f_val(45, col)
+        ns_a = a_val(45, col); ns_f = rev_data["monthly"][i]["net_sales"]
         cogs_a = a_val(46, col); cogs_f = f_val(46, col)
-        exp_a = a_val(40, col); exp_f = f_val(40, col)
+        exp_a = a_val(40, col); exp_f = sum(exp_data["monthly"][i].values())
         gp_a = ns_a - abs(cogs_a); gp_f = ns_f - abs(cogs_f)
         ni_a = gp_a - abs(exp_a); ni_f = gp_f - abs(exp_f)
         monthly.append({"month": i+1, "net_sales": {"actual": ns_a, "forecast": ns_f}, "cogs": {"actual": cogs_a, "forecast": cogs_f}, "gross_profit": {"actual": gp_a, "forecast": gp_f}, "expenses": {"actual": exp_a, "forecast": exp_f}, "net_income": {"actual": ni_a, "forecast": ni_f}})
-    # Dept expenses (rows 33-39)
     dept_names = ["G&A", "Marketing", "Financing Expenses", "Sales Export", "Sales Stores Expenses", "Sales B2B", "R&D"]
     dept_expenses = {}
-    ytd_col = sections["ytd"]
     for i, d in enumerate(dept_names):
         r = 33 + i
         actual = a_val(r, ytd_col)
-        forecast = f_val(r, ytd_col)
+        forecast = exp_data["ytd_totals"].get(d, 0)
         monthly_dept = []
-        for m in months_order:
-            col = sections[m]
-            ma = a_val(r, col); mf = f_val(r, col)
+        for m_idx in range(6):
+            ma = a_val(r, sections[months_order[m_idx]])
+            mf = exp_data["monthly"][m_idx].get(d, 0)
             monthly_dept.append({"actual": ma, "forecast": mf})
         dept_expenses[d] = {"actual": actual, "forecast": forecast, "monthly": monthly_dept}
-    # Profitability data (rows 53-59)
     return {"ytd": ytd, "monthly": monthly, "dept_expenses": dept_expenses}
 
 _sales_cache = {"data": None, "ts": 0}
@@ -2248,23 +2283,22 @@ def get_sales_forecast():
     months_order = ["jan", "feb", "mar", "apr", "may", "jun"]
     a_val = lambda r, c: float(df.iloc[r, c+1]) if c+1 < df.shape[1] and pd.notna(df.iloc[r, c+1]) else 0
     f_val = lambda r, c: float(df.iloc[r, c+2]) if c+2 < df.shape[1] and pd.notna(df.iloc[r, c+2]) else 0
-    # Row 6 = Sales TOTAL: label, G.SalesA, G.SalesF, Variance, Return, Discount, NetSales, G.Prof%
+    rev_data = _read_rev_forecast()
     ytd_col = sections["ytd"]
     ytd = {
-        "gross_sales": {"actual": a_val(6, ytd_col), "forecast": f_val(6, ytd_col)},
+        "gross_sales": {"actual": a_val(6, ytd_col), "forecast": rev_data["yearly_rev"]},
         "returns": float(df.iloc[6, ytd_col+4]) if pd.notna(df.iloc[6, ytd_col+4]) else 0,
         "discounts": float(df.iloc[6, ytd_col+5]) if pd.notna(df.iloc[6, ytd_col+5]) else 0,
         "net_sales": float(df.iloc[6, ytd_col+6]) if pd.notna(df.iloc[6, ytd_col+6]) else 0,
     }
-    # Monthly
     monthly = []
-    for m in months_order:
+    for i, m in enumerate(months_order):
         col = sections[m]
         gs_a = a_val(6, col)
-        gs_f = f_val(6, col)
+        gs_f = rev_data["monthly"][i]["gross_sales"]["forecast"]
         ret = float(df.iloc[6, col+4]) if col+4 < df.shape[1] and pd.notna(df.iloc[6, col+4]) else 0
         disc = float(df.iloc[6, col+5]) if col+5 < df.shape[1] and pd.notna(df.iloc[6, col+5]) else 0
-        ns = float(df.iloc[6, col+6]) if col+6 < df.shape[1] and pd.notna(df.iloc[6, col+6]) else 0
+        ns = rev_data["monthly"][i]["net_sales"]
         monthly.append({"month": months_order.index(m)+1, "gross_sales": {"actual": gs_a, "forecast": gs_f}, "returns": ret, "discounts": disc, "net_sales": ns})
     return {"ytd": ytd, "monthly": monthly}
 
