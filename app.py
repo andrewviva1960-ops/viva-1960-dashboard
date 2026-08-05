@@ -1850,6 +1850,7 @@ async function loadSalesData() {
   const T_ns = sf.ytd.net_sales.actual;
   const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul'];
   const cr = getCurrency();
+  const M = d.months;
 
   const nsPct = T_gs > 0 ? ((T_ns / T_gs) * 100).toFixed(1) : '0';
   document.getElementById('salesKpiGrid').innerHTML =
@@ -1879,58 +1880,58 @@ async function loadSalesData() {
       yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.03)'}}, {responsive:true, displayModeBar:false});
 
   // 3. Quantity Sold
-  const qtyV = actMonths.map((_,i)=>M[i].qty);
-  Plotly.newPlot('salesQtyChart', [{type:'bar', x:actMonths, y:qtyV, marker:{color:'#c4b5fd'}, text:qtyV.map(v=>v.toLocaleString()), textposition:'outside', textfont:{size:11,color:'#64748b',family:'Inter'}, cliponaxis:false}],
+  const qtyV = months.map((_,i)=>M[i].qty);
+  Plotly.newPlot('salesQtyChart', [{type:'bar', x:months, y:qtyV, marker:{color:'#c4b5fd',opacity:0.85}, text:qtyV.map(v=>v.toLocaleString()), textposition:'outside', textfont:{size:11,color:'#475569',family:'Inter'}, cliponaxis:false}],
     {margin:{t:45,b:40,l:60,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
-     yaxis:{rangemode:'tozero',gridcolor:'rgba(0,0,0,0.03)'}, height:300, hovermode:'x unified', showlegend:false},
+     yaxis:{rangemode:'tozero',gridcolor:'rgba(0,0,0,0.03)'}, height:320, hovermode:'x unified', showlegend:false},
     {responsive:true, displayModeBar:false});
 
   // 4. Sales by BU (pie)
   const bu = d.business_units;
-  const buColors = ['#5b21b6','#5a8a5e','#6d28d9','#6d28d9'];
+  const buColors = ['#7c3aed','#5a8a5e','#a78bfa','#c4b5fd'];
   Plotly.newPlot('salesBUChart', [{
     type:'pie', labels:bu.map(x=>x.name), values:bu.map(x=>x.sales_pct),
-    text:bu.map(x=>x.sales_pct.toFixed(1)+'%'), textinfo:'label+percent', textfont:{size:11,color:'#64748b',family:'Inter'},
-    marker:{colors:buColors.slice(0,bu.length),line:{color:'#e5e7eb',width:2}},
-    hovertemplate:'%{label}<br>%{value:.1f}%<extra></extra>'}],
-    {margin:{t:5,b:5,l:5,r:5}, paper_bgcolor:'rgba(0,0,0,0)', height:280, showlegend:true,
-     legend:{orientation:'h',y:-0.08,font:{size:11,color:'#94a3b8'}}},
+    text:bu.map(x=>x.name+'<br>'+x.sales_pct.toFixed(1)+'%'), textinfo:'text', textfont:{size:12,color:'#475569',family:'Inter'},
+    marker:{colors:buColors.slice(0,bu.length),line:{color:'#fff',width:2}},
+    hole:0.4, hovertemplate:'%{label}<br>%{value:.1f}%<extra></extra>'}],
+    {margin:{t:10,b:10,l:10,r:10}, paper_bgcolor:'rgba(0,0,0,0)', height:300, showlegend:true,
+     legend:{orientation:'h',y:-0.05,font:{size:11,color:'#64748b'}}},
     {responsive:true, displayModeBar:false});
 
   // 5. Top Customers
   const tc = d.top_customers;
   Plotly.newPlot('salesTopChart', [{type:'bar', orientation:'h', x:tc.map(x=>x.sales*cr.rate), y:tc.map(x=>x.name),
-    marker:{color:['#7c3aed','#8b5cf6','#a78bfa','#c4b5fd','#ddd6fe']},
-    text:tc.map(x=>salesFmtShort(x.sales*cr.rate)), textposition:'outside', textfont:{size:11,color:'#64748b',family:'Inter'}}],
-    {margin:{t:10,b:20,l:100,r:150}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
-     height:Math.max(200, tc.length*40), hovermode:'y unified', showlegend:false,
+    marker:{color:['#7c3aed','#8b5cf6','#a78bfa','#c4b5fd','#ddd6fe'],opacity:0.9},
+    text:tc.map(x=>salesFmtShort(x.sales*cr.rate)), textposition:'outside', textfont:{size:11,color:'#475569',family:'Inter'}, cliponaxis:false}],
+    {margin:{t:10,b:20,l:120,r:160}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
+     height:Math.max(240, tc.length*45), hovermode:'y unified', showlegend:false,
      xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.03)'}}, {responsive:true, displayModeBar:false});
 
   // 6. Top Types
   const tt = d.top_types;
   Plotly.newPlot('salesTypeChart', [{type:'bar', orientation:'h', x:tt.map(x=>x.sales*cr.rate), y:tt.map(x=>x.name),
-    marker:{color:'#d8b4fe'}, text:tt.map(x=>salesFmtShort(x.sales*cr.rate)), textposition:'outside', textfont:{size:11,color:'#64748b',family:'Inter'}}],
-    {margin:{t:10,b:20,l:120,r:150}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
-     height:Math.max(200, tt.length*40), hovermode:'y unified', showlegend:false,
+    marker:{color:'#a78bfa',opacity:0.9}, text:tt.map(x=>salesFmtShort(x.sales*cr.rate)), textposition:'outside', textfont:{size:11,color:'#475569',family:'Inter'}, cliponaxis:false}],
+    {margin:{t:10,b:20,l:120,r:160}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
+     height:Math.max(240, tt.length*45), hovermode:'y unified', showlegend:false,
      xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.03)'}}, {responsive:true, displayModeBar:false});
 
   // 7. Top Fabrics
   const tf = d.top_fabrics;
   Plotly.newPlot('salesFabricChart', [{type:'bar', orientation:'h', x:tf.map(x=>x.sales*cr.rate), y:tf.map(x=>x.name),
-    marker:{color:'#93c5fd'}, text:tf.map(x=>salesFmtShort(x.sales*cr.rate)), textposition:'outside', textfont:{size:11,color:'#64748b',family:'Inter'}}],
-    {margin:{t:10,b:20,l:120,r:150}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
-     height:Math.max(200, tf.length*40), hovermode:'y unified', showlegend:false,
+    marker:{color:'#93c5fd',opacity:0.9}, text:tf.map(x=>salesFmtShort(x.sales*cr.rate)), textposition:'outside', textfont:{size:11,color:'#475569',family:'Inter'}, cliponaxis:false}],
+    {margin:{t:10,b:20,l:120,r:160}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
+     height:Math.max(240, tf.length*45), hovermode:'y unified', showlegend:false,
      xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'rgba(0,0,0,0.03)'}}, {responsive:true, displayModeBar:false});
 
   // 8. Net Sales Conversion Rate %
   const convAct = sf.monthly.map(m=>m.gross_sales.actual > 0 ? ((m.net_sales.actual / m.gross_sales.actual) * 100) : 0);
   const convFct = sf.monthly.map(m=>m.gross_sales.forecast > 0 ? ((m.net_sales.forecast / m.gross_sales.forecast) * 100) : 0);
   Plotly.newPlot('salesConversionChart', [
-    {type:'scatter', mode:'lines+markers', name:'Actual', x:months, y:convAct, line:{color:'#86efac', width:3}, marker:{size:8, color:'#86efac'}},
-    {type:'scatter', mode:'lines+markers', name:'Budget', x:months, y:convFct, line:{color:'#94a3b8', width:3, dash:'dot'}, marker:{size:8, color:'#94a3b8'}}
-  ], {margin:{t:15,b:40,l:55,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
-      yaxis:{ticksuffix:'%', gridcolor:'rgba(0,0,0,0.03)', rangemode:'tozero'}, height:300,
-      hovermode:'x unified', legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#94a3b8'}}},
+    {type:'scatter', mode:'lines+markers', name:'Actual', x:months, y:convAct, line:{color:'#7c3aed', width:3}, marker:{size:10, color:'#7c3aed', symbol:'circle'}, fill:'tozeroy', fillcolor:'rgba(124,58,237,0.08)'},
+    {type:'scatter', mode:'lines+markers', name:'Budget', x:months, y:convFct, line:{color:'#94a3b8', width:3, dash:'dot'}, marker:{size:10, color:'#94a3b8', symbol:'diamond'}}
+  ], {margin:{t:20,b:40,l:55,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
+      yaxis:{ticksuffix:'%', gridcolor:'rgba(0,0,0,0.03)', rangemode:'tozero'}, height:320,
+      hovermode:'x unified', legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#64748b'}}},
     {responsive:true, displayModeBar:false});
   setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
 }
