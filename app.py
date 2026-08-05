@@ -2279,19 +2279,21 @@ def get_sales_forecast():
     sections = {"ytd": 0, "jan": 18, "feb": 27, "mar": 36, "apr": 54, "may": 63, "jun": 72, "jul": 81}
     months_order = ["jan", "feb", "mar", "apr", "may", "jun", "jul"]
     a_val = lambda r, c: float(df.iloc[r, c+1]) if c+1 < df.shape[1] and pd.notna(df.iloc[r, c+1]) else 0
+    ns_val = lambda r, c: float(df.iloc[r, c+6]) if c+6 < df.shape[1] and pd.notna(df.iloc[r, c+6]) else 0
     rev_data = _read_rev_forecast()
     ytd_col = sections["ytd"]
     ytd = {
         "gross_sales": {"actual": a_val(6, ytd_col), "forecast": rev_data["yearly_rev"] / 2},
-        "returns": 0, "discounts": 0, "net_sales": a_val(6, ytd_col + 6),
+        "returns": 0, "discounts": 0, "net_sales": ns_val(6, ytd_col),
     }
     monthly = []
     for i, m in enumerate(months_order):
         col = sections[m]
         gs_a = a_val(6, col)
         gs_f = rev_data["monthly"][i]["gross_sales"]["forecast"]
-        ns = rev_data["monthly"][i]["net_sales"]
-        monthly.append({"month": months_order.index(m)+1, "gross_sales": {"actual": gs_a, "forecast": gs_f}, "returns": 0, "discounts": 0, "net_sales": ns})
+        ns_a = ns_val(6, col)
+        ns_f = rev_data["monthly"][i]["net_sales"]
+        monthly.append({"month": months_order.index(m)+1, "gross_sales": {"actual": gs_a, "forecast": gs_f}, "returns": 0, "discounts": 0, "net_sales": {"actual": ns_a, "forecast": ns_f}})
     return {"ytd": ytd, "monthly": monthly}
 
 def get_sales_cached():
