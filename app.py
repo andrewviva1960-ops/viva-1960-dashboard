@@ -574,10 +574,6 @@ function authFetch(url, opts) {
   opts = opts || {};
   opts.headers = opts.headers || {};
   opts.headers['Authorization'] = AUTH;
-  opts.cache = 'no-store';
-  opts.headers['Cache-Control'] = 'no-cache';
-  if (url.indexOf('?') >= 0) url += '&_t=' + Date.now();
-  else url += '?_t=' + Date.now();
   return fetch(url, opts);
 }
 
@@ -945,6 +941,15 @@ async function loadInvestmentData() {
     });
     const riskLabels2 = ['Max Drawdown','Downside Deviation','Monthly Volatility'];
     const riskKeys = ['mdd','downside_dev','monthly_risk'];
+    const traces_risk = [];
+    assets.forEach((asset) => {
+      const data = asset === 'Gold' ? s.gold : asset === 'Silver' ? s.silver : s.swiss;
+      traces_risk.push({
+        type:'scatter', mode:'lines+markers', name:asset,
+        x:yrLabels, y:yrKeys.map(yr => data['sharpe_ratio'][yr]),
+        line:{color:colors[asset],width:3}, marker:{size:10}
+      });
+    });
     const traces_rm = [];
     assets.forEach((asset) => {
       const data = asset === 'Gold' ? s.gold : asset === 'Silver' ? s.silver : s.swiss;
@@ -1113,7 +1118,7 @@ async function uploadExcel(input) {
 async function refreshData() {
   var btn = document.getElementById('refreshBtn');
   if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i>'; }
-  try { await authFetch('/api/refresh?_=' + Date.now()); } catch(e) { console.error('refresh failed:', e); }
+  try { await authFetch('/api/refresh?_=' + Date.now(), {cache:'no-store'}); } catch(e) {}
   _refreshCurrentTab();
   if (btn) setTimeout(function(){ btn.disabled = false; btn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh'; }, 1500);
 }
