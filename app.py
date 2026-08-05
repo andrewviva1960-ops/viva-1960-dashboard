@@ -2199,13 +2199,16 @@ _pnl_cache = {"data": None, "ts": 0}
 
 def _read_rev_forecast():
     df = pd.read_excel(_EXCEL_PATH, sheet_name="Revenue", header=None)
-    gr = float(df.iloc[101, 17]) if pd.notna(df.iloc[101, 17]) else 0
+    bu_rows = [13, 28, 89, 100]
     monthly = []
-    for m in range(6):
-        val = float(df.iloc[101, 6+m]) if 6+m < df.shape[1] and pd.notna(df.iloc[101, 6+m]) else 0
-        monthly.append(val)
-    monthly_rev = gr / 12 if gr else 0
-    return {"yearly_rev": gr, "monthly_rev": monthly,
+    for m in range(12):
+        total = 0
+        for r in bu_rows:
+            val = float(df.iloc[r, 6+m]) if 6+m < df.shape[1] and pd.notna(df.iloc[r, 6+m]) else 0
+            total += val
+        monthly.append(total)
+    grand_total = float(df.iloc[101, 17]) if pd.notna(df.iloc[101, 17]) else sum(monthly)
+    return {"yearly_rev": grand_total, "monthly_rev": monthly,
             "monthly": [{"month": i+1, "gross_sales": {"actual": 0, "forecast": v},
                          "returns": 0, "discounts": 0,
                          "net_sales": v} for i, v in enumerate(monthly)]}
@@ -2217,7 +2220,11 @@ def _read_exp_forecast():
     monthly = []
     ytd_totals = {}
     for d, r in dept_rows.items():
-        ytd_totals[d] = float(df.iloc[r, 14]) if 14 < df.shape[1] and pd.notna(df.iloc[r, 14]) else 0
+        total = 0
+        for m in range(12):
+            val = float(df.iloc[r, 2+m]) if 2+m < df.shape[1] and pd.notna(df.iloc[r, 2+m]) else 0
+            total += val
+        ytd_totals[d] = total
     for m in range(6):
         month_data = {}
         for d, r in dept_rows.items():
