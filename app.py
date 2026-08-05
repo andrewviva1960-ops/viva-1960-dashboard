@@ -2293,7 +2293,7 @@ def get_sales_forecast():
         gs_f = rev_data["monthly"][i]["gross_sales"]["forecast"]
         ns_a = ns_val(6, col)
         ns_f = rev_data["monthly"][i]["net_sales"]
-        monthly.append({"month": months_order.index(m)+1, "gross_sales": {"actual": gs_a, "forecast": gs_f}, "returns": 0, "discounts": 0, "net_sales": {"actual": ns_a, "forecast": ns_f}})
+        monthly.append({"month": months_order.index(m)+1, "gross_sales": {"actual": gs_a, "forecast": gs_f}, "returns": 0, "discounts": 0, "net_sales": ns_a, "net_sales_forecast": ns_f})
     return {"ytd": ytd, "monthly": monthly}
 
 def get_sales_cached():
