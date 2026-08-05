@@ -1957,10 +1957,10 @@ async function loadExpensesData() {
   const avgMonthly = ytd.actual * cr.rate / 7;
   const budgetUtil = ytd.forecast > 0 ? ((ytd.actual / ytd.forecast) * 100).toFixed(1) : 'N/A';
   document.getElementById('expKpiGrid').innerHTML =
-    '<div class="kpi-card kpi-exp"><div class="kpi-icon"><i class="fas fa-receipt"></i></div><div class="kpi-label">Total Expenses</div><div class="kpi-value">'+expFmt(ytd.actual*cr.rate)+'</div><div class="kpi-sub">Budget: '+expFmt(ytd.forecast*cr.rate)+'</div></div>' +
-    '<div class="kpi-card kpi-ni"><div class="kpi-icon"><i class="fas fa-building"></i></div><div class="kpi-label">Largest Dept</div><div class="kpi-value" style="font-size:15px">'+topDept+'</div><div class="kpi-sub">'+expFmt(p.dept_expenses[topDept].actual*cr.rate)+'</div></div>' +
-    '<div class="kpi-card kpi-gs"><div class="kpi-icon"><i class="fas fa-calendar"></i></div><div class="kpi-label">Monthly Avg</div><div class="kpi-value">'+expFmt(avgMonthly)+'</div><div class="kpi-sub">Jan-Jul average</div></div>' +
-    '<div class="kpi-card kpi-gp"><div class="kpi-icon"><i class="fas fa-percent"></i></div><div class="kpi-label">Budget Util.</div><div class="kpi-value" style="color:'+(ytd.actual<=ytd.forecast?'var(--green)':'var(--red)')+'">'+budgetUtil+'%</div><div class="kpi-sub">of budget used</div></div>';
+    '<div class="kpi-card kpi-exp" style="overflow:visible"><div class="kpi-icon"><i class="fas fa-receipt"></i></div><div class="kpi-label">Total Expenses</div><div class="kpi-value">'+expFmt(ytd.actual*cr.rate)+'</div><div class="kpi-sub">Budget: '+expFmt(ytd.forecast*cr.rate)+'</div></div>' +
+    '<div class="kpi-card kpi-ni" style="overflow:visible"><div class="kpi-icon"><i class="fas fa-building"></i></div><div class="kpi-label">Largest Dept</div><div class="kpi-value" style="font-size:13px">'+topDept+'</div><div class="kpi-sub">'+expFmt(p.dept_expenses[topDept].actual*cr.rate)+'</div></div>' +
+    '<div class="kpi-card kpi-gs" style="overflow:visible"><div class="kpi-icon"><i class="fas fa-calendar"></i></div><div class="kpi-label">Monthly Avg</div><div class="kpi-value">'+expFmt(avgMonthly)+'</div><div class="kpi-sub">Jan-Jul average</div></div>' +
+    '<div class="kpi-card kpi-gp" style="overflow:visible"><div class="kpi-icon"><i class="fas fa-percent"></i></div><div class="kpi-label">Budget Util.</div><div class="kpi-value" style="color:'+(ytd.actual<=ytd.forecast?'var(--green)':'var(--red)')+'">'+budgetUtil+'%</div><div class="kpi-sub">of budget used</div></div>';
 
   // 1. Monthly Expenses Actual vs Budget
   const expAct = monthly.map(m=>m.expenses.actual*cr.rate);
