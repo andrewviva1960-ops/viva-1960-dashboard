@@ -75,19 +75,28 @@ Plotly.defaultConfig = Object.assign({}, Plotly.defaultConfig || {}, {
 });
 var _origPlotlyNewPlot = Plotly.newPlot;
 Plotly.newPlot = function(el, data, layout, config) {
-  layout = Object.assign({
-    hoverlabel:{bgcolor:'#ffffff',bordercolor:'#e2e8f0',font:{family:'Inter, system-ui, sans-serif',size:12,color:'#1e293b',weight:600},align:'left'}
-  }, layout || {});
+  const dark = document.body.classList.contains('dark-mode');
+  const darkHover = {bgcolor:dark?'#1a2e1e':'#ffffff',bordercolor:dark?'#66bb6a':'#8fbc8f',font:{family:'Inter, system-ui, sans-serif',size:12,color:dark?'#e8f5e9':'#1e293b',weight:600},align:'left'};
+  layout = Object.assign({hoverlabel: darkHover}, layout || {});
+  if (dark) {
+    layout.paper_bgcolor = layout.paper_bgcolor || '#1a2e1e';
+    layout.plot_bgcolor = layout.plot_bgcolor || '#1a2e1e';
+    if (layout.font) layout.font.color = '#c8e6c9';
+    if (layout.xaxis && layout.xaxis.tickfont) layout.xaxis.tickfont.color = '#81c784';
+    if (layout.yaxis && layout.yaxis.tickfont) layout.yaxis.tickfont.color = '#81c784';
+  }
   return _origPlotlyNewPlot(el, data, layout, config);
 };
 function _calmLayout(extra) {
+  const dark = document.body.classList.contains('dark-mode');
   return Object.assign({
     autosize:true,
-    paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-    font:{family:'Inter, system-ui, sans-serif',size:12,color:'#3d7a42'},
-    hoverlabel:{bgcolor:'#ffffff',bordercolor:'#8fbc8f',font:{family:'Inter, system-ui, sans-serif',size:12,color:'#1e293b',weight:600},align:'left',namefont:{size:11,color:'#5a8a5e'}},
-    xaxis:{gridcolor:'transparent',linecolor:_CALM.zero,zerolinecolor:_CALM.zero,tickfont:{size:11,color:'#5a8a5e'}},
-    yaxis:{gridcolor:'transparent',linecolor:_CALM.zero,zerolinecolor:_CALM.zero,tickfont:{size:11,color:'#5a8a5e'}},
+    paper_bgcolor: dark ? '#1a2e1e' : 'rgba(0,0,0,0)',
+    plot_bgcolor: dark ? '#1a2e1e' : 'rgba(0,0,0,0)',
+    font:{family:'Inter, system-ui, sans-serif',size:12,color:dark?'#c8e6c9':'#3d7a42'},
+    hoverlabel:{bgcolor:dark?'#1a2e1e':'#ffffff',bordercolor:dark?'#66bb6a':'#8fbc8f',font:{family:'Inter, system-ui, sans-serif',size:12,color:dark?'#e8f5e9':'#1e293b',weight:600},align:'left',namefont:{size:11,color:dark?'#81c784':'#5a8a5e'}},
+    xaxis:{gridcolor:'transparent',linecolor:dark?'rgba(143,188,143,0.08)':'rgba(0,0,0,0.06)',zerolinecolor:dark?'rgba(143,188,143,0.08)':'rgba(0,0,0,0.06)',tickfont:{size:11,color:dark?'#81c784':'#5a8a5e'}},
+    yaxis:{gridcolor:'transparent',linecolor:dark?'rgba(143,188,143,0.08)':'rgba(0,0,0,0.06)',zerolinecolor:dark?'rgba(143,188,143,0.08)':'rgba(0,0,0,0.06)',tickfont:{size:11,color:dark?'#81c784':'#5a8a5e'}},
     margin:{t:30,b:50,l:60,r:20}
   }, extra||{});
 }
@@ -121,8 +130,71 @@ function _calmLayout(extra) {
   --chart-h: 280px;
   --chart-h-lg: 380px;
 }
+body.dark-mode {
+  --sidebar-bg: #0f1a12;
+  --header-bg: #0f1a12;
+  --card-bg: #1a2e1e;
+  --card-border: rgba(143,188,143,0.12);
+  --text-primary: #e8f5e9;
+  --text-secondary: #81c784;
+  --accent: #81c784;
+  --accent2: #66bb6a;
+  --green: #a5d6a7;
+  --red: #ef9a9a;
+  --teal: #80cbc4;
+  --blue: #90caf9;
+  --purple: #ce93d8;
+  --orange: #ffcc80;
+  --pink: #f48fb1;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.3);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.4);
+  --shadow-xl: 0 12px 40px rgba(0,0,0,0.5);
+  background:#0d1a10;
+  color:#e8f5e9;
+}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 50%,#e8edf5 100%);color:var(--text-primary);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body.dark-mode{background:linear-gradient(135deg,#0d1a10 0%,#132218 50%,#0f1f14 100%)}
+body.dark-mode .header{background:rgba(15,26,18,0.92);border-bottom-color:rgba(143,188,143,0.1)}
+body.dark-mode .header::after{opacity:0.6}
+body.dark-mode .sidebar{background:rgba(15,26,18,0.95);border-right-color:rgba(143,188,143,0.08)}
+body.dark-mode .sidebar .nav-item:hover{background:rgba(143,188,143,0.08)}
+body.dark-mode .sidebar .nav-item.active{background:linear-gradient(135deg,rgba(143,188,143,0.12),rgba(143,188,143,0.04))}
+body.dark-mode .kpi-card{background:#1a2e1e;border-color:rgba(143,188,143,0.1)}
+body.dark-mode .kpi-card .kpi-value{color:#c8e6c9}
+body.dark-mode .kpi-card .kpi-label{color:#81c784}
+body.dark-mode .kpi-card .kpi-sub{color:#66bb6a}
+body.dark-mode .chart-card{background:#1a2e1e;border-color:rgba(143,188,143,0.1)}
+body.dark-mode .chart-card .chart-header h5{color:#c8e6c9}
+body.dark-mode .pnl-card{background:#1a2e1e;border-color:rgba(143,188,143,0.1)}
+body.dark-mode .pnl-card .pnl-label{color:#81c784}
+body.dark-mode .pnl-card .pnl-label.sub{color:#66bb6a}
+body.dark-mode .pnl-card .pnl-label.section-title{color:#a5d6a7}
+body.dark-mode .pnl-card tr.subtotal .pnl-label{color:#a5d6a7}
+body.dark-mode .pnl-card tr.subtotal td:last-child{color:#c8e6c9;border-top-color:rgba(143,188,143,0.15)}
+body.dark-mode .pnl-card tr.grand-total .pnl-label{color:#e8f5e9}
+body.dark-mode .pnl-card tr.grand-total td:last-child{color:#e8f5e9;border-top-color:#66bb6a}
+body.dark-mode .pnl-card .neg{color:#ef9a9a}
+body.dark-mode .pnl-card .pos{color:#a5d6a7}
+body.dark-mode td.num{color:#c8e6c9}
+body.dark-mode .hoverlayer .hovertext rect{fill:#1a2e1e!important;stroke:#66bb6a!important}
+body.dark-mode .hoverlayer .hovertext text{fill:#e8f5e9!important}
+body.dark-mode .footer{color:#4a7a4e}
+body.dark-mode .currency-selector select{background:#1a2e1e;color:#c8e6c9;border-color:rgba(143,188,143,0.15)}
+body.dark-mode .hdr-btn{color:#81c784;border-color:rgba(143,188,143,0.2)}
+body.dark-mode .hdr-btn:hover{background:rgba(143,188,143,0.12);border-color:rgba(143,188,143,0.3)}
+body.dark-mode .page-title{color:#c8e6c9}
+body.dark-mode .sidebar-toggle-float{background:linear-gradient(135deg,#2d5a2d,#1a4a1a)}
+body.dark-mode .edit-modal{background:#1a2e1e;border-color:rgba(143,188,143,0.15)}
+body.dark-mode .edit-modal h4{color:#c8e6c9}
+body.dark-mode .edit-modal input,.edit-mode .edit-modal textarea{background:#0f1a12;color:#c8e6c9;border-color:rgba(143,188,143,0.2)}
+body.dark-mode .edit-overlay{background:rgba(0,0,0,0.6)}
+body.dark-mode .edit-save-bar .btn-save{background:#66bb6a;color:#0d1a10}
+body.dark-mode .loading-shimmer{background:linear-gradient(90deg,rgba(143,188,143,0.05) 25%,rgba(143,188,143,0.1) 50%,rgba(143,188,143,0.05) 75%);background-size:200% 100%}
+body.dark-mode .pnl-card table tr{border-bottom-color:rgba(143,188,143,0.06)}
+body.dark-mode .chart-card .chart-header h5{color:#a5d6a7}
+body.dark-mode .chart-card:hover{box-shadow:0 6px 20px rgba(143,188,143,0.1)}
 @keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes slideInLeft{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
@@ -322,6 +394,7 @@ body.edit-mode .edit-save-bar{display:flex}
     <button id="refreshBtn" onclick="refreshData()" class="hdr-btn"><i class="fas fa-sync-alt"></i> Refresh</button>
     <button id="editToggle" onclick="toggleEditMode()" class="hdr-btn" title="Toggle edit mode"><i class="fas fa-pen"></i> Edit</button>
     <button id="blurToggle" onclick="toggleBlur()" class="hdr-btn" title="Toggle number visibility"><i class="fas fa-eye"></i></button>
+    <button id="darkToggle" onclick="toggleDarkMode()" class="hdr-btn" title="Toggle dark/light mode"><i class="fas fa-moon"></i></button>
   </div>
 </div>
 
@@ -1215,6 +1288,35 @@ function toggleBlur() {
   document.getElementById('blurToggle').classList.toggle('active', _blurred);
   updatePlotlyBlur();
 }
+let _darkMode = localStorage.getItem('dashDarkMode') === 'true';
+if (_darkMode) document.body.classList.add('dark-mode');
+function toggleDarkMode() {
+  _darkMode = !_darkMode;
+  document.body.classList.toggle('dark-mode', _darkMode);
+  localStorage.setItem('dashDarkMode', _darkMode);
+  document.querySelector('#darkToggle i').className = _darkMode ? 'fas fa-sun' : 'fas fa-moon';
+  document.getElementById('darkToggle').classList.toggle('active', _darkMode);
+  updatePlotlyDarkMode();
+}
+function updatePlotlyDarkMode() {
+  const dark = document.body.classList.contains('dark-mode');
+  const bgColor = dark ? '#1a2e1e' : 'rgba(0,0,0,0)';
+  const fontColor = dark ? '#c8e6c9' : '#5a8a5e';
+  const tickColor = dark ? '#81c784' : '#5a8a5e';
+  document.querySelectorAll('.js-plotly-plot').forEach(el => {
+    Plotly.relayout(el, {
+      'paper_bgcolor': bgColor,
+      'plot_bgcolor': bgColor,
+      'font.color': fontColor,
+      'xaxis.tickfont.color': tickColor,
+      'yaxis.tickfont.color': tickColor,
+      'hoverlabel.bordercolor': dark ? '#66bb6a' : '#8fbc8f',
+      'hoverlabel.bgcolor': dark ? '#1a2e1e' : '#ffffff',
+      'hoverlabel.font.color': dark ? '#e8f5e9' : '#1e293b'
+    });
+  });
+}
+setTimeout(() => { document.querySelector('#darkToggle i').className = _darkMode ? 'fas fa-sun' : 'fas fa-moon'; document.getElementById('darkToggle').classList.toggle('active', _darkMode); }, 0);
 function updatePlotlyBlur() {
   const blurred = document.body.classList.contains('blur-mode');
   var found = 0, marked = 0;
