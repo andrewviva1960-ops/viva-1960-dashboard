@@ -182,6 +182,9 @@ body.dark-mode .hoverlayer .hovertext rect{fill:#1a2e1e!important;stroke:#66bb6a
 body.dark-mode .hoverlayer .hovertext text{fill:#e8f5e9!important}
 body.dark-mode .footer{color:#4a7a4e}
 body.dark-mode .currency-selector select{background:#1a2e1e;color:#c8e6c9;border-color:rgba(143,188,143,0.15)}
+body.dark-mode #globalFilters{background:rgba(26,46,30,0.5);border-color:rgba(143,188,143,0.1);border-radius:10px;padding:8px 12px}
+body.dark-mode #globalFilters select{color:#c8e6c9}
+body.dark-mode #globalFilters label{color:#81c784}
 body.dark-mode .hdr-btn{color:#81c784;border-color:rgba(143,188,143,0.2)}
 body.dark-mode .hdr-btn:hover{background:rgba(143,188,143,0.12);border-color:rgba(143,188,143,0.3)}
 body.dark-mode .page-title{color:#c8e6c9}
@@ -418,47 +421,48 @@ body.edit-mode .edit-save-bar{display:flex}
 <!-- Main -->
 <div class="main">
 
+<div id="globalFilters" style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+  <div style="display:flex;align-items:center;gap:5px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:8px;padding:5px 10px">
+    <i class="fas fa-calendar" style="font-size:11px;color:var(--accent)"></i>
+    <label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary)">Period</label>
+    <select id="dashPeriod" onchange="onFilterChange()" style="background:transparent;border:none;color:#334155;font-size:12px;font-weight:500;cursor:pointer;appearance:none;padding-right:14px;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237a8ba3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 2px center">
+      <option value="ytd">YTD</option>
+      <option value="q1">Q1</option>
+      <option value="q2">Q2</option>
+      <option value="q3">Q3</option>
+    </select>
+  </div>
+  <div style="display:flex;align-items:center;gap:5px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:8px;padding:5px 10px">
+    <i class="fas fa-building" style="font-size:11px;color:var(--accent)"></i>
+    <label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary)">B.U</label>
+    <select id="dashBU" onchange="document.getElementById('dashMonth').value='all';onFilterChange()" style="background:transparent;border:none;color:#334155;font-size:12px;font-weight:500;cursor:pointer;appearance:none;padding-right:14px;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237a8ba3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 2px center">
+      <option value="all">All</option>
+      <option value="Export">Export</option>
+      <option value="B2B">B2B</option>
+      <option value="B2C">B2C</option>
+      <option value="CM">CM</option>
+    </select>
+  </div>
+  <div style="display:flex;align-items:center;gap:5px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:8px;padding:5px 10px">
+    <i class="fas fa-calendar-day" style="font-size:11px;color:var(--accent)"></i>
+    <label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary)">Month</label>
+    <select id="dashMonth" onchange="document.getElementById('dashPeriod').value='ytd';onFilterChange()" style="background:transparent;border:none;color:#334155;font-size:12px;font-weight:500;cursor:pointer;appearance:none;padding-right:14px;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237a8ba3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 2px center">
+      <option value="all">All</option>
+      <option value="1">January</option>
+      <option value="2">February</option>
+      <option value="3">March</option>
+      <option value="4">April</option>
+      <option value="5">May</option>
+      <option value="6">June</option>
+      <option value="7">July</option>
+      <option value="8">August</option>
+    </select>
+  </div>
+</div>
+
 <div id="tab-dashboard" class="tab-content active">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
     <div class="page-title" style="margin-bottom:0"><i class="fas fa-tachometer-alt" style="color:var(--accent);margin-right:8px"></i>Dashboard</div>
-    <div style="display:flex;align-items:center;gap:10px">
-      <div style="display:flex;align-items:center;gap:5px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:6px;padding:5px 10px">
-        <i class="fas fa-calendar" style="font-size:11px;color:var(--accent)"></i>
-        <label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary)">Period</label>
-        <select id="dashPeriod" onchange="loadData()" style="background:transparent;border:none;color:#334155;font-size:12px;font-weight:500;cursor:pointer;appearance:none;padding-right:14px;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237a8ba3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 2px center">
-          <option value="ytd">YTD</option>
-          <option value="q1">Q1</option>
-          <option value="q2">Q2</option>
-          <option value="q3">Q3</option>
-        </select>
-      </div>
-      <div style="display:flex;align-items:center;gap:5px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:6px;padding:5px 10px">
-        <i class="fas fa-building" style="font-size:11px;color:var(--accent)"></i>
-        <label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary)">B.U</label>
-        <select id="dashBU" onchange="document.getElementById('dashMonth').value='all';loadData()" style="background:transparent;border:none;color:#334155;font-size:12px;font-weight:500;cursor:pointer;appearance:none;padding-right:14px;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237a8ba3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 2px center">
-          <option value="all">All</option>
-          <option value="Export">Export</option>
-          <option value="B2B">B2B</option>
-          <option value="B2C">B2C</option>
-          <option value="CM">CM</option>
-        </select>
-      </div>
-      <div style="display:flex;align-items:center;gap:5px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:6px;padding:5px 10px">
-        <i class="fas fa-calendar-day" style="font-size:11px;color:var(--accent)"></i>
-        <label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary)">Month</label>
-        <select id="dashMonth" onchange="document.getElementById('dashPeriod').value='ytd';loadData()" style="background:transparent;border:none;color:#334155;font-size:12px;font-weight:500;cursor:pointer;appearance:none;padding-right:14px;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237a8ba3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 2px center">
-          <option value="all">All</option>
-          <option value="1">January</option>
-          <option value="2">February</option>
-          <option value="3">March</option>
-          <option value="4">April</option>
-          <option value="5">May</option>
-          <option value="6">June</option>
-          <option value="7">July</option>
-          <option value="8">August</option>
-        </select>
-      </div>
-    </div>
   </div>
   <div class="kpi-grid" id="kpiGrid"></div>
   <div class="chart-grid">
@@ -1649,7 +1653,27 @@ loadOverrides();
 loadData();
 
 // ---- Tab Switching ----
+let _currentTab = 'dashboard';
+function getActiveTab() { return _currentTab; }
+function getFilters() {
+  return {
+    period: document.getElementById('dashPeriod')?.value || 'ytd',
+    bu: document.getElementById('dashBU')?.value || 'all',
+    month: document.getElementById('dashMonth')?.value || 'all'
+  };
+}
+function onFilterChange() {
+  const tab = _currentTab;
+  if (tab === 'dashboard') loadData();
+  else if (tab === 'pnl') { window._pnlLoaded = false; loadPnlData(); }
+  else if (tab === 'sales') { window._salesLoaded = false; loadSalesData(); }
+  else if (tab === 'expenses') { window._expLoaded = false; loadExpensesData(); }
+  else if (tab === 'style') { window._styleLoaded = false; loadStyleAnalysis(); }
+  else if (tab === 'investment') { window._invLoaded = false; loadInvestmentData(); }
+  else if (tab === 'cashflow') { window._cfLoaded = false; loadCashflowData(); }
+}
 function switchTab(tab) {
+  _currentTab = tab;
   document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
   const tabEl = document.getElementById('tab-' + tab);
   tabEl.classList.add('active');
@@ -1662,6 +1686,7 @@ function switchTab(tab) {
       el.classList.add('active');
     }
   });
+  if (tab === 'dashboard') loadData();
   if (tab === 'pnl' && !window._pnlLoaded) { window._pnlLoaded = true; loadPnlData(); }
   if (tab === 'sales' && !window._salesLoaded) { window._salesLoaded = true; loadSalesData(); }
   if (tab === 'expenses' && !window._expLoaded) { window._expLoaded = true; loadExpensesData(); }
