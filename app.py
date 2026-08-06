@@ -2027,9 +2027,9 @@ async function loadExpensesData() {
   const pieColors = ['#b8918f','#8fbc8f','#6e9e6e','#6e9e6e','#8ba7c7','#8fbc8f','#b8918f'];
   Plotly.newPlot('expPieChart', [{
     type:'pie', labels:depts, values:deptAct,
-    text:deptAct.map(v=>expFmtShort(v)), textinfo:'label+percent', textfont:{size:11,color:'#5a8a5e',family:'Inter'},
-    marker:{colors:pieColors.slice(0,depts.length),line:{color:'#e5e7eb',width:2}},
-    hovertemplate:'%{label}<br>%{value:,.0f} '+cr.symbol+'<extra></extra>'}],
+    text:deptAct.map(v=>expFmtShort(v)), textinfo:'label+text+percent', textposition:'inside', textfont:{size:11,color:'#ffffff',family:'Inter'},
+    marker:{colors:pieColors.slice(0,depts.length),line:{color:'#ffffff',width:2}},
+    hovertemplate:'%{label}<br>'+cr.symbol+': %{value:,.0f}<br>%{percent}<extra></extra>'}],
     {margin:{t:5,b:5,l:5,r:5}, paper_bgcolor:'rgba(0,0,0,0)', height:280, showlegend:true,
      legend:{orientation:'h',y:-0.1,font:{size:11,color:'#5a8a5e'}}},
     {responsive:true, displayModeBar:false});
