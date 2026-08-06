@@ -495,7 +495,7 @@ body.edit-mode .edit-save-bar{display:flex}
   <div style="display:flex;align-items:center;gap:5px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:8px;padding:5px 10px">
     <i class="fas fa-calendar" style="font-size:11px;color:var(--accent)"></i>
     <label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary)">Period</label>
-    <select id="dashPeriod" onchange="onFilterChange()" style="background:transparent;border:none;color:#334155;font-size:12px;font-weight:500;cursor:pointer;appearance:none;padding-right:14px;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237a8ba3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 2px center">
+    <select id="dashPeriod" onchange="resetMonthAll();onFilterChange()" style="background:transparent;border:none;color:#334155;font-size:12px;font-weight:500;cursor:pointer;appearance:none;padding-right:14px;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237a8ba3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 2px center">
       <option value="ytd">YTD</option>
       <option value="q1">Q1</option>
       <option value="q2">Q2</option>
@@ -505,7 +505,7 @@ body.edit-mode .edit-save-bar{display:flex}
   <div style="display:flex;align-items:center;gap:5px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:8px;padding:5px 10px">
     <i class="fas fa-building" style="font-size:11px;color:var(--accent)"></i>
     <label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary)">B.U</label>
-    <select id="dashBU" onchange="document.getElementById('dashMonth').value='all';onFilterChange()" style="background:transparent;border:none;color:#334155;font-size:12px;font-weight:500;cursor:pointer;appearance:none;padding-right:14px;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237a8ba3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 2px center">
+    <select id="dashBU" onchange="resetMonthAll();onFilterChange()" style="background:transparent;border:none;color:#334155;font-size:12px;font-weight:500;cursor:pointer;appearance:none;padding-right:14px;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237a8ba3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 2px center">
       <option value="all">All</option>
       <option value="Export">Export</option>
       <option value="B2B">B2B</option>
@@ -521,14 +521,14 @@ body.edit-mode .edit-save-bar{display:flex}
       <i class="fas fa-chevron-down" style="font-size:8px;margin-left:4px;color:var(--text-secondary)"></i>
     </div>
     <div id="monthPanel" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--card-bg);border:1px solid var(--card-border);border-radius:8px;padding:6px 0;z-index:2000;box-shadow:0 4px 16px rgba(0,0,0,0.12);max-height:260px;overflow-y:auto">
-      <label class="month-opt" onclick="event.stopPropagation()"><input type="checkbox" value="all" checked onchange="onMonthCheck(this)"> All</label>
-      <label class="month-opt" onclick="event.stopPropagation()"><input type="checkbox" value="1" onchange="onMonthCheck(this)"> Jan</label>
-      <label class="month-opt" onclick="event.stopPropagation()"><input type="checkbox" value="2" onchange="onMonthCheck(this)"> Feb</label>
-      <label class="month-opt" onclick="event.stopPropagation()"><input type="checkbox" value="3" onchange="onMonthCheck(this)"> Mar</label>
-      <label class="month-opt" onclick="event.stopPropagation()"><input type="checkbox" value="4" onchange="onMonthCheck(this)"> Apr</label>
-      <label class="month-opt" onclick="event.stopPropagation()"><input type="checkbox" value="5" onchange="onMonthCheck(this)"> May</label>
-      <label class="month-opt" onclick="event.stopPropagation()"><input type="checkbox" value="6" onchange="onMonthCheck(this)"> Jun</label>
-      <label class="month-opt" onclick="event.stopPropagation()"><input type="checkbox" value="7" onchange="onMonthCheck(this)"> Jul</label>
+      <div class="month-opt" onclick="toggleMonthCb(this)"><input type="checkbox" value="all" checked> All</div>
+      <div class="month-opt" onclick="toggleMonthCb(this)"><input type="checkbox" value="1"> Jan</div>
+      <div class="month-opt" onclick="toggleMonthCb(this)"><input type="checkbox" value="2"> Feb</div>
+      <div class="month-opt" onclick="toggleMonthCb(this)"><input type="checkbox" value="3"> Mar</div>
+      <div class="month-opt" onclick="toggleMonthCb(this)"><input type="checkbox" value="4"> Apr</div>
+      <div class="month-opt" onclick="toggleMonthCb(this)"><input type="checkbox" value="5"> May</div>
+      <div class="month-opt" onclick="toggleMonthCb(this)"><input type="checkbox" value="6"> Jun</div>
+      <div class="month-opt" onclick="toggleMonthCb(this)"><input type="checkbox" value="7"> Jul</div>
     </div>
   </div>
 </div>
@@ -1771,22 +1771,32 @@ function toggleMonthDropdown() {
   const p = document.getElementById('monthPanel');
   p.style.display = p.style.display === 'none' ? 'block' : 'none';
 }
-function onMonthCheck(el) {
+function toggleMonthCb(row) {
+  event.stopPropagation();
+  const cb = row.querySelector('input[type=checkbox]');
+  cb.checked = !cb.checked;
   const allCb = document.querySelector('#monthPanel input[value="all"]');
-  if (el.value === 'all') {
+  if (cb.value === 'all') {
     document.querySelectorAll('#monthPanel input[type=checkbox]').forEach(c => { if (c !== allCb) c.checked = false; });
   } else {
     allCb.checked = false;
     const anyChecked = document.querySelectorAll('#monthPanel input[type=checkbox]:checked').length > 0;
     if (!anyChecked) allCb.checked = true;
   }
+  updateMonthLabel();
+  document.getElementById('dashPeriod').value = 'ytd';
+  onFilterChange();
+}
+function resetMonthAll() {
+  document.querySelectorAll('#monthPanel input[type=checkbox]').forEach(c => { c.checked = (c.value === 'all'); });
+  updateMonthLabel();
+}
+function updateMonthLabel() {
   const checked = document.querySelectorAll('#monthPanel input[type=checkbox]:checked');
   const vals = Array.from(checked).map(c => c.value);
   const names = {all:'All',1:'Jan',2:'Feb',3:'Mar',4:'Apr',5:'May',6:'Jun',7:'Jul'};
   const label = (vals.length === 0 || vals.includes('all')) ? 'All' : vals.map(v => names[v]).join('+');
   document.getElementById('monthLabel').textContent = label;
-  document.getElementById('dashPeriod').value = 'ytd';
-  onFilterChange();
 }
 document.addEventListener('click', function(e) {
   if (!e.target.closest('#monthFilterWrap')) document.getElementById('monthPanel').style.display = 'none';
