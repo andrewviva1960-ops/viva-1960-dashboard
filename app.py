@@ -848,24 +848,24 @@ async function loadData() {
     buildKPI('Net Income', T.ni, 'wallet', '#1abc9c', 'ni');
   animateKPIs();
 
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const M = d.months;
+  const monthLabels = M.map((_,i) => ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][i] || ('M'+(i+1)));
 
   const c = getCurrency();
-  const gsV = months.map((_,i) => M[i].gs * c.rate);
-  Plotly.newPlot('salesChart', [{type:'bar', x:months, y:gsV, marker:{color:_CALM.palette[0],line:{width:0},opacity:0.85}, text:gsV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:11,color:'#5a8a5e',family:'Inter'}, cliponaxis:false, marker_line:{width:0}}],
+  const gsV = M.map(m => m.gs * c.rate);
+  Plotly.newPlot('salesChart', [{type:'bar', x:monthLabels, y:gsV, marker:{color:_CALM.palette[0],line:{width:0},opacity:0.85}, text:gsV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:11,color:'#5a8a5e',family:'Inter'}, cliponaxis:false, marker_line:{width:0}}],
     _calmLayout({height:280, hovermode:'x unified', showlegend:false, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:'transparent'}}),
     {responsive:true, displayModeBar:false});
 
-  const expV = months.map((_,i) => M[i].exp * c.rate);
-  Plotly.newPlot('expChart', [{type:'bar', x:months, y:expV, marker:{color:_CALM.palette[3],opacity:0.85}, text:expV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:11,color:'#5a8a5e',family:'Inter'}, cliponaxis:false}],
+  const expV = M.map(m => m.exp * c.rate);
+  Plotly.newPlot('expChart', [{type:'bar', x:monthLabels, y:expV, marker:{color:_CALM.palette[3],opacity:0.85}, text:expV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:11,color:'#5a8a5e',family:'Inter'}, cliponaxis:false}],
     _calmLayout({height:280, hovermode:'x unified', showlegend:false, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:'transparent'}}),
     {responsive:true, displayModeBar:false});
 
-  const nsV = months.map((_,i) => M[i].ns * c.rate);
+  const nsV = M.map(m => m.ns * c.rate);
   Plotly.newPlot('monthlyChart', [
-    {type:'bar', name:'Net Sales', x:months, y:nsV, marker:{color:_CALM.palette[0],opacity:0.85}, text:nsV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:11,color:'#5a8a5e',family:'Inter'}, cliponaxis:false},
-    {type:'bar', name:'Expenses', x:months, y:expV, marker:{color:_CALM.palette[3],opacity:0.85}, text:expV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:11,color:'#5a8a5e',family:'Inter'}, cliponaxis:false}
+    {type:'bar', name:'Net Sales', x:monthLabels, y:nsV, marker:{color:_CALM.palette[0],opacity:0.85}, text:nsV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:11,color:'#5a8a5e',family:'Inter'}, cliponaxis:false},
+    {type:'bar', name:'Expenses', x:monthLabels, y:expV, marker:{color:_CALM.palette[3],opacity:0.85}, text:expV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:11,color:'#5a8a5e',family:'Inter'}, cliponaxis:false}
   ], _calmLayout({barmode:'group', height:280, hovermode:'x unified',
       legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:11,color:'#5a8a5e'}},
       yaxis:{ticksuffix:' '+c.symbol,gridcolor:'transparent'}}), {responsive:true, displayModeBar:false});
@@ -918,22 +918,22 @@ async function loadData() {
     {responsive:true, displayModeBar:false});
 
   // Monthly Quantity Sold
-  const qtyVals = months.map((_,i) => M[i].qty);
-  Plotly.newPlot('qtyChart', [{type:'bar', x:months, y:qtyVals,
+  const qtyVals = M.map(m => m.qty);
+  Plotly.newPlot('qtyChart', [{type:'bar', x:monthLabels, y:qtyVals,
     marker:{color:_CALM.palette[2],opacity:0.85}, text:qtyVals.map(v => v > 0 ? v.toLocaleString() : ''), textposition:'outside', textfont:{size:11,color:'#5a8a5e',family:'Inter'}, cliponaxis:false}],
     _calmLayout({height:280, hovermode:'x unified', showlegend:false, bargap:0.3,
      yaxis:{rangemode:'tozero',gridcolor:'transparent',automargin:true}}),
     {responsive:true, displayModeBar:false});
 
   // Monthly Net Sales vs COGS
-  const ncogsV = months.map((_,i) => M[i].cogs * c.rate);
-  const nnsV = months.map((_,i) => M[i].ns * c.rate);
+  const ncogsV = M.map(m => m.cogs * c.rate);
+  const nnsV = M.map(m => m.ns * c.rate);
   const fmtBig = v => { const a=Math.abs(v); if(a>=1e6)return (a/1e6).toFixed(1)+'M'; if(a>=1e3)return (a/1e3).toFixed(0)+'K'; return Math.round(a).toString(); };
   const nsLabels = nnsV.map(v => v > 0 ? fmtBig(v)+' '+c.symbol : '');
   const cogsLabels = ncogsV.map(v => v > 0 ? fmtBig(v)+' '+c.symbol : '');
   Plotly.newPlot('cogsChart', [
-    {type:'bar', name:'Net Sales', x:months, y:nnsV, marker:{color:_CALM.palette[0],opacity:0.85}, text:nsLabels, textposition:'outside', textfont:{size:11,color:'#5a8a5e',family:'Inter'}, cliponaxis:false},
-    {type:'bar', name:'COGS', x:months, y:ncogsV, marker:{color:_CALM.palette[1],opacity:0.85}, text:cogsLabels, textposition:'outside', textfont:{size:11,color:'#5a8a5e',family:'Inter'}, cliponaxis:false}
+    {type:'bar', name:'Net Sales', x:monthLabels, y:nnsV, marker:{color:_CALM.palette[0],opacity:0.85}, text:nsLabels, textposition:'outside', textfont:{size:11,color:'#5a8a5e',family:'Inter'}, cliponaxis:false},
+    {type:'bar', name:'COGS', x:monthLabels, y:ncogsV, marker:{color:_CALM.palette[1],opacity:0.85}, text:cogsLabels, textposition:'outside', textfont:{size:11,color:'#5a8a5e',family:'Inter'}, cliponaxis:false}
   ], _calmLayout({barmode:'group', height:280, hovermode:'x unified', bargap:0.25, bargroupgap:0.1,
       legend:{orientation:'h',y:1.12,x:.5,xanchor:'center',font:{size:11,color:'#5a8a5e'}},
       yaxis:{ticksuffix:' '+c.symbol,gridcolor:'transparent',automargin:true}}), {responsive:true, displayModeBar:false});
@@ -1700,7 +1700,7 @@ function switchTab(tab) {
 }
 
 // ---- P&L Actual vs Forecast ----
-const pnlMonths = ['Jan','Feb','Mar','Apr','May','Jun','Jul'];
+const monthNameMap = {1:'Jan',2:'Feb',3:'Mar',4:'Apr',5:'May',6:'Jun',7:'Jul'};
 
 function pnlFmt(v) { const c=getCurrency(); const n=Math.abs(v);
   if (n >= 1e6) return (n/1e6).toFixed(1)+'M '+c.symbol;
@@ -1716,6 +1716,7 @@ async function loadPnlData() {
   const d = await r.json();
   const ytd = d.ytd;
   const monthly = d.monthly;
+  const activeMonths = monthly.map(m => monthNameMap[m.month] || ('M'+m.month));
 
   // KPI cards
   const pnlKpis = [
@@ -1748,7 +1749,7 @@ async function loadPnlData() {
   // 1. Net Sales chart - use Sales Summary actuals from PNL Dashboard
   const nsAct = monthly.map(m => m.net_sales.actual * cr.rate);
   const nsFct = monthly.map(m => m.net_sales.forecast * cr.rate);
-  buildGroupedBar('pnlSalesChart', pnlMonths, [
+  buildGroupedBar('pnlSalesChart', activeMonths, [
     {name:'Actual', y:nsAct, color:colAct},
     {name:'Forecast', y:nsFct, color:colFct}
   ], 'Net Sales');
@@ -1756,7 +1757,7 @@ async function loadPnlData() {
   // 2. Gross Profit chart
   const gpAct = monthly.map(m => m.gross_profit.actual * cr.rate);
   const gpFct = monthly.map(m => m.gross_profit.forecast * cr.rate);
-  buildGroupedBar('pnlGpChart', pnlMonths, [
+  buildGroupedBar('pnlGpChart', activeMonths, [
     {name:'Actual', y:gpAct, color:'#5a8a5e'},
     {name:'Forecast', y:gpFct, color:colFct}
   ], 'Gross Profit');
@@ -1764,7 +1765,7 @@ async function loadPnlData() {
   // 3. Net Income chart
   const niAct = monthly.map(m => m.net_income.actual * cr.rate);
   const niFct = monthly.map(m => m.net_income.forecast * cr.rate);
-  buildGroupedBar('pnlNiChart', pnlMonths, [
+  buildGroupedBar('pnlNiChart', activeMonths, [
     {name:'Actual', y:niAct, color:'#b8d8b0'},
     {name:'Forecast', y:niFct, color:colFct}
   ], 'Net Income');
@@ -1773,8 +1774,8 @@ async function loadPnlData() {
   const gpMarginAct = monthly.map(m => m.net_sales.actual > 0 ? (m.gross_profit.actual / m.net_sales.actual * 100) : 0);
   const gpMarginFct = monthly.map(m => m.net_sales.forecast > 0 ? (m.gross_profit.forecast / m.net_sales.forecast * 100) : 0);
   Plotly.newPlot('pnlMarginChart', [
-    {type:'scatter', mode:'lines+markers', name:'Actual Margin', x:pnlMonths, y:gpMarginAct, line:{color:'#b8d8b0', width:3}, marker:{size:8, color:'#b8d8b0'}},
-    {type:'scatter', mode:'lines+markers', name:'Forecast Margin', x:pnlMonths, y:gpMarginFct, line:{color:'#94a3b8', width:3, dash:'dot'}, marker:{size:8, color:'#94a3b8'}}
+    {type:'scatter', mode:'lines+markers', name:'Actual Margin', x:activeMonths, y:gpMarginAct, line:{color:'#b8d8b0', width:3}, marker:{size:8, color:'#b8d8b0'}},
+    {type:'scatter', mode:'lines+markers', name:'Forecast Margin', x:activeMonths, y:gpMarginFct, line:{color:'#94a3b8', width:3, dash:'dot'}, marker:{size:8, color:'#94a3b8'}}
   ], {margin:{t:15,b:35,l:50,r:15}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
       yaxis:{ticksuffix:'%', gridcolor:'transparent', rangemode:'tozero'}, height:280,
       hovermode:'x unified', legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#5a8a5e'}}},
@@ -1895,9 +1896,9 @@ async function loadSalesData() {
   const T_ret = sf.ytd.returns.actual;
   const T_disc = sf.ytd.discounts.actual;
   const T_ns = sf.ytd.net_sales.actual;
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul'];
   const cr = getCurrency();
   const M = d.months;
+  const months = M.map(m => monthNameMap[m.month] || ('M'+m.month));
 
   const nsPct = T_gs > 0 ? ((T_ns / T_gs) * 100).toFixed(1) : '0';
   document.getElementById('salesKpiGrid').innerHTML =
@@ -1927,7 +1928,7 @@ async function loadSalesData() {
       yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent'}}, {responsive:true, displayModeBar:false});
 
   // 3. Quantity Sold
-  const qtyV = months.map((_,i)=>M[i].qty);
+  const qtyV = M.map(m => m.qty);
   Plotly.newPlot('salesQtyChart', [{type:'bar', x:months, y:qtyV, marker:{color:'#b8c8a8',opacity:0.85}, text:qtyV.map(v=>v.toLocaleString()), textposition:'outside', textfont:{size:11,color:'#5a8a5e',family:'Inter'}, cliponaxis:false}],
     {margin:{t:45,b:40,l:60,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', font:{color:'#94a3b8',size:11},
      yaxis:{rangemode:'tozero',gridcolor:'transparent'}, height:280, hovermode:'x unified', showlegend:false},
@@ -1998,10 +1999,10 @@ async function loadExpensesData() {
   const f = getFilters();
   const p = await authFetch('/api/pnl_forecast?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month)).then(r=>r.json());
   const d = await authFetch('/api/data?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month)).then(r=>r.json());
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul'];
   const ytd = p.ytd.expenses;
   const depts = Object.keys(p.dept_expenses);
   const monthly = p.monthly;
+  const months = monthly.map(m => monthNameMap[m.month] || ('M'+m.month));
   const cr = getCurrency();
 
   // KPI cards
