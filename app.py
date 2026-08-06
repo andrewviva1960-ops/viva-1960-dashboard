@@ -127,7 +127,7 @@ function _calmLayout(extra) {
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
-  --chart-h: 280px;
+  --chart-h: 320px;
   --chart-h-lg: 380px;
 }
 body.dark-mode {
@@ -1950,10 +1950,12 @@ function buildGroupedBar(divId, labels, seriesArr, extraLayout) {
     textfont:{size:11,color:'#5a8a5e',family:'Inter'}, cliponaxis:false
   }));
   Plotly.newPlot(divId, traces, {
-    margin:{t:50,b:35,l:55,r:15}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-    font:{color:'#94a3b8',size:11}, barmode:'group', height:280, hovermode:'x unified',
-    legend:{orientation:'h',y:1.12,x:.5,xanchor:'center',font:{size:11,color:'#5a8a5e'}},
+    margin:{t:55,b:40,l:60,r:20}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+    font:{color:'#94a3b8',size:11}, barmode:'group', height:320, hovermode:'x unified',
+    legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:11,color:'#5a8a5e'}},
     yaxis:{ticksuffix:' '+c.symbol,gridcolor:'transparent',automargin:true},
+    xaxis:{automargin:true},
+    cliponaxis:false,
     ...(extraLayout||{})
   }, {responsive:true, displayModeBar:false});
 }
@@ -2000,10 +2002,10 @@ async function loadSalesData() {
   Plotly.newPlot('salesDedChart', [
     {type:'bar',name:'Returns Actual',x:months,y:retAct,marker:{color:'#d4b0b0'},text:retAct.map(v=>fmtBig(v)),textposition:'outside',textfont:{size:11,color:'#5a8a5e',family:'Inter'}},
     {type:'bar',name:'Discounts Actual',x:months,y:discAct,marker:{color:'#d8b4fe'},text:discAct.map(v=>fmtBig(v)),textposition:'outside',textfont:{size:11,color:'#5a8a5e',family:'Inter'}}
-  ], {margin:{t:45,b:40,l:60,r:20},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#94a3b8',size:11},barmode:'group',height:280,hovermode:'x unified',legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#5a8a5e'}},yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent'}},{responsive:true,displayModeBar:false});
+  ], {margin:{t:55,b:40,l:60,r:20},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#94a3b8',size:11},barmode:'group',height:320,hovermode:'x unified',legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:11,color:'#5a8a5e'}},yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true},xaxis:{automargin:true},cliponaxis:false},{responsive:true,displayModeBar:false});
 
   const qtyV = dMonths.map(m => m.qty);
-  Plotly.newPlot('salesQtyChart',[{type:'bar',x:months,y:qtyV,marker:{color:'#b8c8a8',opacity:0.85},text:qtyV.map(v=>v.toLocaleString()),textposition:'outside',textfont:{size:11,color:'#5a8a5e',family:'Inter'},cliponaxis:false}],{margin:{t:45,b:40,l:60,r:20},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#94a3b8',size:11},yaxis:{rangemode:'tozero',gridcolor:'transparent'},height:280,hovermode:'x unified',showlegend:false},{responsive:true,displayModeBar:false});
+  Plotly.newPlot('salesQtyChart',[{type:'bar',x:months,y:qtyV,marker:{color:'#b8c8a8',opacity:0.85},text:qtyV.map(v=>v.toLocaleString()),textposition:'outside',textfont:{size:11,color:'#5a8a5e',family:'Inter'},cliponaxis:false}],{margin:{t:55,b:40,l:60,r:20},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#94a3b8',size:11},yaxis:{rangemode:'tozero',gridcolor:'transparent',automargin:true},xaxis:{automargin:true},height:320,hovermode:'x unified',showlegend:false,cliponaxis:false},{responsive:true,displayModeBar:false});
 
   const bu = d.business_units;
   Plotly.newPlot('salesBUChart',[{type:'pie',labels:bu.map(x=>x.name),values:bu.map(x=>x.sales_pct),text:bu.map(x=>x.name+'<br>'+x.sales_pct.toFixed(1)+'%'),textinfo:'text',textfont:{size:12,color:'#475569',family:'Inter'},marker:{colors:['#6e9e6e','#5a8a5e','#8fbc8f','#b8c8a8'].slice(0,bu.length),line:{color:'#fff',width:2}},hole:0.4,hovertemplate:'%{label}<br>%{value:.1f}%<extra></extra>'}],{margin:{t:10,b:10,l:10,r:10},paper_bgcolor:'rgba(0,0,0,0)',height:280,showlegend:true,legend:{orientation:'h',y:-0.05,font:{size:11,color:'#64748b'}}},{responsive:true,displayModeBar:false});
@@ -2096,11 +2098,11 @@ async function loadExpensesData() {
     openEditModal('value',expFmtShort(currentVal),null);
   });
 
-  Plotly.newPlot('expVarChart',[{type:'bar',x:months,y:varVals,marker:{color:varColors},text:varVals.map(v=>(v<=0?'':'+')+expFmtShort(v)),textposition:'outside',textfont:{size:11,color:'#5a8a5e',family:'Inter'},cliponaxis:false}],{margin:{t:45,b:40,l:60,r:20},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#94a3b8',size:11},yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent'},height:280,hovermode:'x unified',showlegend:false},{responsive:true,displayModeBar:false});
+  Plotly.newPlot('expVarChart',[{type:'bar',x:months,y:varVals,marker:{color:varColors},text:varVals.map(v=>(v<=0?'':'+')+expFmtShort(v)),textposition:'outside',textfont:{size:11,color:'#5a8a5e',family:'Inter'},cliponaxis:false}],{margin:{t:55,b:40,l:60,r:20},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#94a3b8',size:11},yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true},xaxis:{automargin:true},height:320,hovermode:'x unified',showlegend:false,cliponaxis:false},{responsive:true,displayModeBar:false});
 
-  Plotly.newPlot('expPieChart',[{type:'pie',labels:depts,values:deptAct,text:deptAct.map(v=>expFmtShort(v)),textinfo:'label+text+percent',textposition:'inside',textfont:{size:11,color:'#ffffff',family:'Inter'},marker:{colors:pieColors.slice(0,depts.length),line:{color:'#ffffff',width:2}},hovertemplate:'%{label}<br>'+cr.symbol+': %{value:,.0f}<br>%{percent}<extra></extra>'}],{margin:{t:5,b:5,l:5,r:5},paper_bgcolor:'rgba(0,0,0,0)',height:280,showlegend:true,legend:{orientation:'h',y:-0.1,font:{size:11,color:'#5a8a5e'}}},{responsive:true,displayModeBar:false});
+  Plotly.newPlot('expPieChart',[{type:'pie',labels:depts,values:deptAct,text:deptAct.map(v=>expFmtShort(v)),textinfo:'label+text+percent',textposition:'inside',textfont:{size:11,color:'#ffffff',family:'Inter'},marker:{colors:pieColors.slice(0,depts.length),line:{color:'#ffffff',width:2}},hovertemplate:'%{label}<br>'+cr.symbol+': %{value:,.0f}<br>%{percent}<extra></extra>'}],{margin:{t:5,b:5,l:5,r:5},paper_bgcolor:'rgba(0,0,0,0)',height:320,showlegend:true,legend:{orientation:'h',y:-0.1,font:{size:11,color:'#5a8a5e'}}},{responsive:true,displayModeBar:false});
 
-  Plotly.newPlot('expTrendChart',trendTraces,{margin:{t:45,b:40,l:60,r:20},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#94a3b8',size:11},yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent'},height:280,hovermode:'x unified',legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#5a8a5e'}}},{responsive:true,displayModeBar:false});
+  Plotly.newPlot('expTrendChart',trendTraces,{margin:{t:55,b:40,l:60,r:20},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#94a3b8',size:11},yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true},xaxis:{automargin:true},height:320,hovermode:'x unified',legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:11,color:'#5a8a5e'}}},{responsive:true,displayModeBar:false});
 
   // 6. Department Detail Table
   const sortedDepts = depts.sort((a,b)=>p.dept_expenses[b].actual - p.dept_expenses[a].actual);
