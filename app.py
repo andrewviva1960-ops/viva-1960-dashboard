@@ -1474,6 +1474,7 @@ function toggleEditMode() {
       el.contentEditable = 'false';
       el.classList.remove('editable','editing');
     });
+    document.querySelectorAll('.chart-resize-handle').forEach(h => h.remove());
   }
 }
 
@@ -1666,16 +1667,20 @@ document.addEventListener('keydown', function(e) {
 // ---- Chart Resize ----
 function initChartResize() {
   document.querySelectorAll('.chart-card').forEach(card => {
-    if (card.querySelector('.chart-resize-handle')) return;
-    const handle = document.createElement('div');
-    handle.className = 'chart-resize-handle';
-    card.appendChild(handle);
-    let startY, startH;
+    let handle = card.querySelector('.chart-resize-handle');
+    if (_editMode && !handle) {
+      handle = document.createElement('div');
+      handle.className = 'chart-resize-handle';
+      card.appendChild(handle);
+    } else if (!_editMode && handle) {
+      handle.remove();
+      return;
+    } else if (!_editMode) return;
     handle.addEventListener('mousedown', function(e) {
       e.preventDefault(); e.stopPropagation();
-      startY = e.clientY;
+      const startY = e.clientY;
       const body = card.querySelector('.chart-body, .pnl-body');
-      startH = body ? body.offsetHeight : 220;
+      const startH = body ? body.offsetHeight : 220;
       document.body.style.cursor = 'ns-resize';
       document.body.style.userSelect = 'none';
       function onMove(ev) {
