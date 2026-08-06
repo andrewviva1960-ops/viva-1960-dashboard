@@ -1694,12 +1694,12 @@ function switchTab(tab) {
     if (match) el.classList.add('active');
   });
   if (tab === 'dashboard') loadData();
-  if (tab === 'pnl' && !window._pnlLoaded) { window._pnlLoaded = true; loadPnlData(); }
-  if (tab === 'sales' && !window._salesLoaded) { window._salesLoaded = true; loadSalesData(); }
-  if (tab === 'expenses' && !window._expLoaded) { window._expLoaded = true; loadExpensesData(); }
-  if (tab === 'style' && !window._styleLoaded) { window._styleLoaded = true; loadStyleAnalysis(); }
-  if (tab === 'investment' && !window._invLoaded) { window._invLoaded = true; loadInvestmentData(); }
-  if (tab === 'cashflow' && !window._cfLoaded) { window._cfLoaded = true; loadCashflowData(); }
+  if (tab === 'pnl') { window._pnlLoaded = true; loadPnlData(); }
+  if (tab === 'sales') { window._salesLoaded = true; loadSalesData(); }
+  if (tab === 'expenses') { window._expLoaded = true; loadExpensesData(); }
+  if (tab === 'style') { window._styleLoaded = true; loadStyleAnalysis(); }
+  if (tab === 'investment') { window._invLoaded = true; loadInvestmentData(); }
+  if (tab === 'cashflow') { window._cfLoaded = true; loadCashflowData(); }
   setTimeout(() => { updatePlotlyBlur(); markEditables(); animateKPIs(); }, 300);
 }
 
