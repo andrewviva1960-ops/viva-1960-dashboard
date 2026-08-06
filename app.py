@@ -917,12 +917,10 @@ function changeTopSlicer(val) {
 }
 
 async function loadData() {
-  const periodEl = document.getElementById('dashPeriod');
-  const buEl = document.getElementById('dashBU');
-  const monthEl = document.getElementById('dashMonth');
-  const period = periodEl ? periodEl.value : 'ytd';
-  const bu = buEl ? buEl.value : 'all';
-  const month = monthEl ? monthEl.value : 'all';
+  const f = getFilters();
+  const period = f.period;
+  const bu = f.bu;
+  const month = f.month;
   const r = await authFetch('/api/data?period=' + encodeURIComponent(period) + '&bu=' + encodeURIComponent(bu) + '&month=' + encodeURIComponent(month));
   const d = await r.json();
   _data = d;
