@@ -1978,8 +1978,8 @@ async function loadSalesData() {
   const T_disc = sf.ytd.discounts.actual;
   const T_ns = sf.ytd.net_sales.actual;
   const cr = getCurrency();
-  const M = d.months;
-  const months = M.map(m => monthNameMap[m.month] || ('M'+m.month));
+  const months = sf.monthly.map(m => monthNameMap[m.month] || ('M'+m.month));
+  const dMonths = d.months.slice(0, sf.monthly.length);
 
   const nsPct = T_gs > 0 ? ((T_ns / T_gs) * 100).toFixed(1) : '0';
   document.getElementById('salesKpiGrid').innerHTML =
@@ -1987,7 +1987,7 @@ async function loadSalesData() {
     '<div class="kpi-card kpi-ns"><div class="kpi-icon"><i class="fas fa-shopping-cart"></i></div><div class="kpi-label">Net Sales</div><div class="kpi-value">'+salesFmt(T_ns*cr.rate)+'</div><div class="kpi-sub">'+nsPct+'% of Gross</div></div>' +
     '<div class="kpi-card kpi-cogs"><div class="kpi-icon"><i class="fas fa-undo"></i></div><div class="kpi-label">Returns</div><div class="kpi-value" style="color:var(--red)">'+salesFmt(T_ret*cr.rate)+'</div><div class="kpi-sub">'+(T_gs>0?((T_ret/T_gs)*100).toFixed(2):'0')+'% of Sales</div></div>' +
     '<div class="kpi-card kpi-gp"><div class="kpi-icon"><i class="fas fa-percent"></i></div><div class="kpi-label">Discounts</div><div class="kpi-value" style="color:var(--red)">'+salesFmt(T_disc*cr.rate)+'</div><div class="kpi-sub">'+(T_gs>0?((T_disc/T_gs)*100).toFixed(2):'0')+'% of Sales</div></div>' +
-    '<div class="kpi-card kpi-ni"><div class="kpi-icon"><i class="fas fa-box"></i></div><div class="kpi-label">Qty Sold</div><div class="kpi-value">'+d.months.slice(0,7).reduce((s,m)=>s+m.qty,0).toLocaleString()+'</div><div class="kpi-sub">Jan-Jul total</div></div>';
+    '<div class="kpi-card kpi-ni"><div class="kpi-icon"><i class="fas fa-box"></i></div><div class="kpi-label">Qty Sold</div><div class="kpi-value">'+dMonths.reduce((s,m)=>s+m.qty,0).toLocaleString()+'</div><div class="kpi-sub">Jan-Jul total</div></div>';
   animateKPIs();
 
   const fmtBig = v => { const a=Math.abs(v); if(a>=1e6)return (a/1e6).toFixed(1)+'M'; if(a>=1e3)return (a/1e3).toFixed(0)+'K'; return Math.round(a).toString(); };
@@ -2002,7 +2002,7 @@ async function loadSalesData() {
     {type:'bar',name:'Discounts Actual',x:months,y:discAct,marker:{color:'#d8b4fe'},text:discAct.map(v=>fmtBig(v)),textposition:'outside',textfont:{size:11,color:'#5a8a5e',family:'Inter'}}
   ], {margin:{t:45,b:40,l:60,r:20},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#94a3b8',size:11},barmode:'group',height:280,hovermode:'x unified',legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#5a8a5e'}},yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent'}},{responsive:true,displayModeBar:false});
 
-  const qtyV = M.map(m => m.qty);
+  const qtyV = dMonths.map(m => m.qty);
   Plotly.newPlot('salesQtyChart',[{type:'bar',x:months,y:qtyV,marker:{color:'#b8c8a8',opacity:0.85},text:qtyV.map(v=>v.toLocaleString()),textposition:'outside',textfont:{size:11,color:'#5a8a5e',family:'Inter'},cliponaxis:false}],{margin:{t:45,b:40,l:60,r:20},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#94a3b8',size:11},yaxis:{rangemode:'tozero',gridcolor:'transparent'},height:280,hovermode:'x unified',showlegend:false},{responsive:true,displayModeBar:false});
 
   const bu = d.business_units;
@@ -2517,9 +2517,16 @@ def _apply_filters(data, period="ytd", bu="all", month="all"):
         d["ytd"] = period_data
         d["monthly"] = [monthly[i] for i in indices if i < len(monthly)]
     dept = d.get("dept_expenses", {})
-    if dept and d.get("monthly"):
+    if dept and d.get("monthly") and (month != "all" or period != "ytd"):
+        month_indices = []
+        if month != "all" and month.isdigit():
+            month_indices = [int(month) - 1]
+        elif period != "ytd":
+            period_months = {"q1": [0,1,2], "q2": [3,4,5], "q3": [6]}
+            month_indices = period_months.get(period, [])
         for dk in dept:
-            dept[dk]["monthly"] = [m.get("dept_expenses",{}).get(dk, dept[dk].get("monthly",[{}])[0] if dept[dk].get("monthly") else {"actual":0,"forecast":0}) for m in d["monthly"][:7]]
+            orig = dept[dk].get("monthly", [])
+            dept[dk]["monthly"] = [orig[i] if i < len(orig) else {"actual":0,"forecast":0} for i in month_indices]
     return d
 
 @app.route("/api/style_analysis")
