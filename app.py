@@ -292,6 +292,11 @@ body.sidebar-hidden .main{margin-left:0}
 .mobile-nav .mnav-item:active{transform:scale(0.92)}
 .mobile-nav .mnav-dark{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff!important;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;min-width:38px;padding:0;box-shadow:0 2px 10px rgba(110,158,110,0.3)}
 .mobile-nav .mnav-dark i{color:#fff!important;font-size:15px}
+.mobile-nav .mnav-action{background:rgba(110,158,110,0.08);border-radius:50%;width:36px;height:36px;padding:0;min-width:36px}
+.mobile-nav .mnav-action i{font-size:14px;color:var(--accent)!important}
+.mobile-nav .mnav-action.active{background:rgba(110,158,110,0.2)}
+body.dark-mode .mobile-nav .mnav-action{background:rgba(143,188,143,0.1)}
+body.dark-mode .mobile-nav .mnav-action.active{background:rgba(143,188,143,0.2)}
 @media(max-width:768px){
   .mobile-nav{display:block}
   .main{margin-bottom:70px}
@@ -330,6 +335,8 @@ body.sidebar-hidden .main{margin-left:0}
   .kpi-card .kpi-value{font-size:12px!important}
   .mobile-nav .mnav-item{font-size:8px;min-width:38px;padding:4px 2px}
   .mobile-nav .mnav-item i{font-size:14px}
+  .mobile-nav .mnav-action{width:32px;height:32px;min-width:32px}
+  .mobile-nav .mnav-action i{font-size:12px}
 }
 @keyframes borderGlow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 @keyframes cardIn{from{opacity:0;transform:translateY(16px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
@@ -707,6 +714,8 @@ body.edit-mode .edit-save-bar{display:flex}
     <div class="mnav-item" onclick="switchTab('style')"><i class="fas fa-tshirt"></i>Style</div>
     <div class="mnav-item" onclick="switchTab('investment')"><i class="fas fa-coins"></i>Invest</div>
     <div class="mnav-item" onclick="switchTab('cashflow')"><i class="fas fa-money-bill-wave"></i>Cash</div>
+    <div class="mnav-item mnav-action" onclick="toggleBlur()" title="Toggle blur"><i class="fas fa-eye" id="mobileBlurIcon"></i></div>
+    <div class="mnav-item mnav-action" onclick="toggleEditMode()" title="Toggle edit mode"><i class="fas fa-pen" id="mobileEditIcon"></i></div>
     <div class="mnav-item mnav-dark" onclick="toggleDarkMode()" title="Toggle dark/light mode"><i class="fas fa-moon"></i></div>
   </div>
 </div>
@@ -1365,6 +1374,8 @@ function toggleBlur() {
   localStorage.setItem('dashBlur', _blurred);
   document.querySelector('#blurToggle i').className = _blurred ? 'fas fa-eye-slash' : 'fas fa-eye';
   document.getElementById('blurToggle').classList.toggle('active', _blurred);
+  const mb = document.getElementById('mobileBlurIcon');
+  if (mb) { mb.className = _blurred ? 'fas fa-eye-slash' : 'fas fa-eye'; mb.closest('.mnav-item').classList.toggle('active', _blurred); }
   updatePlotlyBlur();
 }
 let _darkMode = localStorage.getItem('dashDarkMode') === 'true';
@@ -1453,6 +1464,8 @@ function toggleEditMode() {
   _editMode = !_editMode;
   document.body.classList.toggle('edit-mode', _editMode);
   document.getElementById('editToggle').classList.toggle('active', _editMode);
+  const me = document.getElementById('mobileEditIcon');
+  if (me) { me.closest('.mnav-item').classList.toggle('active', _editMode); }
   if (_editMode) {
     markEditables();
     initChartResize();
