@@ -240,6 +240,9 @@ body.dark-mode .chart-card:hover{box-shadow:0 6px 20px rgba(143,188,143,0.1)}
 .hdr-btn:active{transform:translateY(0)}
 .hdr-btn i{font-size:13px}
 .hdr-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.month-opt{display:flex;align-items:center;gap:6px;padding:5px 12px;font-size:11px;cursor:pointer;color:var(--text-secondary);transition:background .15s}
+.month-opt:hover{background:rgba(110,158,110,0.08)}
+.month-opt input[type=checkbox]{accent-color:var(--accent);width:14px;height:14px;cursor:pointer}
 .header .currency-selector{display:flex;align-items:center;gap:6px;margin-left:14px;padding-left:14px;border-left:1px solid rgba(0,0,0,0.06)}
 .header .currency-selector label{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#6e9e6e}
 .header .currency-selector select{background:#f8fafc;border:1px solid rgba(0,0,0,0.08);border-radius:var(--radius-sm);padding:4px 28px 4px 10px;color:#334155;font-size:12px;font-weight:500;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;transition:border-color .2s,box-shadow .2s}
@@ -510,20 +513,23 @@ body.edit-mode .edit-save-bar{display:flex}
       <option value="CM">CM</option>
     </select>
   </div>
-  <div style="display:flex;align-items:center;gap:5px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:8px;padding:5px 10px">
+  <div style="display:flex;align-items:center;gap:5px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:8px;padding:5px 10px;position:relative" id="monthFilterWrap">
     <i class="fas fa-calendar-day" style="font-size:11px;color:var(--accent)"></i>
     <label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary)">Month</label>
-    <select id="dashMonth" onchange="document.getElementById('dashPeriod').value='ytd';onFilterChange()" style="background:transparent;border:none;color:#334155;font-size:12px;font-weight:500;cursor:pointer;appearance:none;padding-right:14px;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237a8ba3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 2px center">
-      <option value="all">All</option>
-      <option value="1">January</option>
-      <option value="2">February</option>
-      <option value="3">March</option>
-      <option value="4">April</option>
-      <option value="5">May</option>
-      <option value="6">June</option>
-      <option value="7">July</option>
-      <option value="8">August</option>
-    </select>
+    <div id="monthDropdown" onclick="toggleMonthDropdown()" style="background:transparent;border:none;color:#334155;font-size:12px;font-weight:500;cursor:pointer;padding-right:14px;position:relative;min-width:80px">
+      <span id="monthLabel">All</span>
+      <i class="fas fa-chevron-down" style="font-size:8px;margin-left:4px;color:var(--text-secondary)"></i>
+    </div>
+    <div id="monthPanel" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--card-bg);border:1px solid var(--card-border);border-radius:8px;padding:6px 0;z-index:2000;box-shadow:0 4px 16px rgba(0,0,0,0.12);max-height:260px;overflow-y:auto">
+      <label class="month-opt" onclick="event.stopPropagation()"><input type="checkbox" value="all" checked onchange="onMonthCheck(this)"> All</label>
+      <label class="month-opt" onclick="event.stopPropagation()"><input type="checkbox" value="1" onchange="onMonthCheck(this)"> Jan</label>
+      <label class="month-opt" onclick="event.stopPropagation()"><input type="checkbox" value="2" onchange="onMonthCheck(this)"> Feb</label>
+      <label class="month-opt" onclick="event.stopPropagation()"><input type="checkbox" value="3" onchange="onMonthCheck(this)"> Mar</label>
+      <label class="month-opt" onclick="event.stopPropagation()"><input type="checkbox" value="4" onchange="onMonthCheck(this)"> Apr</label>
+      <label class="month-opt" onclick="event.stopPropagation()"><input type="checkbox" value="5" onchange="onMonthCheck(this)"> May</label>
+      <label class="month-opt" onclick="event.stopPropagation()"><input type="checkbox" value="6" onchange="onMonthCheck(this)"> Jun</label>
+      <label class="month-opt" onclick="event.stopPropagation()"><input type="checkbox" value="7" onchange="onMonthCheck(this)"> Jul</label>
+    </div>
   </div>
 </div>
 
@@ -1754,12 +1760,39 @@ loadData();
 let _currentTab = 'dashboard';
 function getActiveTab() { return _currentTab; }
 function getFilters() {
+  const checked = document.querySelectorAll('#monthPanel input[type=checkbox]:checked');
+  const vals = Array.from(checked).map(c => c.value);
+  const month = (vals.length === 0 || vals.includes('all')) ? 'all' : vals.join(',');
   return {
     period: document.getElementById('dashPeriod')?.value || 'ytd',
     bu: document.getElementById('dashBU')?.value || 'all',
-    month: document.getElementById('dashMonth')?.value || 'all'
+    month: month
   };
 }
+function toggleMonthDropdown() {
+  const p = document.getElementById('monthPanel');
+  p.style.display = p.style.display === 'none' ? 'block' : 'none';
+}
+function onMonthCheck(el) {
+  const allCb = document.querySelector('#monthPanel input[value="all"]');
+  if (el.value === 'all') {
+    document.querySelectorAll('#monthPanel input[type=checkbox]').forEach(c => { if (c !== allCb) c.checked = false; });
+  } else {
+    allCb.checked = false;
+    const anyChecked = document.querySelectorAll('#monthPanel input[type=checkbox]:checked').length > 0;
+    if (!anyChecked) allCb.checked = true;
+  }
+  const checked = document.querySelectorAll('#monthPanel input[type=checkbox]:checked');
+  const vals = Array.from(checked).map(c => c.value);
+  const names = {all:'All',1:'Jan',2:'Feb',3:'Mar',4:'Apr',5:'May',6:'Jun',7:'Jul'};
+  const label = (vals.length === 0 || vals.includes('all')) ? 'All' : vals.map(v => names[v]).join('+');
+  document.getElementById('monthLabel').textContent = label;
+  document.getElementById('dashPeriod').value = 'ytd';
+  onFilterChange();
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('#monthFilterWrap')) document.getElementById('monthPanel').style.display = 'none';
+});
 function onFilterChange() {
   const tab = _currentTab;
   if (tab === 'dashboard') loadData();
@@ -2200,7 +2233,8 @@ def get_data(period="ytd", bu="all", month="all"):
     # Apply period or month filter
     month_ranges = {"ytd": range(1, 13), "q1": range(1, 4), "q2": range(4, 7), "q3": range(7, 10)}
     if month and month != "all":
-        sales_raw = sales_raw[sales_raw["Month"] == int(month)]
+        month_list = [int(x.strip()) for x in month.split(",") if x.strip().isdigit()]
+        sales_raw = sales_raw[sales_raw["Month"].isin(month_list)]
     elif period and period != "ytd" and period in month_ranges:
         valid_months = list(month_ranges[period])
         sales_raw = sales_raw[sales_raw["Month"].isin(valid_months)]
@@ -2211,7 +2245,8 @@ def get_data(period="ytd", bu="all", month="all"):
     exp_raw["Month"] = exp_raw["Month"].astype(int)
     # Apply period or month filter to expenses too
     if month and month != "all":
-        exp_raw = exp_raw[exp_raw["Month"] == int(month)]
+        month_list = [int(x.strip()) for x in month.split(",") if x.strip().isdigit()]
+        exp_raw = exp_raw[exp_raw["Month"].isin(month_list)]
     elif period and period != "ytd" and period in month_ranges:
         valid_months = list(month_ranges[period])
         exp_raw = exp_raw[exp_raw["Month"].isin(valid_months)]
@@ -2518,20 +2553,23 @@ def _apply_filters(data, period="ytd", bu="all", month="all"):
     import copy
     d = copy.deepcopy(data)
     monthly = d.get("monthly", [])
-    months_map = {1:"jan",2:"feb",3:"mar",4:"apr",5:"may",6:"jun",7:"jul"}
-    month_names = ["jan","feb","mar","apr","may","jun","jul"]
     if month != "all":
-        m_idx = int(month) - 1 if month.isdigit() else -1
-        if 0 <= m_idx < len(monthly):
-            m_data = monthly[m_idx]
-            d["ytd"] = {
-                "net_sales": m_data.get("net_sales", d.get("ytd",{}).get("net_sales",{})),
-                "cogs": m_data.get("cogs", d.get("ytd",{}).get("cogs",{})),
-                "expenses": m_data.get("expenses", d.get("ytd",{}).get("expenses",{})),
-                "gross_profit": m_data.get("gross_profit", d.get("ytd",{}).get("gross_profit",{})),
-                "net_income": m_data.get("net_income", d.get("ytd",{}).get("net_income",{}))
-            }
-            d["monthly"] = [m_data]
+        m_indices = []
+        for mp in month.split(","):
+            mp = mp.strip()
+            if mp.isdigit():
+                idx = int(mp) - 1
+                if 0 <= idx < len(monthly):
+                    m_indices.append(idx)
+        if m_indices:
+            agg = {"net_sales":{"actual":0,"forecast":0},"cogs":{"actual":0,"forecast":0},"expenses":{"actual":0,"forecast":0},"gross_profit":{"actual":0,"forecast":0},"net_income":{"actual":0,"forecast":0}}
+            for idx in m_indices:
+                m_data = monthly[idx]
+                for key in agg:
+                    for sub in ["actual","forecast"]:
+                        agg[key][sub] += m_data.get(key,{}).get(sub, 0)
+            d["ytd"] = agg
+            d["monthly"] = [monthly[i] for i in m_indices]
     elif period != "ytd":
         period_months = {"q1": [0,1,2], "q2": [3,4,5], "q3": [6]}
         indices = period_months.get(period, [])
