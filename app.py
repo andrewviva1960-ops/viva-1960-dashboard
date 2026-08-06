@@ -2580,6 +2580,24 @@ def _apply_filters(data, period="ytd", bu="all", month="all"):
     import copy
     d = copy.deepcopy(data)
     monthly = d.get("monthly", [])
+    def _build_agg():
+        agg = {}
+        if monthly:
+            for key in monthly[0]:
+                if key == "month":
+                    continue
+                if isinstance(monthly[0][key], dict):
+                    agg[key] = {"actual": 0, "forecast": 0}
+        return agg
+    def _sum_months(indices):
+        agg = _build_agg()
+        for i in indices:
+            if i < len(monthly):
+                m_data = monthly[i]
+                for key in agg:
+                    for sub in ["actual", "forecast"]:
+                        agg[key][sub] += m_data.get(key, {}).get(sub, 0)
+        return agg
     if month != "all":
         m_indices = []
         for mp in month.split(","):
@@ -2589,13 +2607,7 @@ def _apply_filters(data, period="ytd", bu="all", month="all"):
                 if 0 <= idx < len(monthly):
                     m_indices.append(idx)
         if m_indices:
-            agg = {"net_sales":{"actual":0,"forecast":0},"cogs":{"actual":0,"forecast":0},"expenses":{"actual":0,"forecast":0},"gross_profit":{"actual":0,"forecast":0},"net_income":{"actual":0,"forecast":0}}
-            for idx in m_indices:
-                m_data = monthly[idx]
-                for key in agg:
-                    for sub in ["actual","forecast"]:
-                        agg[key][sub] += m_data.get(key,{}).get(sub, 0)
-            d["ytd"] = agg
+            d["ytd"] = _sum_months(m_indices)
             d["monthly"] = [monthly[i] for i in m_indices]
     elif period != "ytd":
         period_months = {"q1": [0,1,2], "q2": [3,4,5], "q3": [6]}
@@ -2603,13 +2615,7 @@ def _apply_filters(data, period="ytd", bu="all", month="all"):
         indices = []
         for p in p_list:
             indices.extend(period_months.get(p, []))
-        period_data = {"net_sales":{"actual":0,"forecast":0},"cogs":{"actual":0,"forecast":0},"expenses":{"actual":0,"forecast":0},"gross_profit":{"actual":0,"forecast":0},"net_income":{"actual":0,"forecast":0}}
-        for i in indices:
-            if i < len(monthly):
-                for key in period_data:
-                    for sub in ["actual","forecast"]:
-                        period_data[key][sub] += monthly[i].get(key,{}).get(sub, 0)
-        d["ytd"] = period_data
+        d["ytd"] = _sum_months(indices)
         d["monthly"] = [monthly[i] for i in indices if i < len(monthly)]
     dept = d.get("dept_expenses", {})
     if dept and d.get("monthly") and (month != "all" or period != "ytd"):
