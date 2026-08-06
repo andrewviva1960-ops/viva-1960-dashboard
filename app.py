@@ -54,12 +54,14 @@ Plotly.setPlotConfig({
   doubleClick:false,
   displaylogo:false,
   modeBarButtonsToRemove:['zoom2d','pan2d','select2d','lasso2d','zoomIn2d','zoomOut2d','autoScale2d','resetScale2d'],
-  layout:{autosize:true,paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',margin:{t:30,b:50,l:60,r:20},
+  layout:{autosize:true,paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',margin:{t:30,b:50,l:60,r:20},dragmode:false,
     xaxis:{gridcolor:'transparent',linecolor:'rgba(0,0,0,0.06)',zerolinecolor:'rgba(0,0,0,0.06)',tickfont:{size:11,color:'#5a8a5e'},fixedrange:true},
     yaxis:{gridcolor:'transparent',linecolor:'rgba(0,0,0,0.06)',zerolinecolor:'rgba(0,0,0,0.06)',tickfont:{size:11,color:'#5a8a5e'},fixedrange:true},
     font:{family:'Inter, system-ui, sans-serif',size:12,color:'#64748b'}
   }
 });
+document.addEventListener('dblclick', function(e) { if (e.target.closest('.js-plotly-plot')) { e.stopPropagation(); e.preventDefault(); } }, true);
+document.addEventListener('touchstart', function(e) { if (e.target.closest('.js-plotly-plot') && e.touches.length > 1) { e.preventDefault(); } }, {passive:false, capture:true});
 const _CALM = {
   palette: ['#8fbc8f','#8ba7c7','#c4a882','#b8918f','#a8b5a0','#c4b896','#95b8d0','#bfa898','#a3c4a3','#d4b896'],
   bar:    ['#8fbc8f','#8ba7c7','#c4a882','#b8918f','#a8b5a0','#c4b896','#95b8d0','#bfa898','#a3c4a3','#d4b896'],
@@ -353,7 +355,7 @@ body.dark-mode .mobile-nav .mnav-action.active{background:rgba(143,188,143,0.2)}
 .chart-card:nth-child(1){animation-delay:.05s}.chart-card:nth-child(2){animation-delay:.1s}.chart-card:nth-child(3){animation-delay:.15s}.chart-card:nth-child(4){animation-delay:.2s}.chart-card:nth-child(5){animation-delay:.25s}.chart-card:nth-child(6){animation-delay:.3s}
 .chart-card .chart-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 0}
 .chart-card .chart-header h5{font-size:13px;font-weight:600;color:#2d5a2d;margin:0;letter-spacing:-.2px}
-.chart-card .chart-body{padding:4px 6px 6px;min-height:var(--chart-h);display:flex;align-items:stretch}
+.chart-card .chart-body{padding:4px 6px 6px;min-height:var(--chart-h);display:flex;align-items:stretch;touch-action:manipulation;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .chart-card .pnl-body{padding:0;min-height:var(--chart-h);display:flex;align-items:stretch}
 .chart-card.full{grid-column:1/-1}
 .chart-resize-handle{display:none;position:absolute;bottom:0;left:0;right:0;height:8px;cursor:ns-resize;background:linear-gradient(180deg,transparent,rgba(110,158,110,0.15));border-radius:0 0 var(--radius-md) var(--radius-md);z-index:10;transition:background .2s}
