@@ -49,9 +49,14 @@ Plotly.setPlotConfig({
   font:{family:'Inter, system-ui, sans-serif',size:12,color:'#64748b'},
   displayModeBar:false,
   responsive:true,
+  scrollZoom:false,
+  staticPlot:false,
+  doubleClick:false,
+  displaylogo:false,
+  modeBarButtonsToRemove:['zoom2d','pan2d','select2d','lasso2d','zoomIn2d','zoomOut2d','autoScale2d','resetScale2d'],
   layout:{autosize:true,paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',margin:{t:30,b:50,l:60,r:20},
-    xaxis:{gridcolor:'transparent',linecolor:'rgba(0,0,0,0.06)',zerolinecolor:'rgba(0,0,0,0.06)',tickfont:{size:11,color:'#5a8a5e'}},
-    yaxis:{gridcolor:'transparent',linecolor:'rgba(0,0,0,0.06)',zerolinecolor:'rgba(0,0,0,0.06)',tickfont:{size:11,color:'#5a8a5e'}},
+    xaxis:{gridcolor:'transparent',linecolor:'rgba(0,0,0,0.06)',zerolinecolor:'rgba(0,0,0,0.06)',tickfont:{size:11,color:'#5a8a5e'},fixedrange:true},
+    yaxis:{gridcolor:'transparent',linecolor:'rgba(0,0,0,0.06)',zerolinecolor:'rgba(0,0,0,0.06)',tickfont:{size:11,color:'#5a8a5e'},fixedrange:true},
     font:{family:'Inter, system-ui, sans-serif',size:12,color:'#64748b'}
   }
 });
