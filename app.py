@@ -243,6 +243,14 @@ body.dark-mode .chart-card:hover{box-shadow:0 6px 20px rgba(143,188,143,0.1)}
 .month-opt{display:flex;align-items:center;gap:6px;padding:5px 12px;font-size:11px;cursor:pointer;color:var(--text-secondary);transition:background .15s}
 .month-opt:hover{background:rgba(110,158,110,0.08)}
 .month-opt input[type=checkbox]{accent-color:var(--accent);width:14px;height:14px;cursor:pointer}
+.ms-wrap{display:flex;align-items:center;gap:5px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:8px;padding:5px 10px;position:relative}
+.ms-trigger{display:flex;align-items:center;background:transparent;border:none;color:#334155;font-size:12px;font-weight:500;cursor:pointer;padding:0;min-width:60px}
+.ms-panel{position:absolute;top:100%;left:0;min-width:100%;background:var(--card-bg);border:1px solid var(--card-border);border-radius:8px;padding:6px 0;z-index:2000;box-shadow:0 4px 16px rgba(0,0,0,0.12);max-height:260px;overflow-y:auto}
+body.dark-mode .ms-wrap{border-color:rgba(143,188,143,0.15)}
+body.dark-mode .ms-trigger{color:#81c784}
+body.dark-mode .ms-panel{background:#1a2e1e;border-color:rgba(143,188,143,0.15)}
+body.dark-mode .month-opt{color:#a5d6a7}
+body.dark-mode .month-opt:hover{background:rgba(143,188,143,0.1)}
 .header .currency-selector{display:flex;align-items:center;gap:6px;margin-left:14px;padding-left:14px;border-left:1px solid rgba(0,0,0,0.06)}
 .header .currency-selector label{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#6e9e6e}
 .header .currency-selector select{background:#f8fafc;border:1px solid rgba(0,0,0,0.08);border-radius:var(--radius-sm);padding:4px 28px 4px 10px;color:#334155;font-size:12px;font-weight:500;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;transition:border-color .2s,box-shadow .2s}
@@ -492,43 +500,42 @@ body.edit-mode .edit-save-bar{display:flex}
 <div class="main">
 
 <div id="globalFilters" style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
-  <div style="display:flex;align-items:center;gap:5px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:8px;padding:5px 10px">
+  <div class="ms-wrap" id="periodWrap">
     <i class="fas fa-calendar" style="font-size:11px;color:var(--accent)"></i>
     <label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary)">Period</label>
-    <select id="dashPeriod" onchange="resetMonthAll();onFilterChange()" style="background:transparent;border:none;color:#334155;font-size:12px;font-weight:500;cursor:pointer;appearance:none;padding-right:14px;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237a8ba3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 2px center">
-      <option value="ytd">YTD</option>
-      <option value="q1">Q1</option>
-      <option value="q2">Q2</option>
-      <option value="q3">Q3</option>
-    </select>
+    <div class="ms-trigger" onclick="togglePanel('periodPanel')"><span id="periodLabel">YTD</span><i class="fas fa-chevron-down" style="font-size:8px;margin-left:4px;color:var(--text-secondary)"></i></div>
+    <div class="ms-panel" id="periodPanel" style="display:none">
+      <div class="month-opt" onclick="msClick(this,'period')"><input type="checkbox" value="ytd" checked> YTD</div>
+      <div class="month-opt" onclick="msClick(this,'period')"><input type="checkbox" value="q1"> Q1</div>
+      <div class="month-opt" onclick="msClick(this,'period')"><input type="checkbox" value="q2"> Q2</div>
+      <div class="month-opt" onclick="msClick(this,'period')"><input type="checkbox" value="q3"> Q3</div>
+    </div>
   </div>
-  <div style="display:flex;align-items:center;gap:5px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:8px;padding:5px 10px">
+  <div class="ms-wrap" id="buWrap">
     <i class="fas fa-building" style="font-size:11px;color:var(--accent)"></i>
     <label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary)">B.U</label>
-    <select id="dashBU" onchange="resetMonthAll();onFilterChange()" style="background:transparent;border:none;color:#334155;font-size:12px;font-weight:500;cursor:pointer;appearance:none;padding-right:14px;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237a8ba3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 2px center">
-      <option value="all">All</option>
-      <option value="Export">Export</option>
-      <option value="B2B">B2B</option>
-      <option value="B2C">B2C</option>
-      <option value="CM">CM</option>
-    </select>
+    <div class="ms-trigger" onclick="togglePanel('buPanel')"><span id="buLabel">All</span><i class="fas fa-chevron-down" style="font-size:8px;margin-left:4px;color:var(--text-secondary)"></i></div>
+    <div class="ms-panel" id="buPanel" style="display:none">
+      <div class="month-opt" onclick="msClick(this,'bu')"><input type="checkbox" value="all" checked> All</div>
+      <div class="month-opt" onclick="msClick(this,'bu')"><input type="checkbox" value="Export"> Export</div>
+      <div class="month-opt" onclick="msClick(this,'bu')"><input type="checkbox" value="B2B"> B2B</div>
+      <div class="month-opt" onclick="msClick(this,'bu')"><input type="checkbox" value="B2C"> B2C</div>
+      <div class="month-opt" onclick="msClick(this,'bu')"><input type="checkbox" value="CM"> CM</div>
+    </div>
   </div>
-  <div style="display:flex;align-items:center;gap:5px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:8px;padding:5px 10px;position:relative" id="monthFilterWrap">
+  <div class="ms-wrap" id="monthFilterWrap">
     <i class="fas fa-calendar-day" style="font-size:11px;color:var(--accent)"></i>
     <label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary)">Month</label>
-    <div id="monthDropdown" onclick="toggleMonthDropdown()" style="background:transparent;border:none;color:#334155;font-size:12px;font-weight:500;cursor:pointer;padding-right:14px;position:relative;min-width:80px">
-      <span id="monthLabel">All</span>
-      <i class="fas fa-chevron-down" style="font-size:8px;margin-left:4px;color:var(--text-secondary)"></i>
-    </div>
-    <div id="monthPanel" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--card-bg);border:1px solid var(--card-border);border-radius:8px;padding:6px 0;z-index:2000;box-shadow:0 4px 16px rgba(0,0,0,0.12);max-height:260px;overflow-y:auto">
-      <div class="month-opt" onclick="toggleMonthCb(this)"><input type="checkbox" value="all" checked> All</div>
-      <div class="month-opt" onclick="toggleMonthCb(this)"><input type="checkbox" value="1"> Jan</div>
-      <div class="month-opt" onclick="toggleMonthCb(this)"><input type="checkbox" value="2"> Feb</div>
-      <div class="month-opt" onclick="toggleMonthCb(this)"><input type="checkbox" value="3"> Mar</div>
-      <div class="month-opt" onclick="toggleMonthCb(this)"><input type="checkbox" value="4"> Apr</div>
-      <div class="month-opt" onclick="toggleMonthCb(this)"><input type="checkbox" value="5"> May</div>
-      <div class="month-opt" onclick="toggleMonthCb(this)"><input type="checkbox" value="6"> Jun</div>
-      <div class="month-opt" onclick="toggleMonthCb(this)"><input type="checkbox" value="7"> Jul</div>
+    <div class="ms-trigger" onclick="togglePanel('monthPanel')"><span id="monthLabel">All</span><i class="fas fa-chevron-down" style="font-size:8px;margin-left:4px;color:var(--text-secondary)"></i></div>
+    <div class="ms-panel" id="monthPanel" style="display:none">
+      <div class="month-opt" onclick="msClick(this,'month')"><input type="checkbox" value="all" checked> All</div>
+      <div class="month-opt" onclick="msClick(this,'month')"><input type="checkbox" value="1"> Jan</div>
+      <div class="month-opt" onclick="msClick(this,'month')"><input type="checkbox" value="2"> Feb</div>
+      <div class="month-opt" onclick="msClick(this,'month')"><input type="checkbox" value="3"> Mar</div>
+      <div class="month-opt" onclick="msClick(this,'month')"><input type="checkbox" value="4"> Apr</div>
+      <div class="month-opt" onclick="msClick(this,'month')"><input type="checkbox" value="5"> May</div>
+      <div class="month-opt" onclick="msClick(this,'month')"><input type="checkbox" value="6"> Jun</div>
+      <div class="month-opt" onclick="msClick(this,'month')"><input type="checkbox" value="7"> Jul</div>
     </div>
   </div>
 </div>
@@ -1758,48 +1765,51 @@ loadData();
 let _currentTab = 'dashboard';
 function getActiveTab() { return _currentTab; }
 function getFilters() {
-  const checked = document.querySelectorAll('#monthPanel input[type=checkbox]:checked');
-  const vals = Array.from(checked).map(c => c.value);
-  const month = (vals.length === 0 || vals.includes('all')) ? 'all' : vals.join(',');
-  return {
-    period: document.getElementById('dashPeriod')?.value || 'ytd',
-    bu: document.getElementById('dashBU')?.value || 'all',
-    month: month
-  };
+  const monthChecked = Array.from(document.querySelectorAll('#monthPanel input:checked')).map(c=>c.value);
+  const buChecked = Array.from(document.querySelectorAll('#buPanel input:checked')).map(c=>c.value);
+  const periodChecked = Array.from(document.querySelectorAll('#periodPanel input:checked')).map(c=>c.value);
+  const month = (monthChecked.length===0||monthChecked.includes('all'))?'all':monthChecked.join(',');
+  const bu = (buChecked.length===0||buChecked.includes('all'))?'all':buChecked.join(',');
+  const period = (periodChecked.length===0||periodChecked.includes('ytd'))?'ytd':periodChecked.join(',');
+  return {period:period, bu:bu, month:month};
 }
-function toggleMonthDropdown() {
-  const p = document.getElementById('monthPanel');
-  p.style.display = p.style.display === 'none' ? 'block' : 'none';
+function togglePanel(id) {
+  const p = document.getElementById(id);
+  const isOpen = p.style.display !== 'none';
+  document.querySelectorAll('.ms-panel').forEach(el => el.style.display = 'none');
+  if (!isOpen) p.style.display = 'block';
 }
-function toggleMonthCb(row) {
-  event.stopPropagation();
-  const cb = row.querySelector('input[type=checkbox]');
+function msClick(row, group) {
+  var cb = row.querySelector('input[type=checkbox]');
   cb.checked = !cb.checked;
-  const allCb = document.querySelector('#monthPanel input[value="all"]');
-  if (cb.value === 'all') {
-    document.querySelectorAll('#monthPanel input[type=checkbox]').forEach(c => { if (c !== allCb) c.checked = false; });
+  var panel = document.getElementById(group+'Panel');
+  var allVal = group==='period'?'ytd':'all';
+  var allCb = panel.querySelector('input[value="'+allVal+'"]');
+  if (cb.value === allVal) {
+    panel.querySelectorAll('input[type=checkbox]').forEach(c => { if(c!==allCb) c.checked=false; });
   } else {
     allCb.checked = false;
-    const anyChecked = document.querySelectorAll('#monthPanel input[type=checkbox]:checked').length > 0;
-    if (!anyChecked) allCb.checked = true;
+    if (!panel.querySelector('input:checked')) allCb.checked = true;
   }
-  updateMonthLabel();
-  document.getElementById('dashPeriod').value = 'ytd';
-  onFilterChange();
+  updateMsLabel(group);
+  debouncedFilter();
 }
-function resetMonthAll() {
-  document.querySelectorAll('#monthPanel input[type=checkbox]').forEach(c => { c.checked = (c.value === 'all'); });
-  updateMonthLabel();
+function updateMsLabel(group) {
+  var panel = document.getElementById(group+'Panel');
+  var checked = Array.from(panel.querySelectorAll('input:checked')).map(c=>c.value);
+  var labels = {all:'All',ytd:'YTD',q1:'Q1',q2:'Q2',q3:'Q3',Export:'Export',B2B:'B2B',B2C:'B2C',CM:'CM',1:'Jan',2:'Feb',3:'Mar',4:'Apr',5:'May',6:'Jun',7:'Jul'};
+  var allVal = group==='period'?'ytd':'all';
+  var text = (checked.length===0||checked.includes(allVal))?(allVal==='ytd'?'YTD':'All'):checked.map(v=>labels[v]||v).join('+');
+  var el = document.getElementById(group==='period'?'periodLabel':group==='bu'?'buLabel':'monthLabel');
+  if (el) el.textContent = text;
 }
-function updateMonthLabel() {
-  const checked = document.querySelectorAll('#monthPanel input[type=checkbox]:checked');
-  const vals = Array.from(checked).map(c => c.value);
-  const names = {all:'All',1:'Jan',2:'Feb',3:'Mar',4:'Apr',5:'May',6:'Jun',7:'Jul'};
-  const label = (vals.length === 0 || vals.includes('all')) ? 'All' : vals.map(v => names[v]).join('+');
-  document.getElementById('monthLabel').textContent = label;
+var _filterTimer = null;
+function debouncedFilter() {
+  if (_filterTimer) clearTimeout(_filterTimer);
+  _filterTimer = setTimeout(function() { onFilterChange(); }, 300);
 }
 document.addEventListener('click', function(e) {
-  if (!e.target.closest('#monthFilterWrap')) document.getElementById('monthPanel').style.display = 'none';
+  if (!e.target.closest('.ms-wrap')) document.querySelectorAll('.ms-panel').forEach(el => el.style.display = 'none');
 });
 function onFilterChange() {
   const tab = _currentTab;
@@ -2221,8 +2231,8 @@ def get_data(period="ytd", bu="all", month="all"):
     sales_raw, exp_raw = _load_excel()
     # Apply BU filter
     if bu and bu != "all":
-        bu_upper = bu.strip().title()
-        sales_raw = sales_raw[sales_raw["Business Unit"].str.strip().str.title() == bu_upper]
+        bu_list = [x.strip().title() for x in bu.split(",") if x.strip()]
+        sales_raw = sales_raw[sales_raw["Business Unit"].str.strip().str.title().isin(bu_list)]
     for c in ["Sales Amount", "Return", "Discount", "Discount Value", "QTY"]:
         sales_raw[c] = pd.to_numeric(sales_raw[c], errors="coerce").fillna(0)
     sales_raw["Discount Total"] = sales_raw["Sales Amount"] * sales_raw["Discount"]
@@ -2239,13 +2249,17 @@ def get_data(period="ytd", bu="all", month="all"):
     sales_raw = sales_raw[sales_raw["Month"].notna() & sales_raw["Month"].between(1, 12)]
     sales_raw["Month"] = sales_raw["Month"].astype(int)
     # Apply period or month filter
-    month_ranges = {"ytd": range(1, 13), "q1": range(1, 4), "q2": range(4, 7), "q3": range(7, 10)}
     if month and month != "all":
         month_list = [int(x.strip()) for x in month.split(",") if x.strip().isdigit()]
         sales_raw = sales_raw[sales_raw["Month"].isin(month_list)]
-    elif period and period != "ytd" and period in month_ranges:
-        valid_months = list(month_ranges[period])
-        sales_raw = sales_raw[sales_raw["Month"].isin(valid_months)]
+    elif period and period != "ytd":
+        period_months_map = {"q1": [1,2,3], "q2": [4,5,6], "q3": [7,8,9]}
+        p_list = [x.strip() for x in period.split(",") if x.strip()]
+        valid_months = []
+        for p in p_list:
+            valid_months.extend(period_months_map.get(p, []))
+        if valid_months:
+            sales_raw = sales_raw[sales_raw["Month"].isin(valid_months)]
     exp_raw["amount"] = pd.to_numeric(exp_raw["amount"], errors="coerce").fillna(0)
     exp_raw["Department"] = exp_raw["Department"].str.strip().str.title()
     exp_raw["Month"] = pd.to_numeric(exp_raw["Month"], errors="coerce")
@@ -2255,9 +2269,14 @@ def get_data(period="ytd", bu="all", month="all"):
     if month and month != "all":
         month_list = [int(x.strip()) for x in month.split(",") if x.strip().isdigit()]
         exp_raw = exp_raw[exp_raw["Month"].isin(month_list)]
-    elif period and period != "ytd" and period in month_ranges:
-        valid_months = list(month_ranges[period])
-        exp_raw = exp_raw[exp_raw["Month"].isin(valid_months)]
+    elif period and period != "ytd":
+        period_months_map = {"q1": [1,2,3], "q2": [4,5,6], "q3": [7,8,9]}
+        p_list = [x.strip() for x in period.split(",") if x.strip()]
+        valid_months = []
+        for p in p_list:
+            valid_months.extend(period_months_map.get(p, []))
+        if valid_months:
+            exp_raw = exp_raw[exp_raw["Month"].isin(valid_months)]
     SALES_STORES_MONTHLY = 10000.0
     gs = sales_raw.groupby("Month")["Sales Amount"].sum()
     ret_raw = sales_raw["Return"].abs().groupby(sales_raw["Month"]).sum()
@@ -2580,7 +2599,10 @@ def _apply_filters(data, period="ytd", bu="all", month="all"):
             d["monthly"] = [monthly[i] for i in m_indices]
     elif period != "ytd":
         period_months = {"q1": [0,1,2], "q2": [3,4,5], "q3": [6]}
-        indices = period_months.get(period, [])
+        p_list = [x.strip() for x in period.split(",") if x.strip()]
+        indices = []
+        for p in p_list:
+            indices.extend(period_months.get(p, []))
         period_data = {"net_sales":{"actual":0,"forecast":0},"cogs":{"actual":0,"forecast":0},"expenses":{"actual":0,"forecast":0},"gross_profit":{"actual":0,"forecast":0},"net_income":{"actual":0,"forecast":0}}
         for i in indices:
             if i < len(monthly):
@@ -2592,11 +2614,16 @@ def _apply_filters(data, period="ytd", bu="all", month="all"):
     dept = d.get("dept_expenses", {})
     if dept and d.get("monthly") and (month != "all" or period != "ytd"):
         month_indices = []
-        if month != "all" and month.isdigit():
-            month_indices = [int(month) - 1]
+        if month != "all":
+            for mp in month.split(","):
+                mp = mp.strip()
+                if mp.isdigit():
+                    month_indices.append(int(mp) - 1)
         elif period != "ytd":
             period_months = {"q1": [0,1,2], "q2": [3,4,5], "q3": [6]}
-            month_indices = period_months.get(period, [])
+            p_list = [x.strip() for x in period.split(",") if x.strip()]
+            for p in p_list:
+                month_indices.extend(period_months.get(p, []))
         for dk in dept:
             orig = dept[dk].get("monthly", [])
             dept[dk]["monthly"] = [orig[i] if i < len(orig) else {"actual":0,"forecast":0} for i in month_indices]
