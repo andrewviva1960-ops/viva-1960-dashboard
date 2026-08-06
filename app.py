@@ -194,6 +194,11 @@ body.dark-mode .edit-modal h4{color:#c8e6c9}
 body.dark-mode .edit-modal input,.edit-mode .edit-modal textarea{background:#0f1a12;color:#c8e6c9;border-color:rgba(143,188,143,0.2)}
 body.dark-mode .edit-overlay{background:rgba(0,0,0,0.6)}
 body.dark-mode .edit-save-bar .btn-save{background:#66bb6a;color:#0d1a10}
+body.dark-mode .mobile-nav{background:rgba(15,26,18,0.95);border-top-color:rgba(143,188,143,0.1)}
+body.dark-mode .mobile-nav .mnav-item{color:#81c784}
+body.dark-mode .mobile-nav .mnav-item.active{color:#c8e6c9;background:rgba(143,188,143,0.12)}
+body.dark-mode .mobile-nav .mnav-item i{color:#66bb6a}
+body.dark-mode .mobile-nav .mnav-item.active i{color:#a5d6a7}
 body.dark-mode .loading-shimmer{background:linear-gradient(90deg,rgba(143,188,143,0.05) 25%,rgba(143,188,143,0.1) 50%,rgba(143,188,143,0.05) 75%);background-size:200% 100%}
 body.dark-mode .pnl-card table tr{border-bottom-color:rgba(143,188,143,0.06)}
 body.dark-mode .chart-card .chart-header h5{color:#a5d6a7}
@@ -278,6 +283,54 @@ body.sidebar-hidden .main{margin-left:0}
 .chart-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
 @media(max-width:1100px){.chart-grid-3{grid-template-columns:1fr 1fr}}
 @media(max-width:900px){.chart-grid,.chart-grid-3{grid-template-columns:1fr}}
+.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:1001;background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid rgba(0,0,0,0.08);box-shadow:0 -2px 12px rgba(0,0,0,0.06);padding:6px 4px env(safe-area-inset-bottom)}
+.mobile-nav .nav-row{display:flex;justify-content:space-around;align-items:center}
+.mobile-nav .mnav-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px;border-radius:10px;cursor:pointer;font-size:9px;font-weight:600;color:var(--text-secondary);transition:all .2s;min-width:48px;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.mobile-nav .mnav-item i{font-size:16px;color:#6e9e6e;transition:transform .2s}
+.mobile-nav .mnav-item.active{color:#2d5a2d;background:rgba(110,158,110,0.1)}
+.mobile-nav .mnav-item.active i{transform:scale(1.15);color:var(--accent)}
+.mobile-nav .mnav-item:active{transform:scale(0.92)}
+.mobile-nav .mnav-dark{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff!important;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;min-width:38px;padding:0;box-shadow:0 2px 10px rgba(110,158,110,0.3)}
+.mobile-nav .mnav-dark i{color:#fff!important;font-size:15px}
+@media(max-width:768px){
+  .mobile-nav{display:block}
+  .main{margin-bottom:70px}
+  body.sidebar-hidden .sidebar-toggle-float{bottom:80px;top:auto}
+  .header{padding:0 8px;height:50px}
+  .header .brand{width:auto;gap:6px}
+  .header .brand img{height:26px}
+  .header .brand span{font-size:12px}
+  .header .top-right{display:none}
+  .hdr-btn{padding:4px 6px;font-size:10px;gap:3px}
+  .hdr-btn span{display:none}
+  .hdr-btn i{font-size:12px}
+  .header .currency-selector{display:none}
+  .sidebar{display:none!important}
+  .main{margin-left:0!important;margin-top:50px;padding:10px 10px}
+  .page-title{font-size:15px;margin-bottom:8px}
+  #globalFilters{flex-wrap:wrap;gap:6px;padding:6px 8px}
+  #globalFilters select{font-size:11px;padding:5px 22px 5px 8px}
+  .kpi-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .kpi-card{padding:10px;gap:8px}
+  .kpi-card .kpi-value{font-size:13px!important}
+  .kpi-card .kpi-label{font-size:10px}
+  .kpi-card .kpi-sub{font-size:9px}
+  .kpi-card .kpi-icon{width:30px;height:30px;font-size:12px}
+  .chart-grid,.chart-grid-3{grid-template-columns:1fr;gap:8px}
+  .chart-card{border-radius:10px}
+  .chart-card .chart-header h5{font-size:11px}
+  .chart-body{min-height:220px}
+  .pnl-card{font-size:10px}
+  #pnlTable td,#pnlTable th{padding:4px 6px;font-size:10px}
+  .footer{font-size:9px;padding:8px}
+}
+@media(max-width:400px){
+  .kpi-grid{grid-template-columns:1fr 1fr;gap:6px}
+  .kpi-card{padding:8px;gap:6px;flex-direction:column;text-align:center}
+  .kpi-card .kpi-value{font-size:12px!important}
+  .mobile-nav .mnav-item{font-size:8px;min-width:38px;padding:4px 2px}
+  .mobile-nav .mnav-item i{font-size:14px}
+}
 @keyframes borderGlow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 @keyframes cardIn{from{opacity:0;transform:translateY(16px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes colorShift{0%{filter:hue-rotate(0deg)}50%{filter:hue-rotate(15deg)}100%{filter:hue-rotate(0deg)}}
@@ -642,6 +695,19 @@ body.edit-mode .edit-save-bar{display:flex}
   </div>
   <div class="chart-grid">
     <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-lightbulb" style="color:#8fbc8f;margin-right:6px"></i>Cash Flow Insights</h5></div><div class="pnl-body" id="cfInsights"></div></div>
+  </div>
+</div>
+
+<div class="mobile-nav" id="mobileNav">
+  <div class="nav-row">
+    <div class="mnav-item active" onclick="switchTab('dashboard')"><i class="fas fa-tachometer-alt"></i>Home</div>
+    <div class="mnav-item" onclick="switchTab('pnl')"><i class="fas fa-file-invoice-dollar"></i>P&L</div>
+    <div class="mnav-item" onclick="switchTab('sales')"><i class="fas fa-chart-bar"></i>Sales</div>
+    <div class="mnav-item" onclick="switchTab('expenses')"><i class="fas fa-receipt"></i>Expenses</div>
+    <div class="mnav-item" onclick="switchTab('style')"><i class="fas fa-tshirt"></i>Style</div>
+    <div class="mnav-item" onclick="switchTab('investment')"><i class="fas fa-coins"></i>Invest</div>
+    <div class="mnav-item" onclick="switchTab('cashflow')"><i class="fas fa-money-bill-wave"></i>Cash</div>
+    <div class="mnav-item mnav-dark" onclick="toggleDarkMode()" title="Toggle dark/light mode"><i class="fas fa-moon"></i></div>
   </div>
 </div>
 
@@ -1692,6 +1758,11 @@ function switchTab(tab) {
     const t = el.textContent.trim().toLowerCase();
     const match = tab === 'pnl' ? t.includes('p&l') : (tab === 'cashflow' ? t.includes('cash flow') : t.includes(tab));
     if (match) el.classList.add('active');
+  });
+  document.querySelectorAll('.mobile-nav .mnav-item').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.mobile-nav .mnav-item').forEach(el => {
+    const t = el.textContent.trim().toLowerCase();
+    if (t.includes(tab === 'pnl' ? 'p&l' : tab)) el.classList.add('active');
   });
   if (tab === 'dashboard') loadData();
   if (tab === 'pnl') { window._pnlLoaded = true; loadPnlData(); }
