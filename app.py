@@ -962,7 +962,8 @@ function _plotBatch(charts) {
 
 async function loadStyleAnalysis() {
   try {
-    const r = await authFetch('/api/style_analysis');
+    const f = getFilters();
+    const r = await authFetch('/api/style_analysis?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month));
     if (!r.ok) return;
     const s = await r.json();
     if (s.error) return;
@@ -1049,7 +1050,8 @@ async function loadStyleAnalysis() {
 
 async function loadInvestmentData() {
   try {
-    const r = await authFetch('/api/investment');
+    const f = getFilters();
+    const r = await authFetch('/api/investment?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month));
     if (!r.ok) return;
     const s = await r.json();
     if (s.error) { console.error(s.error); return; }
@@ -1174,7 +1176,8 @@ function renderOptimal(yr) {
 
 async function loadCashflowData() {
   try {
-    const r = await authFetch('/api/cashflow');
+    const f = getFilters();
+    const r = await authFetch('/api/cashflow?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month));
     if (!r.ok) return;
     const s = await r.json();
     if (s.error) { console.error(s.error); return; }
@@ -1708,7 +1711,8 @@ function pnlFmt(v) { const c=getCurrency(); const n=Math.abs(v);
 function pnlFmtShort(v) { return pnlFmt(v); }
 
 async function loadPnlData() {
-  const r = await authFetch('/api/pnl_forecast');
+  const f = getFilters();
+  const r = await authFetch('/api/pnl_forecast?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month));
   const d = await r.json();
   const ytd = d.ytd;
   const monthly = d.monthly;
@@ -1884,8 +1888,9 @@ function salesFmt(v) { const c=getCurrency(); const n=Math.abs(v);
 function salesFmtShort(v) { return salesFmt(v); }
 
 async function loadSalesData() {
-  const sf = await authFetch('/api/sales_forecast').then(r=>r.json());
-  const d = await authFetch('/api/data').then(r=>r.json());
+  const f = getFilters();
+  const sf = await authFetch('/api/sales_forecast?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month)).then(r=>r.json());
+  const d = await authFetch('/api/data?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month)).then(r=>r.json());
   const T_gs = sf.ytd.gross_sales.actual;
   const T_ret = sf.ytd.returns.actual;
   const T_disc = sf.ytd.discounts.actual;
@@ -1990,8 +1995,9 @@ function expFmt(v) { const c=getCurrency(); const n=Math.abs(v);
 function expFmtShort(v) { return expFmt(v); }
 
 async function loadExpensesData() {
-  const p = await authFetch('/api/pnl_forecast').then(r=>r.json());
-  const d = await authFetch('/api/data').then(r=>r.json());
+  const f = getFilters();
+  const p = await authFetch('/api/pnl_forecast?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month)).then(r=>r.json());
+  const d = await authFetch('/api/data?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month)).then(r=>r.json());
   const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul'];
   const ytd = p.ytd.expenses;
   const depts = Object.keys(p.dept_expenses);
@@ -2358,21 +2364,17 @@ def get_sales_forecast():
         monthly.append({"month": months_order.index(m)+1, "gross_sales": {"actual": gs_a, "forecast": gs_f}, "returns": {"actual": ret_a, "forecast": 0}, "discounts": {"actual": disc_a, "forecast": 0}, "net_sales": {"actual": ns_a, "forecast": ns_f}})
     return {"ytd": ytd, "monthly": monthly}
 
-def get_sales_cached():
-    if _sales_cache["data"] is not None:
-        return _sales_cache["data"]
-    data = get_sales_forecast()
-    _sales_cache["data"] = data
-    return _sales_cache["data"]
+def get_sales_cached(period="ytd", bu="all", month="all"):
+    if _sales_cache["data"] is None:
+        _sales_cache["data"] = get_sales_forecast()
+    data = _sales_cache["data"]
+    return _apply_filters(data, period, bu, month)
 
-def get_pnl_cached():
-    excel_mtime = os.path.getmtime(_EXCEL_PATH)
-    if _pnl_cache["data"] is not None:
-        return _pnl_cache["data"]
-    data = get_pnl_forecast()
-    _pnl_cache["data"] = data
-    _pnl_cache["ts"] = time.time()
-    return _pnl_cache["data"]
+def get_pnl_cached(period="ytd", bu="all", month="all"):
+    if _pnl_cache["data"] is None:
+        _pnl_cache["data"] = get_pnl_forecast()
+    data = _pnl_cache["data"]
+    return _apply_filters(data, period, bu, month)
 
 def get_data_cached():
     excel_mtime = os.path.getmtime(_EXCEL_PATH)
@@ -2452,21 +2454,65 @@ def api_data():
 @app.route("/api/pnl_forecast")
 @auth.login_required
 def api_pnl_forecast():
-    return jsonify(get_pnl_cached())
+    period = request.args.get("period", "ytd")
+    bu = request.args.get("bu", "all")
+    month = request.args.get("month", "all")
+    return jsonify(get_pnl_cached(period=period, bu=bu, month=month))
 
 @app.route("/api/sales_forecast")
 @auth.login_required
 def api_sales_forecast():
-    return jsonify(get_sales_cached())
+    period = request.args.get("period", "ytd")
+    bu = request.args.get("bu", "all")
+    month = request.args.get("month", "all")
+    return jsonify(get_sales_cached(period=period, bu=bu, month=month))
 
 _style_cache = {"data": None, "ts": 0}
 _inv_cache = {"data": None, "ts": 0}
 _cf_cache = {"data": None, "ts": 0}
 
+def _apply_filters(data, period="ytd", bu="all", month="all"):
+    import copy
+    d = copy.deepcopy(data)
+    monthly = d.get("monthly", [])
+    months_map = {1:"jan",2:"feb",3:"mar",4:"apr",5:"may",6:"jun",7:"jul"}
+    month_names = ["jan","feb","mar","apr","may","jun","jul"]
+    if month != "all":
+        m_idx = int(month) - 1 if month.isdigit() else -1
+        if 0 <= m_idx < len(monthly):
+            m_data = monthly[m_idx]
+            d["ytd"] = {
+                "net_sales": m_data.get("net_sales", d.get("ytd",{}).get("net_sales",{})),
+                "cogs": m_data.get("cogs", d.get("ytd",{}).get("cogs",{})),
+                "expenses": m_data.get("expenses", d.get("ytd",{}).get("expenses",{})),
+                "gross_profit": m_data.get("gross_profit", d.get("ytd",{}).get("gross_profit",{})),
+                "net_income": m_data.get("net_income", d.get("ytd",{}).get("net_income",{}))
+            }
+            d["monthly"] = [m_data]
+    elif period != "ytd":
+        period_months = {"q1": [0,1,2], "q2": [3,4,5], "q3": [6]}
+        indices = period_months.get(period, [])
+        period_data = {"net_sales":{"actual":0,"forecast":0},"cogs":{"actual":0,"forecast":0},"expenses":{"actual":0,"forecast":0},"gross_profit":{"actual":0,"forecast":0},"net_income":{"actual":0,"forecast":0}}
+        for i in indices:
+            if i < len(monthly):
+                for key in period_data:
+                    for sub in ["actual","forecast"]:
+                        period_data[key][sub] += monthly[i].get(key,{}).get(sub, 0)
+        d["ytd"] = period_data
+        d["monthly"] = [monthly[i] for i in indices if i < len(monthly)]
+    dept = d.get("dept_expenses", {})
+    if dept and d.get("monthly"):
+        for dk in dept:
+            dept[dk]["monthly"] = [m.get("dept_expenses",{}).get(dk, dept[dk].get("monthly",[{}])[0] if dept[dk].get("monthly") else {"actual":0,"forecast":0}) for m in d["monthly"][:7]]
+    return d
+
 @app.route("/api/style_analysis")
 @auth.login_required
 def api_style_analysis():
     now = time.time()
+    period = request.args.get("period", "ytd")
+    bu = request.args.get("bu", "all")
+    month = request.args.get("month", "all")
     if _style_cache["data"] and (now - _style_cache["ts"]) < 300:
         return jsonify(_style_cache["data"])
     try:
@@ -2591,6 +2637,9 @@ def api_style_analysis():
 @auth.login_required
 def api_investment():
     now = time.time()
+    period = request.args.get("period", "ytd")
+    bu = request.args.get("bu", "all")
+    month = request.args.get("month", "all")
     if _inv_cache["data"] and (now - _inv_cache["ts"]) < 300:
         return jsonify(_inv_cache["data"])
     try:
@@ -2701,6 +2750,9 @@ def api_investment():
 @auth.login_required
 def api_cashflow():
     now = time.time()
+    period = request.args.get("period", "ytd")
+    bu = request.args.get("bu", "all")
+    month = request.args.get("month", "all")
     if _cf_cache["data"] and (now - _cf_cache["ts"]) < 300:
         return jsonify(_cf_cache["data"])
     try:
