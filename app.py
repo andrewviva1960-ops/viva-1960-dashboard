@@ -1682,9 +1682,9 @@ function switchTab(tab) {
   tabEl.style.animation = 'fadeInUp .4s cubic-bezier(.4,0,.2,1) both';
   document.querySelectorAll('.sidebar .nav-item').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.sidebar .nav-item').forEach(el => {
-    if (el.textContent.trim().toLowerCase().includes(tab === 'pnl' ? 'p&l' : tab)) {
-      el.classList.add('active');
-    }
+    const t = el.textContent.trim().toLowerCase();
+    const match = tab === 'pnl' ? t.includes('p&l') : (tab === 'cashflow' ? t.includes('cash flow') : t.includes(tab));
+    if (match) el.classList.add('active');
   });
   if (tab === 'dashboard') loadData();
   if (tab === 'pnl' && !window._pnlLoaded) { window._pnlLoaded = true; loadPnlData(); }
