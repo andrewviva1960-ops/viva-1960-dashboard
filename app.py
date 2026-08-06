@@ -2739,7 +2739,7 @@ def api_cashflow():
             if bu: aging[bu] = {"amount": amt, "aging": ag}
         # Top Spending Categories (rows 53-62, col 1=Amount)
         cat_spend = {}
-        for i in range(53, 63):
+        for i in range(53, min(63, len(dash))):
             name = str(dash.iloc[i, 0]).strip() if pd.notna(dash.iloc[i, 0]) else ""
             amt = float(dash.iloc[i, 1]) if pd.notna(dash.iloc[i, 1]) else 0
             if name: cat_spend[name] = amt
