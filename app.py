@@ -44,6 +44,8 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
 <link href="/static/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="/static/all.min.css">
 <script src="/static/plotly.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 Plotly.setPlotConfig({
   font:{family:'Inter, system-ui, sans-serif',size:12,color:'#72839E'},
@@ -240,6 +242,13 @@ body.dark-mode .chart-card:hover{box-shadow:0 6px 20px rgba(255,255,255,0.1)}
 .hdr-btn:active{transform:translateY(0)}
 .hdr-btn i{font-size:13px}
 .hdr-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.export-wrap{position:relative;display:inline-block}
+.export-menu{position:absolute;top:100%;right:0;min-width:180px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius-sm);box-shadow:var(--shadow-lg);z-index:3000;padding:6px 0;margin-top:4px}
+.export-menu-title{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);padding:6px 14px 2px;font-weight:700}
+.export-menu-item{display:flex;align-items:center;gap:8px;padding:7px 14px;font-size:12px;color:var(--text-primary);cursor:pointer;transition:background .15s}
+.export-menu-item:hover{background:rgba(59,214,113,0.08)}
+.export-menu-item i{font-size:13px;color:var(--accent);width:16px;text-align:center}
+.export-menu-divider{height:1px;background:var(--card-border);margin:4px 10px}
 .month-opt{display:flex;align-items:center;gap:6px;padding:5px 12px;font-size:11px;cursor:pointer;color:var(--text-secondary);transition:background .15s}
 .month-opt:hover{background:rgba(59,214,113,0.08)}
 .month-opt input[type=checkbox]{accent-color:var(--accent);width:14px;height:14px;cursor:pointer}
@@ -477,6 +486,18 @@ body.edit-mode .edit-save-bar{display:flex}
       </select>
     </div>
     <button id="refreshBtn" onclick="refreshData()" class="hdr-btn"><i class="fas fa-sync-alt"></i> Refresh</button>
+    <div class="export-wrap">
+      <button id="exportToggle" onclick="toggleExportMenu()" class="hdr-btn"><i class="fas fa-file-pdf"></i> Export</button>
+      <div id="exportMenu" class="export-menu" style="display:none">
+        <div class="export-menu-title">PDF Export</div>
+        <div class="export-menu-item" onclick="exportPDF('current')"><i class="fas fa-file-pdf"></i> Current Page</div>
+        <div class="export-menu-item" onclick="exportPDF('all')"><i class="fas fa-file-pdf"></i> All Pages</div>
+        <div class="export-menu-divider"></div>
+        <div class="export-menu-title">Print</div>
+        <div class="export-menu-item" onclick="printTab('current')"><i class="fas fa-print"></i> Current Page</div>
+        <div class="export-menu-item" onclick="printTab('all')"><i class="fas fa-print"></i> All Pages</div>
+      </div>
+    </div>
     <button id="editToggle" onclick="toggleEditMode()" class="hdr-btn" title="Toggle edit mode"><i class="fas fa-pen"></i> Edit</button>
     <button id="blurToggle" onclick="toggleBlur()" class="hdr-btn" title="Toggle number visibility"><i class="fas fa-eye"></i></button>
     <button id="darkToggle" onclick="toggleDarkMode()" class="hdr-btn" title="Toggle dark/light mode"><i class="fas fa-moon"></i></button>
@@ -2209,6 +2230,81 @@ async function loadExpensesData() {
     '<td class="num" style="padding:6px 10px;text-align:right;color:' + (ytd.actual<=ytd.forecast?'var(--green)':'var(--red)') + '">' + (ytd.forecast>0?((ytd.actual-ytd.forecast)/ytd.forecast*100).toFixed(1):'N/A') + '%</td>' +
     '<td class="num" style="padding:6px 10px;text-align:right;color:#72839E">100%</td></tr></table></div>';
   setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
+}
+
+// ---- Export / Print ----
+function toggleExportMenu() {
+  var m = document.getElementById('exportMenu');
+  m.style.display = m.style.display === 'none' ? 'block' : 'none';
+}
+function closeExportMenu() {
+  var m = document.getElementById('exportMenu');
+  if (m) m.style.display = 'none';
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.export-wrap')) closeExportMenu();
+});
+
+async function exportPDF(mode) {
+  closeExportMenu();
+  var btn = document.getElementById('exportToggle');
+  var origHTML = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  btn.disabled = true;
+  try {
+    var jsPDF = window.jspdf && window.jspdf.jsPDF;
+    if (!jsPDF) throw new Error('jsPDF not loaded');
+    var tabs = mode === 'all' ? ['dashboard','pnl','sales','expenses','style','investment','cashflow'] : [_currentTab];
+    var pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    var first = true;
+    for (var i = 0; i < tabs.length; i++) {
+      var tab = tabs[i];
+      var el = document.getElementById('tab-' + tab);
+      if (!el) continue;
+      var clone = el.cloneNode(true);
+      clone.style.cssText = 'position:fixed;top:0;left:0;width:1200px;z-index:-1;display:block;opacity:1;visibility:visible;background:' + (document.body.classList.contains('dark-mode') ? '#131A25' : '#ffffff');
+      document.body.appendChild(clone);
+      try {
+        var canvas = await html2canvas(clone, {
+          scale: 2, useCORS: true, logging: false,
+          backgroundColor: document.body.classList.contains('dark-mode') ? '#131A25' : '#ffffff',
+          windowWidth: 1200, windowHeight: clone.scrollHeight
+        });
+        var imgData = canvas.toDataURL('image/png');
+        var pxW = canvas.width, pxH = canvas.height;
+        var pdfW = 297, pdfH = (pxH / pxW) * pdfW;
+        if (!first) pdf.addPage([pdfW, pdfH], pdfH > pdfW ? 'portrait' : 'landscape');
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfW, pdfH);
+        first = false;
+      } finally {
+        document.body.removeChild(clone);
+      }
+    }
+    pdf.save('VIVA_1960_' + (mode === 'all' ? 'All_Pages' : _currentTab) + '_' + new Date().toISOString().slice(0,10) + '.pdf');
+  } catch(e) { console.error('PDF export error:', e); }
+  finally { btn.innerHTML = origHTML; btn.disabled = false; }
+}
+
+function printTab(mode) {
+  closeExportMenu();
+  var tabs = mode === 'all' ? ['dashboard','pnl','sales','expenses','style','investment','cashflow'] : [_currentTab];
+  var html = '<html><head><title>VIVA 1960 Dashboard</title>';
+  html += '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">';
+  html += '<style>@page{size:landscape;margin:10mm}body{font-family:Inter,system-ui,sans-serif;margin:0;padding:10px;background:#fff;color:#1C2434;font-size:11px}img{max-width:100%}.tab-content{display:block!important;page-break-after:always}h2{font-size:14px;margin:0 0 8px;border-bottom:1px solid #e2e8f0;padding-bottom:4px}</style>';
+  html += '</head><body>';
+  for (var i = 0; i < tabs.length; i++) {
+    var el = document.getElementById('tab-' + tabs[i]);
+    if (!el) continue;
+    var clone = el.cloneNode(true);
+    clone.style.display = 'block';
+    html += '<div class="tab-content"><h2>' + tabs[i].charAt(0).toUpperCase() + tabs[i].slice(1) + '</h2>' + clone.innerHTML + '</div>';
+  }
+  html += '</body></html>';
+  var w = window.open('', '_blank');
+  if (!w) { console.error('Popup blocked'); return; }
+  w.document.write(html);
+  w.document.close();
+  setTimeout(function() { try { w.print(); } catch(e) {} }, 500);
 }
 </script>
 </body>
