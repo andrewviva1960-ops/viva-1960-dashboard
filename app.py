@@ -1067,7 +1067,24 @@ async function loadData() {
   _tabLoading.dashboard = false;
 }
 
-function buildGroupedBar
+function buildGroupedBar(divId, labels, seriesArr, extraLayout) {
+  const c = getCurrency();
+  const traces = seriesArr.map(s => ({
+    type:'bar', name:s.name, x:labels, y:s.y,
+    marker:{color:s.color, opacity:0.85},
+    text:s.y.map(v => fmtShort(v)), textposition:'outside',
+    textfont:{size:11,color:'#4A5568',family:'Inter'}, cliponaxis:false
+  }));
+  Plotly.newPlot(divId, traces, {
+    margin:{t:65,b:55,l:70,r:30}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+    font:{color:'#A0AEC0',size:11}, barmode:'group', height:320, hovermode:'x unified',
+    legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:11,color:'#4A5568'}},
+    yaxis:{ticksuffix:' '+c.symbol,gridcolor:'transparent',automargin:true},
+    xaxis:{automargin:true},
+    cliponaxis:false,
+    ...(extraLayout||{})
+  }, {responsive:true, displayModeBar:false});
+}
 
 function preloadTabs() {
   const f = getFilters();
