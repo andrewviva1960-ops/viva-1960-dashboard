@@ -1748,7 +1748,7 @@ async function fetchRates() {
           var c = CURRENCIES[k];
           if (!c) continue;
           var rateStr = k === 'EGP' ? '1.00' : (1 / c.rate).toFixed(2);
-          html += '<option value="' + k + '"' + (k === val ? ' selected' : '') + '>' + k + ' — ' + (names[k]||k) + ' (' + rateStr + ')</option>';
+          html += '<option value="' + k + '"' + (k === val ? ' selected' : '') + '>' + k + ' (' + c.symbol + ') ' + rateStr + '</option>';
         }
         sel.innerHTML = html;
       }
