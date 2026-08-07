@@ -760,16 +760,16 @@ body.edit-mode .edit-save-bar{display:flex}
 // Currency rates (base: EGP) - CBE Official Rates (29 Jul 2026) - Average of Buy & Sell
 let CURRENCIES = {
   EGP: {rate: 1, symbol: 'EGP', locale: 'en-US'},
-  USD: {rate: 0.02008, symbol: '$', locale: 'en-US'},
-  EUR: {rate: 0.01739, symbol: '\u20AC', locale: 'de-DE'},
-  GBP: {rate: 0.01492, symbol: '\u00A3', locale: 'en-GB'},
-  CHF: {rate: 0.01622, symbol: 'CHF', locale: 'de-CH'},
-  KWD: {rate: 0.00617, symbol: 'KWD', locale: 'ar-KW'},
+  USD: {rate: 0.020089, symbol: '$', locale: 'en-US'},
+  EUR: {rate: 0.017396, symbol: '\u20AC', locale: 'de-DE'},
+  GBP: {rate: 0.014922, symbol: '\u00A3', locale: 'en-GB'},
+  CHF: {rate: 0.016231, symbol: 'CHF', locale: 'de-CH'},
+  KWD: {rate: 0.006169, symbol: 'KWD', locale: 'ar-KW'},
   BHD: {rate: 0.00744, symbol: 'BHD', locale: 'ar-BH'},
   OMR: {rate: 0.00767, symbol: 'OMR', locale: 'ar-OM'},
   JOD: {rate: 0.01409, symbol: 'JOD', locale: 'ar-JO'},
-  SAR: {rate: 0.07546, symbol: 'SAR', locale: 'ar-SA'},
-  AED: {rate: 0.07379, symbol: 'AED', locale: 'ar-AE'}
+  SAR: {rate: 0.075445, symbol: 'SAR', locale: 'ar-SA'},
+  AED: {rate: 0.073778, symbol: 'AED', locale: 'ar-AE'}
 };
 let currentCurrency = 'EGP';
 let _data = null;
@@ -2521,24 +2521,34 @@ _rates_cache = {"data": None, "ts": 0}
 @app.route("/api/rates")
 def api_rates():
     import urllib.request as _urllib
+    import re as _re
     now = time.time()
     if _rates_cache["data"] and (now - _rates_cache["ts"]) < 86400:
         return jsonify(_rates_cache["data"])
     try:
-        req = _urllib.Request("https://api.exchangerate-api.com/v4/latest/EGP", headers={"User-Agent": "Mozilla/5.0"})
-        resp = _urllib.urlopen(req, timeout=10)
-        data = json.loads(resp.read().decode())
-        rates = data.get("rates", {})
+        req = _urllib.Request("https://www.fexant.com/bank/CBE", headers={"User-Agent": "Mozilla/5.0"})
+        resp = _urllib.urlopen(req, timeout=15)
+        html = resp.read().decode("utf-8", errors="ignore")
+        rows = _re.findall(
+            r'<a[^>]*title="View exchange rate history"[^>]*>.*?</a>\s*</td>\s*'
+            r'<td><strong>([A-Z]{3})</strong></td>\s*'
+            r'<td[^>]*>\s*([\d.]+)\s*EGP.*?</td>\s*'
+            r'<td[^>]*>\s*([\d.]+)\s*EGP',
+            html, _re.DOTALL
+        )
         result = {"EGP": 1}
-        for code in ["USD","EUR","GBP","CHF","KWD","BHD","OMR","JOD","SAR","AED"]:
-            if code in rates and rates[code] > 0:
-                result[code] = round(rates[code], 6)
+        for code, buy, sell in rows:
+            if code == "CBE":
+                continue
+            avg = (float(buy) + float(sell)) / 2.0
+            if avg > 0:
+                result[code] = round(1.0 / avg, 6)
         if len(result) > 2:
             _rates_cache["data"] = result
             _rates_cache["ts"] = now
         return jsonify(result)
     except:
-        return jsonify({"EGP": 1, "USD": 0.02008, "EUR": 0.01739, "GBP": 0.01492, "CHF": 0.01622, "KWD": 0.00617, "BHD": 0.00744, "OMR": 0.00767, "JOD": 0.01409, "SAR": 0.07546, "AED": 0.07379})
+        return jsonify({"EGP": 1, "USD": 0.020089, "EUR": 0.017396, "GBP": 0.014922, "CHF": 0.016231, "KWD": 0.006169, "BHD": 0.00744, "OMR": 0.00767, "JOD": 0.01409, "SAR": 0.075445, "AED": 0.073778})
 
 @app.route("/api/data")
 @auth.login_required
