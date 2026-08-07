@@ -2521,61 +2521,24 @@ _rates_cache = {"data": None, "ts": 0}
 @app.route("/api/rates")
 def api_rates():
     import urllib.request as _urllib
-    import re as _re
     now = time.time()
     if _rates_cache["data"] and (now - _rates_cache["ts"]) < 86400:
         return jsonify(_rates_cache["data"])
     try:
-        req = _urllib.Request("https://www.cbe.org.eg/en/economic-research/statistics/exchange-rates", headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
-        resp = _urllib.urlopen(req, timeout=15)
-        html = resp.read().decode("utf-8", errors="ignore")
-        rate_map = {}
-        row_pat = _re.compile(r'<td[^>]*>\s*(.*?)\s*</td>', _re.DOTALL)
-        rows = _re.findall(r'<tr[^>]*>(.*?)</tr>', html, _re.DOTALL)
-        for row in rows:
-            cells = row_pat.findall(row)
-            if len(cells) >= 3:
-                name = _re.sub(r'<[^>]+>', '', cells[0]).strip()
-                buy_s = _re.sub(r'<[^>]+>', '', cells[1]).strip()
-                sell_s = _re.sub(r'<[^>]+>', '', cells[2]).strip()
-                try:
-                    buy = float(buy_s)
-                    sell = float(sell_s)
-                    avg = (buy + sell) / 2.0
-                    if avg > 0:
-                        rate_map[name.lower()] = avg
-                except: pass
-        def g(*names):
-            for n in names:
-                if n in rate_map: return rate_map[n]
-            return 0
-        usd_egp = g('us dollar')
-        eur_egp = g('euro')
-        gbp_egp = g('pound sterling', 'gbp')
-        chf_egp = g('swiss franc')
-        sar_egp = g('saudi riyal')
-        kwd_egp = g('kuwaiti dinar')
-        aed_egp = g('uae dirham', 'emirati dirham')
-        jod_egp = g('jordanian dinar')
-        omr_egp = g('omani rial')
-        bhd_egp = g('bahraini dinar')
+        req = _urllib.Request("https://api.exchangerate-api.com/v4/latest/EGP", headers={"User-Agent": "Mozilla/5.0"})
+        resp = _urllib.urlopen(req, timeout=10)
+        data = json.loads(resp.read().decode())
+        rates = data.get("rates", {})
         result = {"EGP": 1}
-        if usd_egp > 0: result["USD"] = 1.0 / usd_egp
-        if eur_egp > 0: result["EUR"] = 1.0 / eur_egp
-        if gbp_egp > 0: result["GBP"] = 1.0 / gbp_egp
-        if chf_egp > 0: result["CHF"] = 1.0 / chf_egp
-        if sar_egp > 0: result["SAR"] = 1.0 / sar_egp
-        if kwd_egp > 0: result["KWD"] = 1.0 / kwd_egp
-        if aed_egp > 0: result["AED"] = 1.0 / aed_egp
-        if jod_egp > 0: result["JOD"] = 1.0 / jod_egp
-        if omr_egp > 0: result["OMR"] = 1.0 / omr_egp
-        if bhd_egp > 0: result["BHD"] = 1.0 / bhd_egp
+        for code in ["USD","EUR","GBP","CHF","KWD","BHD","OMR","JOD","SAR","AED"]:
+            if code in rates and rates[code] > 0:
+                result[code] = round(rates[code], 6)
         if len(result) > 2:
             _rates_cache["data"] = result
             _rates_cache["ts"] = now
         return jsonify(result)
     except:
-        return jsonify({"EGP": 1, "USD": 0.02, "EUR": 0.017, "GBP": 0.015, "CHF": 0.016, "KWD": 0.006, "BHD": 0.007, "OMR": 0.007, "JOD": 0.014, "SAR": 0.075, "AED": 0.073})
+        return jsonify({"EGP": 1, "USD": 0.02008, "EUR": 0.01739, "GBP": 0.01492, "CHF": 0.01622, "KWD": 0.00617, "BHD": 0.00744, "OMR": 0.00767, "JOD": 0.01409, "SAR": 0.07546, "AED": 0.07379})
 
 @app.route("/api/data")
 @auth.login_required
