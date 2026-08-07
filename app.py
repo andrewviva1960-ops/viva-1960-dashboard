@@ -541,11 +541,11 @@ body.edit-mode .edit-save-bar{display:flex}
   </div>
   <div class="kpi-grid" id="kpiGrid"></div>
   <div class="chart-grid">
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:var(--accent);margin-right:6px"></i>Monthly Gross Sales</h5></div><div class="chart-body" id="salesChart"></div></div>
-    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-receipt" style="color:#DF484A;margin-right:6px"></i>Monthly Expenses</h5></div><div class="chart-body" id="expChart"></div></div>
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-arrows-alt-h" style="color:var(--accent);margin-right:6px"></i>Monthly Net Sales vs Expenses</h5></div><div class="chart-body" id="monthlyChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-arrows-alt-h" style="color:var(--accent);margin-right:6px"></i>Monthly Net Sales vs Expenses</h5></div><div class="chart-body" id="monthlyChart"></div></div>
+    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:var(--accent);margin-right:6px"></i>Monthly Gross Sales</h5></div><div class="chart-body" id="salesChart"></div></div>
+    <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-receipt" style="color:#DF484A;margin-right:6px"></i>Monthly Expenses</h5></div><div class="chart-body" id="expChart"></div></div>
   </div>
   <div class="chart-grid">
     <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-sitemap" style="color:#63B3ED;margin-right:6px"></i>Expenses by Department</h5></div><div class="chart-body" id="deptChart"></div></div>
