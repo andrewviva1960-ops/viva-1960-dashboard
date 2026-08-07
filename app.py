@@ -163,7 +163,7 @@ body.dark-mode {
   color:#EDF2F7;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 50%,#e8edf5 100%);color:var(--text-primary);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 50%,#e8edf5 100%);color:var(--text-primary);overflow-x:clip;-webkit-font-smoothing:antialiased}
 body.dark-mode{background:linear-gradient(135deg,#131A25 0%,#1C2434 50%,#131A25 100%)}
 body.dark-mode .header{background:rgba(19,26,37,0.92);border-bottom-color:rgba(255,255,255,0.06)}
 body.dark-mode .header::after{opacity:0.6}
@@ -380,6 +380,9 @@ body.dark-mode .mobile-nav .mnav-action.active{background:rgba(255,255,255,0.2)}
 .chart-card .chart-body{padding:4px 6px 6px;height:var(--chart-h);overflow:visible;touch-action:manipulation;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .chart-card .chart-body .js-plotly-plot,.chart-card .chart-body .plotly{overflow:visible!important}
 .chart-card .chart-body .js-plotly-plot .main-svg,.chart-card .chart-body .plotly .main-svg{overflow:visible!important}
+.js-plotly-plot{overflow:visible!important}
+.js-plotly-plot .main-svg{overflow:visible!important}
+.js-plotly-plot .svg-container{overflow:visible!important}
 .chart-card .pnl-body{padding:0;height:var(--chart-h);overflow:visible}
 .chart-card.full{grid-column:1/-1}
 .chart-resize-handle{display:none;position:absolute;bottom:0;left:0;right:0;height:8px;cursor:ns-resize;background:linear-gradient(180deg,transparent,rgba(59,214,113,0.15));border-radius:0 0 var(--radius-md) var(--radius-md);z-index:10;transition:background .2s}
@@ -938,7 +941,7 @@ function renderTopChart(d, c) {
   Plotly.newPlot('topCustomersChart', [{type:'bar', x:names, y:vals,
     marker:{color:['#2DA356','#473FE0','#3BD671','#3BD671','#81E6D9']},
     text:vals.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:11,color:'#4A5568',family:'Inter'}, cliponaxis:false}],
-    {margin:{t:50,b:55,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+    {margin:{t:50,b:55,l:80,r:40}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
      font:{size:11,color:'#4A5568'}, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:'transparent'}, height:280,
      hovermode:'x unified', showlegend:false}, {responsive:true, displayModeBar:false});
 }
@@ -954,6 +957,7 @@ async function loadData() {
   const period = f.period;
   const bu = f.bu;
   const month = f.month;
+  _tabLoading.dashboard = true;
   const r = await authFetch('/api/data?period=' + encodeURIComponent(period) + '&bu=' + encodeURIComponent(bu) + '&month=' + encodeURIComponent(month));
   const d = await r.json();
   _data = d;
@@ -1032,7 +1036,7 @@ async function loadData() {
     text:buSalesPct.map(v => v.toFixed(1) + '%'), textinfo:'label+percent', textfont:{size:11,color:_CALM.txtDark,family:'Inter'},
     marker:{colors:_CALM.palette.slice(0,buNames.length),line:{color:'#ffffff',width:3}},
     hovertemplate:'%{label}<br>%{value:.1f}%<extra></extra>'}],
-    {margin:{t:5,b:5,l:5,r:5}, paper_bgcolor:'rgba(0,0,0,0)', height:280, showlegend:true,
+    {margin:{t:20,b:35,l:20,r:20}, paper_bgcolor:'rgba(0,0,0,0)', height:280, showlegend:true,
      legend:{orientation:'h',y:-0.12,font:{size:11,color:'#4A5568'}}},
     {responsive:true, displayModeBar:false});
 
@@ -1041,6 +1045,7 @@ async function loadData() {
   Plotly.newPlot('qtyChart', [{type:'bar', x:monthLabels, y:qtyVals,
     marker:{color:_CALM.palette[2],opacity:0.85}, text:qtyVals.map(v => v > 0 ? v.toLocaleString() : ''), textposition:'outside', textfont:{size:11,color:'#4A5568',family:'Inter'}, cliponaxis:false}],
     _calmLayout({height:280, hovermode:'x unified', showlegend:false, bargap:0.3,
+     margin:{t:50,b:55,l:65,r:60},
      yaxis:{rangemode:'tozero',gridcolor:'transparent',automargin:true}}),
     {responsive:true, displayModeBar:false});
 
@@ -1060,7 +1065,10 @@ async function loadData() {
   animateCharts();
   setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
   setTimeout(preloadTabs, 500);
+  _tabLoading.dashboard = false;
 }
+
+function buildGroupedBar
 
 function preloadTabs() {
   const f = getFilters();
@@ -1090,6 +1098,7 @@ function _plotBatch(charts) {
 
 async function loadStyleAnalysis() {
   try {
+    _tabLoading.style = true;
     const f = getFilters();
     const r = await authFetch('/api/style_analysis?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month));
     if (!r.ok) return;
@@ -1174,10 +1183,12 @@ async function loadStyleAnalysis() {
     }
     setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
   } catch(e) { console.error('Style analysis error:', e); }
+  _tabLoading.style = false;
 }
 
 async function loadInvestmentData() {
   try {
+    _tabLoading.investment = true;
     const f = getFilters();
     const r = await authFetch('/api/investment?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month));
     if (!r.ok) return;
@@ -1268,6 +1279,7 @@ async function loadInvestmentData() {
     }
     setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
   } catch(e) { console.error('Investment data error:', e); }
+  _tabLoading.investment = false;
 }
 
 function renderOptimal(yr) {
@@ -1304,6 +1316,7 @@ function renderOptimal(yr) {
 
 async function loadCashflowData() {
   try {
+    _tabLoading.cashflow = true;
     const f = getFilters();
     const r = await authFetch('/api/cashflow?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month));
     if (!r.ok) return;
@@ -1370,6 +1383,7 @@ async function loadCashflowData() {
     ].join('') + '</div>';
     setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
   } catch(e) { console.error('Cash flow data error:', e); }
+  _tabLoading.cashflow = false;
 }
 
 async function uploadExcel(input) {
@@ -1390,14 +1404,19 @@ async function exportPDF(mode) {
   const origHTML = btn.innerHTML;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
   btn.disabled = true;
+  const savedTab = _currentTab;
   try {
     const { jsPDF } = window.jspdf;
     const tabs = mode === 'all' ? ['dashboard','pnl','sales','expenses','style','investment','cashflow'] : [_currentTab];
     const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
     let first = true;
     for (const tab of tabs) {
-      switchTab(tab);
-      await new Promise(r => setTimeout(r, 600));
+      if (mode === 'all') {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        const tabEl = document.getElementById('tab-' + tab);
+        if (tabEl) tabEl.classList.add('active');
+        await new Promise(r => setTimeout(r, 800));
+      }
       const el = document.getElementById('tab-' + tab);
       if (!el) continue;
       const canvas = await html2canvas(el, {
@@ -1409,11 +1428,6 @@ async function exportPDF(mode) {
       const pxW = canvas.width, pxH = canvas.height;
       const pdfW = 297, pdfH = (pxH / pxW) * pdfW;
       if (!first) pdf.addPage([pdfW, pdfH], pdfH > pdfW ? 'portrait' : 'landscape');
-      else {
-        pdf.setFontSize(8);
-        pdf.setTextColor(150);
-        pdf.setPage(1);
-      }
       pdf.addImage(imgData, 'PNG', 0, 0, pdfW, pdfH);
       first = false;
     }
@@ -1422,6 +1436,10 @@ async function exportPDF(mode) {
     console.error('PDF export error:', e);
     alert('Export failed: ' + e.message);
   } finally {
+    _currentTab = savedTab;
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    const restoreEl = document.getElementById('tab-' + savedTab);
+    if (restoreEl) restoreEl.classList.add('active');
     btn.innerHTML = origHTML;
     btn.disabled = false;
   }
@@ -1746,12 +1764,12 @@ function redoEdit() {
 function _refreshCurrentTab() {
   var tab = getActiveTabId();
   if (tab === 'dashboard') { loadData(); }
-  else if (tab === 'pnl') { window._pnlLoaded = false; loadPnlData(); }
-  else if (tab === 'sales') { window._salesLoaded = false; loadSalesData(); }
-  else if (tab === 'expenses') { window._expLoaded = false; loadExpensesData(); }
-  else if (tab === 'style') { window._styleLoaded = false; loadStyleAnalysis(); }
-  else if (tab === 'investment') { window._invLoaded = false; loadInvestmentData(); }
-  else if (tab === 'cashflow') { window._cfLoaded = false; loadCashflowData(); }
+  else if (tab === 'pnl') { loadPnlData(); }
+  else if (tab === 'sales') { loadSalesData(); }
+  else if (tab === 'expenses') { loadExpensesData(); }
+  else if (tab === 'style') { loadStyleAnalysis(); }
+  else if (tab === 'investment') { loadInvestmentData(); }
+  else if (tab === 'cashflow') { loadCashflowData(); }
 }
 
 function highlightDirty() {
@@ -1924,14 +1942,16 @@ document.addEventListener('click', function(e) {
 function onFilterChange() {
   const tab = _currentTab;
   if (tab === 'dashboard') loadData();
-  else if (tab === 'pnl') { window._pnlLoaded = false; loadPnlData(); }
-  else if (tab === 'sales') { window._salesLoaded = false; loadSalesData(); }
-  else if (tab === 'expenses') { window._expLoaded = false; loadExpensesData(); }
-  else if (tab === 'style') { window._styleLoaded = false; loadStyleAnalysis(); }
-  else if (tab === 'investment') { window._invLoaded = false; loadInvestmentData(); }
-  else if (tab === 'cashflow') { window._cfLoaded = false; loadCashflowData(); }
+  else if (tab === 'pnl') loadPnlData();
+  else if (tab === 'sales') loadSalesData();
+  else if (tab === 'expenses') loadExpensesData();
+  else if (tab === 'style') loadStyleAnalysis();
+  else if (tab === 'investment') loadInvestmentData();
+  else if (tab === 'cashflow') loadCashflowData();
 }
-function switchTab(tab) {
+var _tabLoading = {};
+function switchTab(tab, force) {
+  if (_tabLoading[tab] && !force) return;
   _currentTab = tab;
   document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
   const tabEl = document.getElementById('tab-' + tab);
@@ -1951,12 +1971,12 @@ function switchTab(tab) {
     if (t.includes(tab === 'pnl' ? 'p&l' : tab)) el.classList.add('active');
   });
   if (tab === 'dashboard') loadData();
-  if (tab === 'pnl') { window._pnlLoaded = true; loadPnlData(); }
-  if (tab === 'sales') { window._salesLoaded = true; loadSalesData(); }
-  if (tab === 'expenses') { window._expLoaded = true; loadExpensesData(); }
-  if (tab === 'style') { window._styleLoaded = true; loadStyleAnalysis(); }
-  if (tab === 'investment') { window._invLoaded = true; loadInvestmentData(); }
-  if (tab === 'cashflow') { window._cfLoaded = true; loadCashflowData(); }
+  else if (tab === 'pnl') loadPnlData();
+  else if (tab === 'sales') loadSalesData();
+  else if (tab === 'expenses') loadExpensesData();
+  else if (tab === 'style') loadStyleAnalysis();
+  else if (tab === 'investment') loadInvestmentData();
+  else if (tab === 'cashflow') loadCashflowData();
   setTimeout(() => { updatePlotlyBlur(); markEditables(); animateKPIs(); }, 300);
 }
 
@@ -1973,6 +1993,7 @@ function pnlFmtShort(v) { return pnlFmt(v); }
 
 async function loadPnlData() {
   const f = getFilters();
+  _tabLoading.pnl = true;
   const r = await authFetch('/api/pnl_forecast?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month));
   const d = await r.json();
   const ytd = d.ytd;
@@ -2125,9 +2146,8 @@ async function loadPnlData() {
         (varPct !== 'N/A' ? (varAmt >= 0 ? '+' : '') + varPct + '%' : 'N/A') + '</td></tr>';
     }).join('') + '</table></div>';
   setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
-}
-
-function buildGroupedBar(divId, labels, seriesArr, extraLayout) {
+  _tabLoading.pnl = false;
+}(divId, labels, seriesArr, extraLayout) {
   const c = getCurrency();
   const traces = seriesArr.map(s => ({
     type:'bar', name:s.name, x:labels, y:s.y,
@@ -2157,6 +2177,7 @@ function salesFmtShort(v) { return salesFmt(v); }
 async function loadSalesData() {
   const f = getFilters();
   const qs = '?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month);
+  _tabLoading.sales = true;
   const [sf, d] = await Promise.all([
     authFetch('/api/sales_forecast'+qs).then(r=>r.json()),
     authFetch('/api/data'+qs).then(r=>r.json())
@@ -2191,19 +2212,19 @@ async function loadSalesData() {
   ], {margin:{t:65,b:55,l:70,r:30},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#A0AEC0',size:11},barmode:'group',height:320,hovermode:'x unified',legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:11,color:'#4A5568'}},yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true},xaxis:{automargin:true},cliponaxis:false},{responsive:true,displayModeBar:false});
 
   const qtyV = dMonths.map(m => m.qty);
-  Plotly.newPlot('salesQtyChart',[{type:'bar',x:months,y:qtyV,marker:{color:'#3BD671',opacity:0.85},text:qtyV.map(v=>v.toLocaleString()),textposition:'outside',textfont:{size:10,color:'#4A5568',family:'Inter'},cliponaxis:false}],{margin:{t:80,b:65,l:90,r:50},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#A0AEC0',size:11},yaxis:{rangemode:'tozero',gridcolor:'transparent',automargin:true},xaxis:{automargin:true,fixedrange:true},height:340,hovermode:'x unified',showlegend:false,cliponaxis:false},{responsive:true,displayModeBar:false});
+  Plotly.newPlot('salesQtyChart',[{type:'bar',x:months,y:qtyV,marker:{color:'#3BD671',opacity:0.85},text:qtyV.map(v=>v.toLocaleString()),textposition:'outside',textfont:{size:10,color:'#4A5568',family:'Inter'},cliponaxis:false}],{margin:{t:80,b:65,l:90,r:60},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#A0AEC0',size:11},yaxis:{rangemode:'tozero',gridcolor:'transparent',automargin:true},xaxis:{automargin:true,fixedrange:true},height:340,hovermode:'x unified',showlegend:false,cliponaxis:false},{responsive:true,displayModeBar:false});
 
   const bu = d.business_units;
-  Plotly.newPlot('salesBUChart',[{type:'pie',labels:bu.map(x=>x.name),values:bu.map(x=>x.sales_pct),text:bu.map(x=>x.name+'<br>'+x.sales_pct.toFixed(1)+'%'),textinfo:'text',textfont:{size:12,color:'#475569',family:'Inter'},marker:{colors:['#2DA356','#4A5568','#3BD671','#3BD671'].slice(0,bu.length),line:{color:'#fff',width:2}},hole:0.4,hovertemplate:'%{label}<br>%{value:.1f}%<extra></extra>'}],{margin:{t:20,b:30,l:20,r:20},paper_bgcolor:'rgba(0,0,0,0)',height:300,showlegend:true,legend:{orientation:'h',y:-0.05,font:{size:11,color:'#72839E'}}},{responsive:true,displayModeBar:false});
+  Plotly.newPlot('salesBUChart',[{type:'pie',labels:bu.map(x=>x.name),values:bu.map(x=>x.sales_pct),text:bu.map(x=>x.name+'<br>'+x.sales_pct.toFixed(1)+'%'),textinfo:'text',textfont:{size:12,color:'#475569',family:'Inter'},marker:{colors:['#2DA356','#4A5568','#3BD671','#3BD671'].slice(0,bu.length),line:{color:'#fff',width:2}},hole:0.4,hovertemplate:'%{label}<br>%{value:.1f}%<extra></extra>'}],{margin:{t:30,b:40,l:30,r:30},paper_bgcolor:'rgba(0,0,0,0)',height:300,showlegend:true,legend:{orientation:'h',y:-0.05,font:{size:11,color:'#72839E'}}},{responsive:true,displayModeBar:false});
 
   const tc = d.top_customers;
-  Plotly.newPlot('salesTopChart',[{type:'bar',orientation:'h',x:tc.map(x=>x.sales*cr.rate),y:tc.map(x=>x.name),marker:{color:['#2DA356','#473FE0','#3BD671','#3BD671','#81E6D9'],opacity:0.9},text:tc.map(x=>fmtBig(x.sales*cr.rate)),textposition:'outside',textfont:{size:10,color:'#4A5568',family:'Inter'},cliponaxis:false}],{margin:{t:15,b:30,l:15,r:80},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#4A5568',size:11},height:Math.max(260,tc.length*48),hovermode:'y unified',showlegend:false,yaxis:{automargin:true,tickfont:{size:11,color:'#4A5568'}},xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true,fixedrange:true}},{responsive:true,displayModeBar:false});
+  Plotly.newPlot('salesTopChart',[{type:'bar',orientation:'h',x:tc.map(x=>x.sales*cr.rate),y:tc.map(x=>x.name),marker:{color:['#2DA356','#473FE0','#3BD671','#3BD671','#81E6D9'],opacity:0.9},text:tc.map(x=>fmtBig(x.sales*cr.rate)),textposition:'outside',textfont:{size:10,color:'#4A5568',family:'Inter'},cliponaxis:false}],{margin:{t:15,b:30,l:15,r:90},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#4A5568',size:11},height:Math.max(260,tc.length*48),hovermode:'y unified',showlegend:false,yaxis:{automargin:true,tickfont:{size:11,color:'#4A5568'}},xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true,fixedrange:true}},{responsive:true,displayModeBar:false});
 
   const tt = d.top_types;
-  Plotly.newPlot('salesTypeChart',[{type:'bar',orientation:'h',x:tt.map(x=>x.sales*cr.rate),y:tt.map(x=>x.name),marker:{color:'#3BD671',opacity:0.9},text:tt.map(x=>fmtBig(x.sales*cr.rate)),textposition:'outside',textfont:{size:10,color:'#4A5568',family:'Inter'},cliponaxis:false}],{margin:{t:15,b:30,l:15,r:80},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#4A5568',size:11},height:Math.max(260,tt.length*48),hovermode:'y unified',showlegend:false,yaxis:{automargin:true,tickfont:{size:11,color:'#4A5568'}},xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true,fixedrange:true}},{responsive:true,displayModeBar:false});
+  Plotly.newPlot('salesTypeChart',[{type:'bar',orientation:'h',x:tt.map(x=>x.sales*cr.rate),y:tt.map(x=>x.name),marker:{color:'#3BD671',opacity:0.9},text:tt.map(x=>fmtBig(x.sales*cr.rate)),textposition:'outside',textfont:{size:10,color:'#4A5568',family:'Inter'},cliponaxis:false}],{margin:{t:15,b:30,l:15,r:90},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#4A5568',size:11},height:Math.max(260,tt.length*48),hovermode:'y unified',showlegend:false,yaxis:{automargin:true,tickfont:{size:11,color:'#4A5568'}},xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true,fixedrange:true}},{responsive:true,displayModeBar:false});
 
   const tf = d.top_fabrics;
-  Plotly.newPlot('salesFabricChart',[{type:'bar',orientation:'h',x:tf.map(x=>x.sales*cr.rate),y:tf.map(x=>x.name),marker:{color:'#00B5D8',opacity:0.9},text:tf.map(x=>fmtBig(x.sales*cr.rate)),textposition:'outside',textfont:{size:10,color:'#4A5568',family:'Inter'},cliponaxis:false}],{margin:{t:15,b:30,l:15,r:80},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#4A5568',size:11},height:Math.max(260,tf.length*48),hovermode:'y unified',showlegend:false,yaxis:{automargin:true,tickfont:{size:11,color:'#4A5568'}},xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true,fixedrange:true}},{responsive:true,displayModeBar:false});
+  Plotly.newPlot('salesFabricChart',[{type:'bar',orientation:'h',x:tf.map(x=>x.sales*cr.rate),y:tf.map(x=>x.name),marker:{color:'#00B5D8',opacity:0.9},text:tf.map(x=>fmtBig(x.sales*cr.rate)),textposition:'outside',textfont:{size:10,color:'#4A5568',family:'Inter'},cliponaxis:false}],{margin:{t:15,b:30,l:15,r:90},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#4A5568',size:11},height:Math.max(260,tf.length*48),hovermode:'y unified',showlegend:false,yaxis:{automargin:true,tickfont:{size:11,color:'#4A5568'}},xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true,fixedrange:true}},{responsive:true,displayModeBar:false});
 
   const convAct = sf.monthly.map(m=>m.gross_sales.actual > 0 ? ((m.net_sales.actual / m.gross_sales.actual) * 100) : 0);
   const convFct = sf.monthly.map(m=>m.gross_sales.forecast > 0 ? ((m.net_sales.forecast / m.gross_sales.forecast) * 100) : 0);
@@ -2212,6 +2233,7 @@ async function loadSalesData() {
     {type:'scatter',mode:'lines+markers',name:'Budget',x:months,y:convFct,line:{color:'#A0AEC0',width:3,dash:'dot'},marker:{size:10,color:'#A0AEC0',symbol:'diamond'}}
   ],{margin:{t:20,b:40,l:55,r:20},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#A0AEC0',size:11},yaxis:{ticksuffix:'%',gridcolor:'transparent',rangemode:'tozero'},height:280,hovermode:'x unified',legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#72839E'}}},{responsive:true,displayModeBar:false});
   setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
+  _tabLoading.sales = false;
 }
 
 // ---- Expenses Tab ----
@@ -2225,6 +2247,7 @@ function expFmtShort(v) { return expFmt(v); }
 async function loadExpensesData() {
   const f = getFilters();
   const qs = '?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month);
+  _tabLoading.expenses = true;
   const [p, d] = await Promise.all([
     authFetch('/api/pnl_forecast'+qs).then(r=>r.json()),
     authFetch('/api/data'+qs).then(r=>r.json())
@@ -2315,6 +2338,7 @@ async function loadExpensesData() {
     '<td class="num" style="padding:6px 10px;text-align:right;color:' + (ytd.actual<=ytd.forecast?'var(--green)':'var(--red)') + '">' + (ytd.forecast>0?((ytd.actual-ytd.forecast)/ytd.forecast*100).toFixed(1):'N/A') + '%</td>' +
     '<td class="num" style="padding:6px 10px;text-align:right;color:#72839E">100%</td></tr></table></div>';
   setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
+  _tabLoading.expenses = false;
 }
 </script>
 </body>
