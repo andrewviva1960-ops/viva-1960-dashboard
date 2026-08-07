@@ -550,9 +550,6 @@ body.edit-mode .edit-save-bar{display:flex}
   </div>
   <div class="kpi-grid" id="kpiGrid"></div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-university" style="color:var(--accent);margin-right:6px"></i>CBE Official Exchange Rates</h5><span style="font-size:11px;color:var(--text-secondary)">Base: EGP</span></div><div class="chart-body" id="currencyRateChart"></div></div>
-  </div>
-  <div class="chart-grid">
     <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:var(--accent);margin-right:6px"></i>Monthly Gross Sales</h5></div><div class="chart-body" id="salesChart"></div></div>
     <div class="chart-card"><div class="chart-header"><h5><i class="fas fa-receipt" style="color:#DF484A;margin-right:6px"></i>Monthly Expenses</h5></div><div class="chart-body" id="expChart"></div></div>
   </div>
@@ -868,7 +865,6 @@ function changeCurrency(curr) {
   currentCurrency = curr;
   const select = document.getElementById('currencySelect');
   if (select) select.value = curr;
-  renderCurrencyChart();
   loadData();
   window._pnlLoaded = false;
   window._salesLoaded = false;
@@ -878,30 +874,6 @@ function changeCurrency(curr) {
     var id = active.id.replace('tab-', '');
     if (id !== 'dashboard') switchTab(id);
   }
-}
-
-function renderCurrencyChart() {
-  const allCurs = ['USD','EUR','GBP','CHF','KWD','BHD','OMR','JOD','SAR','AED'];
-  const sel = currentCurrency;
-  const vals = allCurs.map(n => {
-    const rate = CURRENCIES[n] ? CURRENCIES[n].rate : 0;
-    return rate > 0 ? (1 / rate) : 0;
-  });
-  const barColors = allCurs.map(n => n === sel ? '#2DA356' : '#b8b8a8');
-  Plotly.newPlot('currencyRateChart', [{
-    type: 'bar', x: allCurs, y: vals,
-    marker: {color: barColors, line: {color: '#2DA356', width: allCurs.map(n => n === sel ? 2 : 0)}},
-    text: vals.map(v => v.toFixed(2) + ' EGP'),
-    textposition: 'outside', textfont: {size: 11, color: '#475569', family: 'Inter'}, cliponaxis: false
-  }], {
-    margin: {t: 25, b: 40, l: 65, r: 20},
-    paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
-    font: {size: 11, color: '#A0AEC0', family: 'Inter'},
-    yaxis: {title: 'EGP per 1 unit', titlefont:{size:11,color:'#4A5568'}, gridcolor: 'transparent', rangemode: 'tozero', tickfont:{size:11}},
-    height: 280, hovermode: 'x unified', showlegend: false
-  }, {responsive: true, displayModeBar: false});
-  const ts = document.getElementById('rateTimestamp');
-  if (ts) ts.textContent = 'Last updated: ' + new Date().toLocaleString();
 }
 
 function renderTopChart(d, c) {
@@ -1034,7 +1006,6 @@ async function loadData() {
   ], _calmLayout({barmode:'group', height:280, hovermode:'x unified', bargap:0.25, bargroupgap:0.1,
       legend:{orientation:'h',y:1.12,x:.5,xanchor:'center',font:{size:11,color:'#4A5568'}},
       yaxis:{ticksuffix:' '+c.symbol,gridcolor:'transparent',automargin:true}}), {responsive:true, displayModeBar:false});
-  renderCurrencyChart();
   animateCharts();
   setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
   setTimeout(preloadTabs, 500);
