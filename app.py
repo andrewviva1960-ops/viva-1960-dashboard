@@ -2245,11 +2245,45 @@ document.addEventListener('click', function(e) {
   if (!e.target.closest('.export-wrap')) closeExportMenu();
 });
 
+async function captureTab(tabEl, bgColor) {
+  var chartDivs = tabEl.querySelectorAll('.plotly-chart');
+  var originals = [];
+  var chartImages = [];
+  for (var c = 0; c < chartDivs.length; c++) {
+    var div = chartDivs[c];
+    var gd = div.querySelector('.js-plotly-plot') || div.querySelector('.plotly');
+    if (gd && gd.data) {
+      try {
+        var imgData = await Plotly.toImage(gd, {format:'png', width:800, height:340, scale:2});
+        chartImages.push({div: div, img: imgData});
+      } catch(e) { chartImages.push({div: div, img: null}); }
+    } else {
+      chartImages.push({div: div, img: null});
+    }
+  }
+  var clone = tabEl.cloneNode(true);
+  clone.style.cssText = 'position:fixed;top:0;left:0;width:1200px;z-index:-1;display:block;opacity:1;visibility:visible;overflow:visible;background:' + bgColor;
+  document.body.appendChild(clone);
+  var clonedCharts = clone.querySelectorAll('.plotly-chart');
+  for (var c = 0; c < chartImages.length && c < clonedCharts.length; c++) {
+    if (chartImages[c].img) {
+      clonedCharts[c].innerHTML = '<img src="' + chartImages[c].img + '" style="width:100%;height:auto;display:block">';
+    }
+  }
+  var canvas = await html2canvas(clone, {
+    scale: 1.5, useCORS: true, logging: false,
+    backgroundColor: bgColor, windowWidth: 1200,
+    windowHeight: clone.scrollHeight
+  });
+  document.body.removeChild(clone);
+  return canvas;
+}
+
 async function exportPDF(mode) {
   closeExportMenu();
   var btn = document.getElementById('exportToggle');
   var origHTML = btn.innerHTML;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
   btn.disabled = true;
   try {
     var jsPDF = window.jspdf && window.jspdf.jsPDF;
@@ -2257,28 +2291,18 @@ async function exportPDF(mode) {
     var tabs = mode === 'all' ? ['dashboard','pnl','sales','expenses','style','investment','cashflow'] : [_currentTab];
     var pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
     var first = true;
+    var bg = document.body.classList.contains('dark-mode') ? '#131A25' : '#ffffff';
     for (var i = 0; i < tabs.length; i++) {
-      var tab = tabs[i];
-      var el = document.getElementById('tab-' + tab);
+      var el = document.getElementById('tab-' + tabs[i]);
       if (!el) continue;
-      var clone = el.cloneNode(true);
-      clone.style.cssText = 'position:fixed;top:0;left:0;width:1200px;z-index:-1;display:block;opacity:1;visibility:visible;background:' + (document.body.classList.contains('dark-mode') ? '#131A25' : '#ffffff');
-      document.body.appendChild(clone);
-      try {
-        var canvas = await html2canvas(clone, {
-          scale: 2, useCORS: true, logging: false,
-          backgroundColor: document.body.classList.contains('dark-mode') ? '#131A25' : '#ffffff',
-          windowWidth: 1200, windowHeight: clone.scrollHeight
-        });
-        var imgData = canvas.toDataURL('image/png');
-        var pxW = canvas.width, pxH = canvas.height;
-        var pdfW = 297, pdfH = (pxH / pxW) * pdfW;
-        if (!first) pdf.addPage([pdfW, pdfH], pdfH > pdfW ? 'portrait' : 'landscape');
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfW, pdfH);
-        first = false;
-      } finally {
-        document.body.removeChild(clone);
-      }
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Page ' + (i+1) + '/' + tabs.length;
+      var canvas = await captureTab(el, bg);
+      var imgData = canvas.toDataURL('image/jpeg', 0.85);
+      var pxW = canvas.width, pxH = canvas.height;
+      var pdfW = 297, pdfH = (pxH / pxW) * pdfW;
+      if (!first) pdf.addPage([pdfW, pdfH], 'landscape');
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfW, pdfH);
+      first = false;
     }
     pdf.save('VIVA_1960_' + (mode === 'all' ? 'All_Pages' : _currentTab) + '_' + new Date().toISOString().slice(0,10) + '.pdf');
   } catch(e) { console.error('PDF export error:', e); }
@@ -2288,23 +2312,44 @@ async function exportPDF(mode) {
 function printTab(mode) {
   closeExportMenu();
   var tabs = mode === 'all' ? ['dashboard','pnl','sales','expenses','style','investment','cashflow'] : [_currentTab];
-  var html = '<html><head><title>VIVA 1960 Dashboard</title>';
-  html += '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">';
-  html += '<style>@page{size:landscape;margin:10mm}body{font-family:Inter,system-ui,sans-serif;margin:0;padding:10px;background:#fff;color:#1C2434;font-size:11px}img{max-width:100%}.tab-content{display:block!important;page-break-after:always}h2{font-size:14px;margin:0 0 8px;border-bottom:1px solid #e2e8f0;padding-bottom:4px}</style>';
-  html += '</head><body>';
+  var promises = [];
   for (var i = 0; i < tabs.length; i++) {
     var el = document.getElementById('tab-' + tabs[i]);
     if (!el) continue;
-    var clone = el.cloneNode(true);
-    clone.style.display = 'block';
-    html += '<div class="tab-content"><h2>' + tabs[i].charAt(0).toUpperCase() + tabs[i].slice(1) + '</h2>' + clone.innerHTML + '</div>';
+    (function(tabEl, tabName) {
+      promises.push((async function() {
+        var chartDivs = tabEl.querySelectorAll('.plotly-chart');
+        var chartImages = [];
+        for (var c = 0; c < chartDivs.length; c++) {
+          var gd = chartDivs[c].querySelector('.js-plotly-plot') || chartDivs[c].querySelector('.plotly');
+          if (gd && gd.data) {
+            try { chartImages.push(await Plotly.toImage(gd, {format:'png', width:800, height:340, scale:2})); }
+            catch(e) { chartImages.push(null); }
+          } else chartImages.push(null);
+        }
+        var clone = tabEl.cloneNode(true);
+        clone.style.display = 'block';
+        var clonedCharts = clone.querySelectorAll('.plotly-chart');
+        for (var c = 0; c < chartImages.length && c < clonedCharts.length; c++) {
+          if (chartImages[c]) {
+            clonedCharts[c].innerHTML = '<img src="' + chartImages[c] + '" style="width:100%;height:auto;display:block">';
+          }
+        }
+        return '<div class="tab-content"><h2>' + tabName.charAt(0).toUpperCase() + tabName.slice(1) + '</h2>' + clone.innerHTML + '</div>';
+      })());
+    })(el, tabs[i]);
   }
-  html += '</body></html>';
-  var w = window.open('', '_blank');
-  if (!w) { console.error('Popup blocked'); return; }
-  w.document.write(html);
-  w.document.close();
-  setTimeout(function() { try { w.print(); } catch(e) {} }, 500);
+  Promise.all(promises).then(function(pages) {
+    var html = '<html><head><title>VIVA 1960 Dashboard</title>';
+    html += '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">';
+    html += '<style>@page{size:landscape;margin:10mm}body{font-family:Inter,system-ui,sans-serif;margin:0;padding:10px;background:#fff;color:#1C2434;font-size:11px}img{max-width:100%}.tab-content{page-break-after:always}h2{font-size:14px;margin:0 0 8px;border-bottom:1px solid #e2e8f0;padding-bottom:4px}</style>';
+    html += '</head><body>' + pages.join('') + '</body></html>';
+    var w = window.open('', '_blank');
+    if (!w) return;
+    w.document.write(html);
+    w.document.close();
+    setTimeout(function() { try { w.print(); } catch(e) {} }, 600);
+  });
 }
 </script>
 </body>
