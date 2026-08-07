@@ -895,9 +895,6 @@ function changeCurrency(curr) {
   if (select) select.value = curr;
   renderCurrencyChart();
   loadData();
-  window._pnlLoaded = false;
-  window._salesLoaded = false;
-  window._expLoaded = false;
   var active = document.querySelector('.tab-content.active');
   if (active) {
     var id = active.id.replace('tab-', '');
@@ -1887,10 +1884,11 @@ loadOverrides();
   tick();
   setInterval(tick, 1000);
 })();
-loadData();
 
+var _tabLoading = {};
+var _currentTab = 'dashboard';
+loadData();
 // ---- Tab Switching ----
-let _currentTab = 'dashboard';
 function getActiveTab() { return _currentTab; }
 function getFilters() {
   const monthChecked = Array.from(document.querySelectorAll('#monthPanel input:checked')).map(c=>c.value);
@@ -1931,7 +1929,6 @@ function updateMsLabel(group) {
   var el = document.getElementById(group==='period'?'periodLabel':group==='bu'?'buLabel':'monthLabel');
   if (el) el.textContent = text;
 }
-var _filterTimer = null;
 function debouncedFilter() {
   if (_filterTimer) clearTimeout(_filterTimer);
   _filterTimer = setTimeout(function() { onFilterChange(); }, 300);
@@ -1949,7 +1946,6 @@ function onFilterChange() {
   else if (tab === 'investment') loadInvestmentData();
   else if (tab === 'cashflow') loadCashflowData();
 }
-var _tabLoading = {};
 function switchTab(tab, force) {
   if (_tabLoading[tab] && !force) return;
   _currentTab = tab;
