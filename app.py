@@ -760,16 +760,16 @@ body.edit-mode .edit-save-bar{display:flex}
 // Currency rates (base: EGP) - CBE Official Rates (29 Jul 2026) - Average of Buy & Sell
 let CURRENCIES = {
   EGP: {rate: 1, symbol: 'EGP', locale: 'en-US'},
-  USD: {rate: 0.019721, symbol: '$', locale: 'en-US'},
-  EUR: {rate: 0.017317, symbol: '\u20AC', locale: 'de-DE'},
-  GBP: {rate: 0.014831, symbol: '\u00A3', locale: 'en-GB'},
-  CHF: {rate: 0.016161, symbol: 'CHF', locale: 'de-CH'},
-  KWD: {rate: 0.006071, symbol: 'KWD', locale: 'ar-KW'},
-  BHD: {rate: 0.007439, symbol: 'BHD', locale: 'ar-BH'},
-  OMR: {rate: 0.007673, symbol: 'OMR', locale: 'ar-OM'},
-  JOD: {rate: 0.014085, symbol: 'JOD', locale: 'ar-JO'},
-  SAR: {rate: 0.074034, symbol: 'SAR', locale: 'ar-SA'},
-  AED: {rate: 0.072428, symbol: 'AED', locale: 'ar-AE'}
+  USD: {rate: 0.02008, symbol: '$', locale: 'en-US'},
+  EUR: {rate: 0.01739, symbol: '\u20AC', locale: 'de-DE'},
+  GBP: {rate: 0.01492, symbol: '\u00A3', locale: 'en-GB'},
+  CHF: {rate: 0.01622, symbol: 'CHF', locale: 'de-CH'},
+  KWD: {rate: 0.00617, symbol: 'KWD', locale: 'ar-KW'},
+  BHD: {rate: 0.00744, symbol: 'BHD', locale: 'ar-BH'},
+  OMR: {rate: 0.00767, symbol: 'OMR', locale: 'ar-OM'},
+  JOD: {rate: 0.01409, symbol: 'JOD', locale: 'ar-JO'},
+  SAR: {rate: 0.07546, symbol: 'SAR', locale: 'ar-SA'},
+  AED: {rate: 0.07379, symbol: 'AED', locale: 'ar-AE'}
 };
 let currentCurrency = 'EGP';
 let _data = null;
@@ -2521,29 +2521,58 @@ _rates_cache = {"data": None, "ts": 0}
 @app.route("/api/rates")
 def api_rates():
     import urllib.request as _urllib
+    import re as _re
     now = time.time()
     if _rates_cache["data"] and (now - _rates_cache["ts"]) < 86400:
         return jsonify(_rates_cache["data"])
     try:
-        req = _urllib.Request("https://api.exchangerate-api.com/v4/latest/EGP", headers={"User-Agent": "Mozilla/5.0"})
-        resp = _urllib.urlopen(req, timeout=10)
-        data = json.loads(resp.read().decode())
-        rates = data.get("rates", {})
-        result = {
-            "EGP": 1,
-            "USD": rates.get("USD", 0.02),
-            "EUR": rates.get("EUR", 0.017),
-            "GBP": rates.get("GBP", 0.015),
-            "CHF": rates.get("CHF", 0.016),
-            "KWD": rates.get("KWD", 0.006),
-            "BHD": rates.get("BHD", 0.007),
-            "OMR": rates.get("OMR", 0.007),
-            "JOD": rates.get("JOD", 0.014),
-            "SAR": rates.get("SAR", 0.075),
-            "AED": rates.get("AED", 0.073),
-        }
-        _rates_cache["data"] = result
-        _rates_cache["ts"] = now
+        req = _urllib.Request("https://www.cbe.org.eg/en/economic-research/statistics/exchange-rates", headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
+        resp = _urllib.urlopen(req, timeout=15)
+        html = resp.read().decode("utf-8", errors="ignore")
+        rate_map = {}
+        row_pat = _re.compile(r'<td[^>]*>\s*(.*?)\s*</td>', _re.DOTALL)
+        rows = _re.findall(r'<tr[^>]*>(.*?)</tr>', html, _re.DOTALL)
+        for row in rows:
+            cells = row_pat.findall(row)
+            if len(cells) >= 3:
+                name = _re.sub(r'<[^>]+>', '', cells[0]).strip()
+                buy_s = _re.sub(r'<[^>]+>', '', cells[1]).strip()
+                sell_s = _re.sub(r'<[^>]+>', '', cells[2]).strip()
+                try:
+                    buy = float(buy_s)
+                    sell = float(sell_s)
+                    avg = (buy + sell) / 2.0
+                    if avg > 0:
+                        rate_map[name.lower()] = avg
+                except: pass
+        def g(*names):
+            for n in names:
+                if n in rate_map: return rate_map[n]
+            return 0
+        usd_egp = g('us dollar')
+        eur_egp = g('euro')
+        gbp_egp = g('pound sterling', 'gbp')
+        chf_egp = g('swiss franc')
+        sar_egp = g('saudi riyal')
+        kwd_egp = g('kuwaiti dinar')
+        aed_egp = g('uae dirham', 'emirati dirham')
+        jod_egp = g('jordanian dinar')
+        omr_egp = g('omani rial')
+        bhd_egp = g('bahraini dinar')
+        result = {"EGP": 1}
+        if usd_egp > 0: result["USD"] = 1.0 / usd_egp
+        if eur_egp > 0: result["EUR"] = 1.0 / eur_egp
+        if gbp_egp > 0: result["GBP"] = 1.0 / gbp_egp
+        if chf_egp > 0: result["CHF"] = 1.0 / chf_egp
+        if sar_egp > 0: result["SAR"] = 1.0 / sar_egp
+        if kwd_egp > 0: result["KWD"] = 1.0 / kwd_egp
+        if aed_egp > 0: result["AED"] = 1.0 / aed_egp
+        if jod_egp > 0: result["JOD"] = 1.0 / jod_egp
+        if omr_egp > 0: result["OMR"] = 1.0 / omr_egp
+        if bhd_egp > 0: result["BHD"] = 1.0 / bhd_egp
+        if len(result) > 2:
+            _rates_cache["data"] = result
+            _rates_cache["ts"] = now
         return jsonify(result)
     except:
         return jsonify({"EGP": 1, "USD": 0.02, "EUR": 0.017, "GBP": 0.015, "CHF": 0.016, "KWD": 0.006, "BHD": 0.007, "OMR": 0.007, "JOD": 0.014, "SAR": 0.075, "AED": 0.073})
