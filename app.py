@@ -44,6 +44,8 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
 <link href="/static/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="/static/all.min.css">
 <script src="/static/plotly.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 Plotly.setPlotConfig({
   font:{family:'Inter, system-ui, sans-serif',size:12,color:'#72839E'},
@@ -477,6 +479,7 @@ body.edit-mode .edit-save-bar{display:flex}
       </select>
     </div>
     <button id="refreshBtn" onclick="refreshData()" class="hdr-btn"><i class="fas fa-sync-alt"></i> Refresh</button>
+    <button id="pdfBtn" onclick="exportPDF()" class="hdr-btn" title="Export to PDF"><i class="fas fa-file-pdf"></i> PDF</button>
     <button id="editToggle" onclick="toggleEditMode()" class="hdr-btn" title="Toggle edit mode"><i class="fas fa-pen"></i> Edit</button>
     <button id="blurToggle" onclick="toggleBlur()" class="hdr-btn" title="Toggle number visibility"><i class="fas fa-eye"></i></button>
     <button id="darkToggle" onclick="toggleDarkMode()" class="hdr-btn" title="Toggle dark/light mode"><i class="fas fa-moon"></i></button>
@@ -739,6 +742,7 @@ body.edit-mode .edit-save-bar{display:flex}
     <div class="mnav-item" onclick="switchTab('investment')"><i class="fas fa-coins"></i>Invest</div>
     <div class="mnav-item" onclick="switchTab('cashflow')"><i class="fas fa-money-bill-wave"></i>Cash</div>
     <div class="mnav-item mnav-action" onclick="toggleBlur()" title="Toggle blur"><i class="fas fa-eye" id="mobileBlurIcon"></i></div>
+    <div class="mnav-item mnav-action" onclick="exportPDF()" title="Export PDF"><i class="fas fa-file-pdf"></i></div>
     <div class="mnav-item mnav-action" onclick="toggleEditMode()" title="Toggle edit mode"><i class="fas fa-pen" id="mobileEditIcon"></i></div>
     <div class="mnav-item mnav-dark" onclick="toggleDarkMode()" title="Toggle dark/light mode"><i class="fas fa-moon"></i></div>
   </div>
@@ -1360,6 +1364,41 @@ async function uploadExcel(input) {
   if (j.ok) { loadData(); alert('Excel updated successfully!'); }
   else { alert('Error: ' + j.error); }
   input.value = '';
+}
+
+async function exportPDF() {
+  const btn = document.getElementById('pdfBtn');
+  const origHTML = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
+  btn.disabled = true;
+  try {
+    const { jsPDF } = window.jspdf;
+    const activeTab = document.querySelector('.tab-content.active');
+    if (!activeTab) return;
+    const canvas = await html2canvas(activeTab, {
+      scale: 2,
+      useCORS: true,
+      logging: false,
+      backgroundColor: document.body.classList.contains('dark-mode') ? '#131A25' : '#ffffff',
+      windowWidth: activeTab.scrollWidth,
+      windowHeight: activeTab.scrollHeight
+    });
+    const imgData = canvas.toDataURL('image/png');
+    const pxW = canvas.width;
+    const pxH = canvas.height;
+    const pdfW = 297;
+    const pdfH = (pxH / pxW) * pdfW;
+    const pdf = new jsPDF({ orientation: pdfH > pdfW ? 'portrait' : 'landscape', unit: 'mm', format: [pdfW, pdfH] });
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfW, pdfH);
+    const tabName = _currentTab || 'dashboard';
+    pdf.save('VIVA_1960_' + tabName + '_' + new Date().toISOString().slice(0,10) + '.pdf');
+  } catch(e) {
+    console.error('PDF export error:', e);
+    alert('Export failed: ' + e.message);
+  } finally {
+    btn.innerHTML = origHTML;
+    btn.disabled = false;
+  }
 }
 
 async function refreshData() {
