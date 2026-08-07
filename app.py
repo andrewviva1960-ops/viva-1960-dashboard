@@ -1401,42 +1401,46 @@ async function exportPDF(mode) {
   const origHTML = btn.innerHTML;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
   btn.disabled = true;
-  const savedTab = _currentTab;
   try {
     const { jsPDF } = window.jspdf;
+    if (!jsPDF) throw new Error('jsPDF not loaded');
     const tabs = mode === 'all' ? ['dashboard','pnl','sales','expenses','style','investment','cashflow'] : [_currentTab];
     const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
     let first = true;
     for (const tab of tabs) {
-      if (mode === 'all') {
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-        const tabEl = document.getElementById('tab-' + tab);
-        if (tabEl) tabEl.classList.add('active');
-        await new Promise(r => setTimeout(r, 800));
-      }
       const el = document.getElementById('tab-' + tab);
       if (!el) continue;
-      const canvas = await html2canvas(el, {
-        scale: 2, useCORS: true, logging: false,
-        backgroundColor: document.body.classList.contains('dark-mode') ? '#131A25' : '#ffffff',
-        windowWidth: el.scrollWidth, windowHeight: el.scrollHeight
-      });
-      const imgData = canvas.toDataURL('image/png');
-      const pxW = canvas.width, pxH = canvas.height;
-      const pdfW = 297, pdfH = (pxH / pxW) * pdfW;
-      if (!first) pdf.addPage([pdfW, pdfH], pdfH > pdfW ? 'portrait' : 'landscape');
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfW, pdfH);
-      first = false;
+      var clone = el.cloneNode(true);
+      clone.style.position = 'fixed';
+      clone.style.top = '0';
+      clone.style.left = '0';
+      clone.style.width = '1200px';
+      clone.style.zIndex = '-1';
+      clone.style.display = 'block';
+      clone.style.opacity = '1';
+      clone.style.visibility = 'visible';
+      clone.style.background = document.body.classList.contains('dark-mode') ? '#131A25' : '#ffffff';
+      document.body.appendChild(clone);
+      try {
+        const canvas = await html2canvas(clone, {
+          scale: 2, useCORS: true, logging: false,
+          backgroundColor: document.body.classList.contains('dark-mode') ? '#131A25' : '#ffffff',
+          windowWidth: 1200, windowHeight: clone.scrollHeight
+        });
+        const imgData = canvas.toDataURL('image/png');
+        const pxW = canvas.width, pxH = canvas.height;
+        const pdfW = 297, pdfH = (pxH / pxW) * pdfW;
+        if (!first) pdf.addPage([pdfW, pdfH], pdfH > pdfW ? 'portrait' : 'landscape');
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfW, pdfH);
+        first = false;
+      } finally {
+        document.body.removeChild(clone);
+      }
     }
     pdf.save('VIVA_1960_' + (mode === 'all' ? 'All_Pages' : _currentTab) + '_' + new Date().toISOString().slice(0,10) + '.pdf');
   } catch(e) {
     console.error('PDF export error:', e);
-    alert('Export failed: ' + e.message);
   } finally {
-    _currentTab = savedTab;
-    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-    const restoreEl = document.getElementById('tab-' + savedTab);
-    if (restoreEl) restoreEl.classList.add('active');
     btn.innerHTML = origHTML;
     btn.disabled = false;
   }
@@ -1462,13 +1466,16 @@ function printTab(mode) {
   for (const tab of tabs) {
     const el = document.getElementById('tab-' + tab);
     if (!el) continue;
-    html += '<div class="tab-content"><h2>' + tab.charAt(0).toUpperCase() + tab.slice(1) + '</h2>' + el.innerHTML + '</div>';
+    const clone = el.cloneNode(true);
+    clone.style.display = 'block';
+    html += '<div class="tab-content"><h2>' + tab.charAt(0).toUpperCase() + tab.slice(1) + '</h2>' + clone.innerHTML + '</div>';
   }
   html += '</body></html>';
-  const w = window.open('', '_blank');
+  var w = window.open('', '_blank');
+  if (!w) { console.error('Popup blocked'); return; }
   w.document.write(html);
   w.document.close();
-  setTimeout(() => { w.print(); }, 500);
+  setTimeout(function() { try { w.print(); } catch(e) {} }, 500);
 }
 
 function toggleExportMenu() {
