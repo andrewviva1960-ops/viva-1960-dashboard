@@ -44,8 +44,6 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
 <link href="/static/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="/static/all.min.css">
 <script src="/static/plotly.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 Plotly.setPlotConfig({
   font:{family:'Inter, system-ui, sans-serif',size:12,color:'#72839E'},
@@ -163,7 +161,7 @@ body.dark-mode {
   color:#EDF2F7;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 50%,#e8edf5 100%);color:var(--text-primary);overflow-x:clip;-webkit-font-smoothing:antialiased}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 50%,#e8edf5 100%);color:var(--text-primary);overflow-x:hidden;-webkit-font-smoothing:antialiased}
 body.dark-mode{background:linear-gradient(135deg,#131A25 0%,#1C2434 50%,#131A25 100%)}
 body.dark-mode .header{background:rgba(19,26,37,0.92);border-bottom-color:rgba(255,255,255,0.06)}
 body.dark-mode .header::after{opacity:0.6}
@@ -242,13 +240,6 @@ body.dark-mode .chart-card:hover{box-shadow:0 6px 20px rgba(255,255,255,0.1)}
 .hdr-btn:active{transform:translateY(0)}
 .hdr-btn i{font-size:13px}
 .hdr-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-.export-wrap{position:relative;display:inline-block}
-.export-menu{position:absolute;top:100%;right:0;min-width:180px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius-sm);box-shadow:var(--shadow-lg);z-index:3000;padding:6px 0;margin-top:4px}
-.export-menu-title{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);padding:6px 14px 2px;font-weight:700}
-.export-menu-item{display:flex;align-items:center;gap:8px;padding:7px 14px;font-size:12px;color:var(--text-primary);cursor:pointer;transition:background .15s}
-.export-menu-item:hover{background:rgba(59,214,113,0.08)}
-.export-menu-item i{font-size:13px;color:var(--accent);width:16px;text-align:center}
-.export-menu-divider{height:1px;background:var(--card-border);margin:4px 10px}
 .month-opt{display:flex;align-items:center;gap:6px;padding:5px 12px;font-size:11px;cursor:pointer;color:var(--text-secondary);transition:background .15s}
 .month-opt:hover{background:rgba(59,214,113,0.08)}
 .month-opt input[type=checkbox]{accent-color:var(--accent);width:14px;height:14px;cursor:pointer}
@@ -380,9 +371,6 @@ body.dark-mode .mobile-nav .mnav-action.active{background:rgba(255,255,255,0.2)}
 .chart-card .chart-body{padding:4px 6px 6px;height:var(--chart-h);overflow:visible;touch-action:manipulation;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .chart-card .chart-body .js-plotly-plot,.chart-card .chart-body .plotly{overflow:visible!important}
 .chart-card .chart-body .js-plotly-plot .main-svg,.chart-card .chart-body .plotly .main-svg{overflow:visible!important}
-.js-plotly-plot{overflow:visible!important}
-.js-plotly-plot .main-svg{overflow:visible!important}
-.js-plotly-plot .svg-container{overflow:visible!important}
 .chart-card .pnl-body{padding:0;height:var(--chart-h);overflow:visible}
 .chart-card.full{grid-column:1/-1}
 .chart-resize-handle{display:none;position:absolute;bottom:0;left:0;right:0;height:8px;cursor:ns-resize;background:linear-gradient(180deg,transparent,rgba(59,214,113,0.15));border-radius:0 0 var(--radius-md) var(--radius-md);z-index:10;transition:background .2s}
@@ -489,18 +477,6 @@ body.edit-mode .edit-save-bar{display:flex}
       </select>
     </div>
     <button id="refreshBtn" onclick="refreshData()" class="hdr-btn"><i class="fas fa-sync-alt"></i> Refresh</button>
-    <div class="export-wrap">
-      <button id="exportToggle" onclick="toggleExportMenu()" class="hdr-btn" title="Export / Print"><i class="fas fa-download"></i> Export</button>
-      <div id="exportMenu" class="export-menu" style="display:none">
-        <div class="export-menu-title">PDF Export</div>
-        <div class="export-menu-item" onclick="exportPDF('current')"><i class="fas fa-file-pdf"></i> Current Page</div>
-        <div class="export-menu-item" onclick="exportPDF('all')"><i class="fas fa-file-pdf"></i> All Pages</div>
-        <div class="export-menu-divider"></div>
-        <div class="export-menu-title">Print</div>
-        <div class="export-menu-item" onclick="printTab('current')"><i class="fas fa-print"></i> Current Page</div>
-        <div class="export-menu-item" onclick="printTab('all')"><i class="fas fa-print"></i> All Pages</div>
-      </div>
-    </div>
     <button id="editToggle" onclick="toggleEditMode()" class="hdr-btn" title="Toggle edit mode"><i class="fas fa-pen"></i> Edit</button>
     <button id="blurToggle" onclick="toggleBlur()" class="hdr-btn" title="Toggle number visibility"><i class="fas fa-eye"></i></button>
     <button id="darkToggle" onclick="toggleDarkMode()" class="hdr-btn" title="Toggle dark/light mode"><i class="fas fa-moon"></i></button>
@@ -763,7 +739,6 @@ body.edit-mode .edit-save-bar{display:flex}
     <div class="mnav-item" onclick="switchTab('investment')"><i class="fas fa-coins"></i>Invest</div>
     <div class="mnav-item" onclick="switchTab('cashflow')"><i class="fas fa-money-bill-wave"></i>Cash</div>
     <div class="mnav-item mnav-action" onclick="toggleBlur()" title="Toggle blur"><i class="fas fa-eye" id="mobileBlurIcon"></i></div>
-    <div class="mnav-item mnav-action" onclick="mobileExportMenu()" title="Export/Print"><i class="fas fa-download"></i></div>
     <div class="mnav-item mnav-action" onclick="toggleEditMode()" title="Toggle edit mode"><i class="fas fa-pen" id="mobileEditIcon"></i></div>
     <div class="mnav-item mnav-dark" onclick="toggleDarkMode()" title="Toggle dark/light mode"><i class="fas fa-moon"></i></div>
   </div>
@@ -895,6 +870,9 @@ function changeCurrency(curr) {
   if (select) select.value = curr;
   renderCurrencyChart();
   loadData();
+  window._pnlLoaded = false;
+  window._salesLoaded = false;
+  window._expLoaded = false;
   var active = document.querySelector('.tab-content.active');
   if (active) {
     var id = active.id.replace('tab-', '');
@@ -938,7 +916,7 @@ function renderTopChart(d, c) {
   Plotly.newPlot('topCustomersChart', [{type:'bar', x:names, y:vals,
     marker:{color:['#2DA356','#473FE0','#3BD671','#3BD671','#81E6D9']},
     text:vals.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:11,color:'#4A5568',family:'Inter'}, cliponaxis:false}],
-    {margin:{t:50,b:55,l:80,r:40}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+    {margin:{t:50,b:55,l:80,r:25}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
      font:{size:11,color:'#4A5568'}, yaxis:{rangemode:'tozero',ticksuffix:' '+c.symbol,gridcolor:'transparent'}, height:280,
      hovermode:'x unified', showlegend:false}, {responsive:true, displayModeBar:false});
 }
@@ -950,14 +928,12 @@ function changeTopSlicer(val) {
 }
 
 async function loadData() {
-  _tabLoading.dashboard = true;
-  try {
-    const f = getFilters();
-    const period = f.period;
-    const bu = f.bu;
-    const month = f.month;
-    const r = await authFetch('/api/data?period=' + encodeURIComponent(period) + '&bu=' + encodeURIComponent(bu) + '&month=' + encodeURIComponent(month));
-    const d = await r.json();
+  const f = getFilters();
+  const period = f.period;
+  const bu = f.bu;
+  const month = f.month;
+  const r = await authFetch('/api/data?period=' + encodeURIComponent(period) + '&bu=' + encodeURIComponent(bu) + '&month=' + encodeURIComponent(month));
+  const d = await r.json();
   _data = d;
   const T = d.totals;
   document.getElementById('kpiGrid').innerHTML =
@@ -1034,7 +1010,7 @@ async function loadData() {
     text:buSalesPct.map(v => v.toFixed(1) + '%'), textinfo:'label+percent', textfont:{size:11,color:_CALM.txtDark,family:'Inter'},
     marker:{colors:_CALM.palette.slice(0,buNames.length),line:{color:'#ffffff',width:3}},
     hovertemplate:'%{label}<br>%{value:.1f}%<extra></extra>'}],
-    {margin:{t:20,b:35,l:20,r:20}, paper_bgcolor:'rgba(0,0,0,0)', height:280, showlegend:true,
+    {margin:{t:5,b:5,l:5,r:5}, paper_bgcolor:'rgba(0,0,0,0)', height:280, showlegend:true,
      legend:{orientation:'h',y:-0.12,font:{size:11,color:'#4A5568'}}},
     {responsive:true, displayModeBar:false});
 
@@ -1043,7 +1019,6 @@ async function loadData() {
   Plotly.newPlot('qtyChart', [{type:'bar', x:monthLabels, y:qtyVals,
     marker:{color:_CALM.palette[2],opacity:0.85}, text:qtyVals.map(v => v > 0 ? v.toLocaleString() : ''), textposition:'outside', textfont:{size:11,color:'#4A5568',family:'Inter'}, cliponaxis:false}],
     _calmLayout({height:280, hovermode:'x unified', showlegend:false, bargap:0.3,
-     margin:{t:50,b:55,l:65,r:60},
      yaxis:{rangemode:'tozero',gridcolor:'transparent',automargin:true}}),
     {responsive:true, displayModeBar:false});
 
@@ -1063,27 +1038,6 @@ async function loadData() {
   animateCharts();
   setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
   setTimeout(preloadTabs, 500);
-  } catch(e) { console.error('Dashboard load error:', e); }
-  _tabLoading.dashboard = false;
-}
-
-function buildGroupedBar(divId, labels, seriesArr, extraLayout) {
-  const c = getCurrency();
-  const traces = seriesArr.map(s => ({
-    type:'bar', name:s.name, x:labels, y:s.y,
-    marker:{color:s.color, opacity:0.85},
-    text:s.y.map(v => fmtShort(v)), textposition:'outside',
-    textfont:{size:11,color:'#4A5568',family:'Inter'}, cliponaxis:false
-  }));
-  Plotly.newPlot(divId, traces, {
-    margin:{t:65,b:55,l:70,r:30}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-    font:{color:'#A0AEC0',size:11}, barmode:'group', height:320, hovermode:'x unified',
-    legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:11,color:'#4A5568'}},
-    yaxis:{ticksuffix:' '+c.symbol,gridcolor:'transparent',automargin:true},
-    xaxis:{automargin:true},
-    cliponaxis:false,
-    ...(extraLayout||{})
-  }, {responsive:true, displayModeBar:false});
 }
 
 function preloadTabs() {
@@ -1113,7 +1067,6 @@ function _plotBatch(charts) {
 }
 
 async function loadStyleAnalysis() {
-  _tabLoading.style = true;
   try {
     const f = getFilters();
     const r = await authFetch('/api/style_analysis?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month));
@@ -1199,11 +1152,9 @@ async function loadStyleAnalysis() {
     }
     setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
   } catch(e) { console.error('Style analysis error:', e); }
-  _tabLoading.style = false;
 }
 
 async function loadInvestmentData() {
-  _tabLoading.investment = true;
   try {
     const f = getFilters();
     const r = await authFetch('/api/investment?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month));
@@ -1295,7 +1246,6 @@ async function loadInvestmentData() {
     }
     setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
   } catch(e) { console.error('Investment data error:', e); }
-  _tabLoading.investment = false;
 }
 
 function renderOptimal(yr) {
@@ -1331,7 +1281,6 @@ function renderOptimal(yr) {
 }
 
 async function loadCashflowData() {
-  _tabLoading.cashflow = true;
   try {
     const f = getFilters();
     const r = await authFetch('/api/cashflow?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month));
@@ -1399,7 +1348,6 @@ async function loadCashflowData() {
     ].join('') + '</div>';
     setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
   } catch(e) { console.error('Cash flow data error:', e); }
-  _tabLoading.cashflow = false;
 }
 
 async function uploadExcel(input) {
@@ -1413,101 +1361,6 @@ async function uploadExcel(input) {
   else { alert('Error: ' + j.error); }
   input.value = '';
 }
-
-async function exportPDF(mode) {
-  closeExportMenu();
-  const btn = document.getElementById('exportToggle');
-  const origHTML = btn.innerHTML;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
-  btn.disabled = true;
-  try {
-    const { jsPDF } = window.jspdf;
-    if (!jsPDF) throw new Error('jsPDF not loaded');
-    const tabs = mode === 'all' ? ['dashboard','pnl','sales','expenses','style','investment','cashflow'] : [_currentTab];
-    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-    let first = true;
-    for (const tab of tabs) {
-      const el = document.getElementById('tab-' + tab);
-      if (!el) continue;
-      var clone = el.cloneNode(true);
-      clone.style.position = 'fixed';
-      clone.style.top = '0';
-      clone.style.left = '0';
-      clone.style.width = '1200px';
-      clone.style.zIndex = '-1';
-      clone.style.display = 'block';
-      clone.style.opacity = '1';
-      clone.style.visibility = 'visible';
-      clone.style.background = document.body.classList.contains('dark-mode') ? '#131A25' : '#ffffff';
-      document.body.appendChild(clone);
-      try {
-        const canvas = await html2canvas(clone, {
-          scale: 2, useCORS: true, logging: false,
-          backgroundColor: document.body.classList.contains('dark-mode') ? '#131A25' : '#ffffff',
-          windowWidth: 1200, windowHeight: clone.scrollHeight
-        });
-        const imgData = canvas.toDataURL('image/png');
-        const pxW = canvas.width, pxH = canvas.height;
-        const pdfW = 297, pdfH = (pxH / pxW) * pdfW;
-        if (!first) pdf.addPage([pdfW, pdfH], pdfH > pdfW ? 'portrait' : 'landscape');
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfW, pdfH);
-        first = false;
-      } finally {
-        document.body.removeChild(clone);
-      }
-    }
-    pdf.save('VIVA_1960_' + (mode === 'all' ? 'All_Pages' : _currentTab) + '_' + new Date().toISOString().slice(0,10) + '.pdf');
-  } catch(e) {
-    console.error('PDF export error:', e);
-  } finally {
-    btn.innerHTML = origHTML;
-    btn.disabled = false;
-  }
-}
-
-function mobileExportMenu() {
-  const choice = prompt('Type:\n  p = PDF current page\n  pa = PDF all pages\n  pr = Print current page\n  pra = Print all pages');
-  if (!choice) return;
-  const c = choice.toLowerCase().trim();
-  if (c === 'p') exportPDF('current');
-  else if (c === 'pa') exportPDF('all');
-  else if (c === 'pr') printTab('current');
-  else if (c === 'pra') printTab('all');
-}
-
-function printTab(mode) {
-  closeExportMenu();
-  const tabs = mode === 'all' ? ['dashboard','pnl','sales','expenses','style','investment','cashflow'] : [_currentTab];
-  let html = '<html><head><title>VIVA 1960 Dashboard</title>';
-  html += '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">';
-  html += '<style>@page{size:landscape;margin:10mm}body{font-family:Inter,system-ui,sans-serif;margin:0;padding:10px;background:#fff;color:#1C2434;font-size:11px}img{max-width:100%}.tab-content{display:block!important;page-break-after:always}.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}.kpi-card{border:1px solid #e2e8f0;border-radius:8px;padding:10px;text-align:center}.kpi-label{font-size:10px;color:#72839E}.kpi-value{font-size:14px;font-weight:700}.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}.chart-card{border:1px solid #e2e8f0;border-radius:8px;padding:8px;overflow:hidden}.chart-card.full{grid-column:1/-1}.pnl-body{font-size:10px}h2{font-size:14px;margin:0 0 8px;border-bottom:1px solid #e2e8f0;padding-bottom:4px}</style>';
-  html += '</head><body>';
-  for (const tab of tabs) {
-    const el = document.getElementById('tab-' + tab);
-    if (!el) continue;
-    const clone = el.cloneNode(true);
-    clone.style.display = 'block';
-    html += '<div class="tab-content"><h2>' + tab.charAt(0).toUpperCase() + tab.slice(1) + '</h2>' + clone.innerHTML + '</div>';
-  }
-  html += '</body></html>';
-  var w = window.open('', '_blank');
-  if (!w) { console.error('Popup blocked'); return; }
-  w.document.write(html);
-  w.document.close();
-  setTimeout(function() { try { w.print(); } catch(e) {} }, 500);
-}
-
-function toggleExportMenu() {
-  const m = document.getElementById('exportMenu');
-  m.style.display = m.style.display === 'none' ? 'block' : 'none';
-}
-function closeExportMenu() {
-  const m = document.getElementById('exportMenu');
-  if (m) m.style.display = 'none';
-}
-document.addEventListener('click', function(e) {
-  if (!e.target.closest('.export-wrap')) closeExportMenu();
-});
 
 async function refreshData() {
   var btn = document.getElementById('refreshBtn');
@@ -1787,12 +1640,12 @@ function redoEdit() {
 function _refreshCurrentTab() {
   var tab = getActiveTabId();
   if (tab === 'dashboard') { loadData(); }
-  else if (tab === 'pnl') { loadPnlData(); }
-  else if (tab === 'sales') { loadSalesData(); }
-  else if (tab === 'expenses') { loadExpensesData(); }
-  else if (tab === 'style') { loadStyleAnalysis(); }
-  else if (tab === 'investment') { loadInvestmentData(); }
-  else if (tab === 'cashflow') { loadCashflowData(); }
+  else if (tab === 'pnl') { window._pnlLoaded = false; loadPnlData(); }
+  else if (tab === 'sales') { window._salesLoaded = false; loadSalesData(); }
+  else if (tab === 'expenses') { window._expLoaded = false; loadExpensesData(); }
+  else if (tab === 'style') { window._styleLoaded = false; loadStyleAnalysis(); }
+  else if (tab === 'investment') { window._invLoaded = false; loadInvestmentData(); }
+  else if (tab === 'cashflow') { window._cfLoaded = false; loadCashflowData(); }
 }
 
 function highlightDirty() {
@@ -1910,11 +1763,10 @@ loadOverrides();
   tick();
   setInterval(tick, 1000);
 })();
-
-var _tabLoading = {};
-var _currentTab = 'dashboard';
 loadData();
+
 // ---- Tab Switching ----
+let _currentTab = 'dashboard';
 function getActiveTab() { return _currentTab; }
 function getFilters() {
   const monthChecked = Array.from(document.querySelectorAll('#monthPanel input:checked')).map(c=>c.value);
@@ -1955,6 +1807,7 @@ function updateMsLabel(group) {
   var el = document.getElementById(group==='period'?'periodLabel':group==='bu'?'buLabel':'monthLabel');
   if (el) el.textContent = text;
 }
+var _filterTimer = null;
 function debouncedFilter() {
   if (_filterTimer) clearTimeout(_filterTimer);
   _filterTimer = setTimeout(function() { onFilterChange(); }, 300);
@@ -1965,15 +1818,14 @@ document.addEventListener('click', function(e) {
 function onFilterChange() {
   const tab = _currentTab;
   if (tab === 'dashboard') loadData();
-  else if (tab === 'pnl') loadPnlData();
-  else if (tab === 'sales') loadSalesData();
-  else if (tab === 'expenses') loadExpensesData();
-  else if (tab === 'style') loadStyleAnalysis();
-  else if (tab === 'investment') loadInvestmentData();
-  else if (tab === 'cashflow') loadCashflowData();
+  else if (tab === 'pnl') { window._pnlLoaded = false; loadPnlData(); }
+  else if (tab === 'sales') { window._salesLoaded = false; loadSalesData(); }
+  else if (tab === 'expenses') { window._expLoaded = false; loadExpensesData(); }
+  else if (tab === 'style') { window._styleLoaded = false; loadStyleAnalysis(); }
+  else if (tab === 'investment') { window._invLoaded = false; loadInvestmentData(); }
+  else if (tab === 'cashflow') { window._cfLoaded = false; loadCashflowData(); }
 }
-function switchTab(tab, force) {
-  if (_tabLoading[tab] && !force) return;
+function switchTab(tab) {
   _currentTab = tab;
   document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
   const tabEl = document.getElementById('tab-' + tab);
@@ -1993,12 +1845,12 @@ function switchTab(tab, force) {
     if (t.includes(tab === 'pnl' ? 'p&l' : tab)) el.classList.add('active');
   });
   if (tab === 'dashboard') loadData();
-  else if (tab === 'pnl') loadPnlData();
-  else if (tab === 'sales') loadSalesData();
-  else if (tab === 'expenses') loadExpensesData();
-  else if (tab === 'style') loadStyleAnalysis();
-  else if (tab === 'investment') loadInvestmentData();
-  else if (tab === 'cashflow') loadCashflowData();
+  if (tab === 'pnl') { window._pnlLoaded = true; loadPnlData(); }
+  if (tab === 'sales') { window._salesLoaded = true; loadSalesData(); }
+  if (tab === 'expenses') { window._expLoaded = true; loadExpensesData(); }
+  if (tab === 'style') { window._styleLoaded = true; loadStyleAnalysis(); }
+  if (tab === 'investment') { window._invLoaded = true; loadInvestmentData(); }
+  if (tab === 'cashflow') { window._cfLoaded = true; loadCashflowData(); }
   setTimeout(() => { updatePlotlyBlur(); markEditables(); animateKPIs(); }, 300);
 }
 
@@ -2014,8 +1866,6 @@ function pnlFmt(v) { const c=getCurrency(); const n=Math.abs(v);
 function pnlFmtShort(v) { return pnlFmt(v); }
 
 async function loadPnlData() {
-  _tabLoading.pnl = true;
-  try {
   const f = getFilters();
   const r = await authFetch('/api/pnl_forecast?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month));
   const d = await r.json();
@@ -2169,8 +2019,25 @@ async function loadPnlData() {
         (varPct !== 'N/A' ? (varAmt >= 0 ? '+' : '') + varPct + '%' : 'N/A') + '</td></tr>';
     }).join('') + '</table></div>';
   setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
-  } catch(e) { console.error('P&L load error:', e); }
-  _tabLoading.pnl = false;
+}
+
+function buildGroupedBar(divId, labels, seriesArr, extraLayout) {
+  const c = getCurrency();
+  const traces = seriesArr.map(s => ({
+    type:'bar', name:s.name, x:labels, y:s.y,
+    marker:{color:s.color, opacity:0.85},
+    text:s.y.map(v => fmtShort(v)), textposition:'outside',
+    textfont:{size:11,color:'#4A5568',family:'Inter'}, cliponaxis:false
+  }));
+  Plotly.newPlot(divId, traces, {
+    margin:{t:65,b:55,l:70,r:30}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+    font:{color:'#A0AEC0',size:11}, barmode:'group', height:320, hovermode:'x unified',
+    legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:11,color:'#4A5568'}},
+    yaxis:{ticksuffix:' '+c.symbol,gridcolor:'transparent',automargin:true},
+    xaxis:{automargin:true},
+    cliponaxis:false,
+    ...(extraLayout||{})
+  }, {responsive:true, displayModeBar:false});
 }
 
 // ---- Sales Tab ----
@@ -2182,8 +2049,6 @@ function salesFmt(v) { const c=getCurrency(); const n=Math.abs(v);
 function salesFmtShort(v) { return salesFmt(v); }
 
 async function loadSalesData() {
-  _tabLoading.sales = true;
-  try {
   const f = getFilters();
   const qs = '?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month);
   const [sf, d] = await Promise.all([
@@ -2220,19 +2085,19 @@ async function loadSalesData() {
   ], {margin:{t:65,b:55,l:70,r:30},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#A0AEC0',size:11},barmode:'group',height:320,hovermode:'x unified',legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:11,color:'#4A5568'}},yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true},xaxis:{automargin:true},cliponaxis:false},{responsive:true,displayModeBar:false});
 
   const qtyV = dMonths.map(m => m.qty);
-  Plotly.newPlot('salesQtyChart',[{type:'bar',x:months,y:qtyV,marker:{color:'#3BD671',opacity:0.85},text:qtyV.map(v=>v.toLocaleString()),textposition:'outside',textfont:{size:10,color:'#4A5568',family:'Inter'},cliponaxis:false}],{margin:{t:80,b:65,l:90,r:60},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#A0AEC0',size:11},yaxis:{rangemode:'tozero',gridcolor:'transparent',automargin:true},xaxis:{automargin:true,fixedrange:true},height:340,hovermode:'x unified',showlegend:false,cliponaxis:false},{responsive:true,displayModeBar:false});
+  Plotly.newPlot('salesQtyChart',[{type:'bar',x:months,y:qtyV,marker:{color:'#3BD671',opacity:0.85},text:qtyV.map(v=>v.toLocaleString()),textposition:'outside',textfont:{size:10,color:'#4A5568',family:'Inter'},cliponaxis:false}],{margin:{t:80,b:65,l:90,r:50},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#A0AEC0',size:11},yaxis:{rangemode:'tozero',gridcolor:'transparent',automargin:true},xaxis:{automargin:true,fixedrange:true},height:340,hovermode:'x unified',showlegend:false,cliponaxis:false},{responsive:true,displayModeBar:false});
 
   const bu = d.business_units;
-  Plotly.newPlot('salesBUChart',[{type:'pie',labels:bu.map(x=>x.name),values:bu.map(x=>x.sales_pct),text:bu.map(x=>x.name+'<br>'+x.sales_pct.toFixed(1)+'%'),textinfo:'text',textfont:{size:12,color:'#475569',family:'Inter'},marker:{colors:['#2DA356','#4A5568','#3BD671','#3BD671'].slice(0,bu.length),line:{color:'#fff',width:2}},hole:0.4,hovertemplate:'%{label}<br>%{value:.1f}%<extra></extra>'}],{margin:{t:30,b:40,l:30,r:30},paper_bgcolor:'rgba(0,0,0,0)',height:300,showlegend:true,legend:{orientation:'h',y:-0.05,font:{size:11,color:'#72839E'}}},{responsive:true,displayModeBar:false});
+  Plotly.newPlot('salesBUChart',[{type:'pie',labels:bu.map(x=>x.name),values:bu.map(x=>x.sales_pct),text:bu.map(x=>x.name+'<br>'+x.sales_pct.toFixed(1)+'%'),textinfo:'text',textfont:{size:12,color:'#475569',family:'Inter'},marker:{colors:['#2DA356','#4A5568','#3BD671','#3BD671'].slice(0,bu.length),line:{color:'#fff',width:2}},hole:0.4,hovertemplate:'%{label}<br>%{value:.1f}%<extra></extra>'}],{margin:{t:20,b:30,l:20,r:20},paper_bgcolor:'rgba(0,0,0,0)',height:300,showlegend:true,legend:{orientation:'h',y:-0.05,font:{size:11,color:'#72839E'}}},{responsive:true,displayModeBar:false});
 
   const tc = d.top_customers;
-  Plotly.newPlot('salesTopChart',[{type:'bar',orientation:'h',x:tc.map(x=>x.sales*cr.rate),y:tc.map(x=>x.name),marker:{color:['#2DA356','#473FE0','#3BD671','#3BD671','#81E6D9'],opacity:0.9},text:tc.map(x=>fmtBig(x.sales*cr.rate)),textposition:'outside',textfont:{size:10,color:'#4A5568',family:'Inter'},cliponaxis:false}],{margin:{t:15,b:30,l:15,r:90},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#4A5568',size:11},height:Math.max(260,tc.length*48),hovermode:'y unified',showlegend:false,yaxis:{automargin:true,tickfont:{size:11,color:'#4A5568'}},xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true,fixedrange:true}},{responsive:true,displayModeBar:false});
+  Plotly.newPlot('salesTopChart',[{type:'bar',orientation:'h',x:tc.map(x=>x.sales*cr.rate),y:tc.map(x=>x.name),marker:{color:['#2DA356','#473FE0','#3BD671','#3BD671','#81E6D9'],opacity:0.9},text:tc.map(x=>fmtBig(x.sales*cr.rate)),textposition:'outside',textfont:{size:10,color:'#4A5568',family:'Inter'},cliponaxis:false}],{margin:{t:15,b:30,l:15,r:80},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#4A5568',size:11},height:Math.max(260,tc.length*48),hovermode:'y unified',showlegend:false,yaxis:{automargin:true,tickfont:{size:11,color:'#4A5568'}},xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true,fixedrange:true}},{responsive:true,displayModeBar:false});
 
   const tt = d.top_types;
-  Plotly.newPlot('salesTypeChart',[{type:'bar',orientation:'h',x:tt.map(x=>x.sales*cr.rate),y:tt.map(x=>x.name),marker:{color:'#3BD671',opacity:0.9},text:tt.map(x=>fmtBig(x.sales*cr.rate)),textposition:'outside',textfont:{size:10,color:'#4A5568',family:'Inter'},cliponaxis:false}],{margin:{t:15,b:30,l:15,r:90},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#4A5568',size:11},height:Math.max(260,tt.length*48),hovermode:'y unified',showlegend:false,yaxis:{automargin:true,tickfont:{size:11,color:'#4A5568'}},xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true,fixedrange:true}},{responsive:true,displayModeBar:false});
+  Plotly.newPlot('salesTypeChart',[{type:'bar',orientation:'h',x:tt.map(x=>x.sales*cr.rate),y:tt.map(x=>x.name),marker:{color:'#3BD671',opacity:0.9},text:tt.map(x=>fmtBig(x.sales*cr.rate)),textposition:'outside',textfont:{size:10,color:'#4A5568',family:'Inter'},cliponaxis:false}],{margin:{t:15,b:30,l:15,r:80},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#4A5568',size:11},height:Math.max(260,tt.length*48),hovermode:'y unified',showlegend:false,yaxis:{automargin:true,tickfont:{size:11,color:'#4A5568'}},xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true,fixedrange:true}},{responsive:true,displayModeBar:false});
 
   const tf = d.top_fabrics;
-  Plotly.newPlot('salesFabricChart',[{type:'bar',orientation:'h',x:tf.map(x=>x.sales*cr.rate),y:tf.map(x=>x.name),marker:{color:'#00B5D8',opacity:0.9},text:tf.map(x=>fmtBig(x.sales*cr.rate)),textposition:'outside',textfont:{size:10,color:'#4A5568',family:'Inter'},cliponaxis:false}],{margin:{t:15,b:30,l:15,r:90},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#4A5568',size:11},height:Math.max(260,tf.length*48),hovermode:'y unified',showlegend:false,yaxis:{automargin:true,tickfont:{size:11,color:'#4A5568'}},xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true,fixedrange:true}},{responsive:true,displayModeBar:false});
+  Plotly.newPlot('salesFabricChart',[{type:'bar',orientation:'h',x:tf.map(x=>x.sales*cr.rate),y:tf.map(x=>x.name),marker:{color:'#00B5D8',opacity:0.9},text:tf.map(x=>fmtBig(x.sales*cr.rate)),textposition:'outside',textfont:{size:10,color:'#4A5568',family:'Inter'},cliponaxis:false}],{margin:{t:15,b:30,l:15,r:80},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#4A5568',size:11},height:Math.max(260,tf.length*48),hovermode:'y unified',showlegend:false,yaxis:{automargin:true,tickfont:{size:11,color:'#4A5568'}},xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true,fixedrange:true}},{responsive:true,displayModeBar:false});
 
   const convAct = sf.monthly.map(m=>m.gross_sales.actual > 0 ? ((m.net_sales.actual / m.gross_sales.actual) * 100) : 0);
   const convFct = sf.monthly.map(m=>m.gross_sales.forecast > 0 ? ((m.net_sales.forecast / m.gross_sales.forecast) * 100) : 0);
@@ -2241,8 +2106,6 @@ async function loadSalesData() {
     {type:'scatter',mode:'lines+markers',name:'Budget',x:months,y:convFct,line:{color:'#A0AEC0',width:3,dash:'dot'},marker:{size:10,color:'#A0AEC0',symbol:'diamond'}}
   ],{margin:{t:20,b:40,l:55,r:20},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#A0AEC0',size:11},yaxis:{ticksuffix:'%',gridcolor:'transparent',rangemode:'tozero'},height:280,hovermode:'x unified',legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#72839E'}}},{responsive:true,displayModeBar:false});
   setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
-  } catch(e) { console.error('Sales load error:', e); }
-  _tabLoading.sales = false;
 }
 
 // ---- Expenses Tab ----
@@ -2254,8 +2117,6 @@ function expFmt(v) { const c=getCurrency(); const n=Math.abs(v);
 function expFmtShort(v) { return expFmt(v); }
 
 async function loadExpensesData() {
-  _tabLoading.expenses = true;
-  try {
   const f = getFilters();
   const qs = '?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month);
   const [p, d] = await Promise.all([
@@ -2348,8 +2209,6 @@ async function loadExpensesData() {
     '<td class="num" style="padding:6px 10px;text-align:right;color:' + (ytd.actual<=ytd.forecast?'var(--green)':'var(--red)') + '">' + (ytd.forecast>0?((ytd.actual-ytd.forecast)/ytd.forecast*100).toFixed(1):'N/A') + '%</td>' +
     '<td class="num" style="padding:6px 10px;text-align:right;color:#72839E">100%</td></tr></table></div>';
   setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
-  } catch(e) { console.error('Expenses load error:', e); }
-  _tabLoading.expenses = false;
 }
 </script>
 </body>
