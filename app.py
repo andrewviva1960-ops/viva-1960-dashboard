@@ -950,13 +950,14 @@ function changeTopSlicer(val) {
 }
 
 async function loadData() {
-  const f = getFilters();
-  const period = f.period;
-  const bu = f.bu;
-  const month = f.month;
   _tabLoading.dashboard = true;
-  const r = await authFetch('/api/data?period=' + encodeURIComponent(period) + '&bu=' + encodeURIComponent(bu) + '&month=' + encodeURIComponent(month));
-  const d = await r.json();
+  try {
+    const f = getFilters();
+    const period = f.period;
+    const bu = f.bu;
+    const month = f.month;
+    const r = await authFetch('/api/data?period=' + encodeURIComponent(period) + '&bu=' + encodeURIComponent(bu) + '&month=' + encodeURIComponent(month));
+    const d = await r.json();
   _data = d;
   const T = d.totals;
   document.getElementById('kpiGrid').innerHTML =
@@ -1062,6 +1063,7 @@ async function loadData() {
   animateCharts();
   setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
   setTimeout(preloadTabs, 500);
+  } catch(e) { console.error('Dashboard load error:', e); }
   _tabLoading.dashboard = false;
 }
 
@@ -1094,8 +1096,8 @@ function _plotBatch(charts) {
 }
 
 async function loadStyleAnalysis() {
+  _tabLoading.style = true;
   try {
-    _tabLoading.style = true;
     const f = getFilters();
     const r = await authFetch('/api/style_analysis?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month));
     if (!r.ok) return;
@@ -1184,8 +1186,8 @@ async function loadStyleAnalysis() {
 }
 
 async function loadInvestmentData() {
+  _tabLoading.investment = true;
   try {
-    _tabLoading.investment = true;
     const f = getFilters();
     const r = await authFetch('/api/investment?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month));
     if (!r.ok) return;
@@ -1312,8 +1314,8 @@ function renderOptimal(yr) {
 }
 
 async function loadCashflowData() {
+  _tabLoading.cashflow = true;
   try {
-    _tabLoading.cashflow = true;
     const f = getFilters();
     const r = await authFetch('/api/cashflow?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month));
     if (!r.ok) return;
@@ -1995,8 +1997,9 @@ function pnlFmt(v) { const c=getCurrency(); const n=Math.abs(v);
 function pnlFmtShort(v) { return pnlFmt(v); }
 
 async function loadPnlData() {
-  const f = getFilters();
   _tabLoading.pnl = true;
+  try {
+  const f = getFilters();
   const r = await authFetch('/api/pnl_forecast?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month));
   const d = await r.json();
   const ytd = d.ytd;
@@ -2149,6 +2152,7 @@ async function loadPnlData() {
         (varPct !== 'N/A' ? (varAmt >= 0 ? '+' : '') + varPct + '%' : 'N/A') + '</td></tr>';
     }).join('') + '</table></div>';
   setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
+  } catch(e) { console.error('P&L load error:', e); }
   _tabLoading.pnl = false;
 }(divId, labels, seriesArr, extraLayout) {
   const c = getCurrency();
@@ -2178,9 +2182,10 @@ function salesFmt(v) { const c=getCurrency(); const n=Math.abs(v);
 function salesFmtShort(v) { return salesFmt(v); }
 
 async function loadSalesData() {
+  _tabLoading.sales = true;
+  try {
   const f = getFilters();
   const qs = '?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month);
-  _tabLoading.sales = true;
   const [sf, d] = await Promise.all([
     authFetch('/api/sales_forecast'+qs).then(r=>r.json()),
     authFetch('/api/data'+qs).then(r=>r.json())
@@ -2236,6 +2241,7 @@ async function loadSalesData() {
     {type:'scatter',mode:'lines+markers',name:'Budget',x:months,y:convFct,line:{color:'#A0AEC0',width:3,dash:'dot'},marker:{size:10,color:'#A0AEC0',symbol:'diamond'}}
   ],{margin:{t:20,b:40,l:55,r:20},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#A0AEC0',size:11},yaxis:{ticksuffix:'%',gridcolor:'transparent',rangemode:'tozero'},height:280,hovermode:'x unified',legend:{orientation:'h',y:1.1,x:.5,xanchor:'center',font:{size:11,color:'#72839E'}}},{responsive:true,displayModeBar:false});
   setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
+  } catch(e) { console.error('Sales load error:', e); }
   _tabLoading.sales = false;
 }
 
@@ -2248,9 +2254,10 @@ function expFmt(v) { const c=getCurrency(); const n=Math.abs(v);
 function expFmtShort(v) { return expFmt(v); }
 
 async function loadExpensesData() {
+  _tabLoading.expenses = true;
+  try {
   const f = getFilters();
   const qs = '?period='+encodeURIComponent(f.period)+'&bu='+encodeURIComponent(f.bu)+'&month='+encodeURIComponent(f.month);
-  _tabLoading.expenses = true;
   const [p, d] = await Promise.all([
     authFetch('/api/pnl_forecast'+qs).then(r=>r.json()),
     authFetch('/api/data'+qs).then(r=>r.json())
@@ -2341,6 +2348,7 @@ async function loadExpensesData() {
     '<td class="num" style="padding:6px 10px;text-align:right;color:' + (ytd.actual<=ytd.forecast?'var(--green)':'var(--red)') + '">' + (ytd.forecast>0?((ytd.actual-ytd.forecast)/ytd.forecast*100).toFixed(1):'N/A') + '%</td>' +
     '<td class="num" style="padding:6px 10px;text-align:right;color:#72839E">100%</td></tr></table></div>';
   setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
+  } catch(e) { console.error('Expenses load error:', e); }
   _tabLoading.expenses = false;
 }
 </script>
