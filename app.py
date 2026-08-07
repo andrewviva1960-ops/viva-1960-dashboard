@@ -242,6 +242,13 @@ body.dark-mode .chart-card:hover{box-shadow:0 6px 20px rgba(255,255,255,0.1)}
 .hdr-btn:active{transform:translateY(0)}
 .hdr-btn i{font-size:13px}
 .hdr-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.export-wrap{position:relative;display:inline-block}
+.export-menu{position:absolute;top:100%;right:0;min-width:180px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius-sm);box-shadow:var(--shadow-lg);z-index:3000;padding:6px 0;margin-top:4px}
+.export-menu-title{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);padding:6px 14px 2px;font-weight:700}
+.export-menu-item{display:flex;align-items:center;gap:8px;padding:7px 14px;font-size:12px;color:var(--text-primary);cursor:pointer;transition:background .15s}
+.export-menu-item:hover{background:rgba(59,214,113,0.08)}
+.export-menu-item i{font-size:13px;color:var(--accent);width:16px;text-align:center}
+.export-menu-divider{height:1px;background:var(--card-border);margin:4px 10px}
 .month-opt{display:flex;align-items:center;gap:6px;padding:5px 12px;font-size:11px;cursor:pointer;color:var(--text-secondary);transition:background .15s}
 .month-opt:hover{background:rgba(59,214,113,0.08)}
 .month-opt input[type=checkbox]{accent-color:var(--accent);width:14px;height:14px;cursor:pointer}
@@ -479,7 +486,18 @@ body.edit-mode .edit-save-bar{display:flex}
       </select>
     </div>
     <button id="refreshBtn" onclick="refreshData()" class="hdr-btn"><i class="fas fa-sync-alt"></i> Refresh</button>
-    <button id="pdfBtn" onclick="exportPDF()" class="hdr-btn" title="Export to PDF"><i class="fas fa-file-pdf"></i> PDF</button>
+    <div class="export-wrap">
+      <button id="exportToggle" onclick="toggleExportMenu()" class="hdr-btn" title="Export / Print"><i class="fas fa-download"></i> Export</button>
+      <div id="exportMenu" class="export-menu" style="display:none">
+        <div class="export-menu-title">PDF Export</div>
+        <div class="export-menu-item" onclick="exportPDF('current')"><i class="fas fa-file-pdf"></i> Current Page</div>
+        <div class="export-menu-item" onclick="exportPDF('all')"><i class="fas fa-file-pdf"></i> All Pages</div>
+        <div class="export-menu-divider"></div>
+        <div class="export-menu-title">Print</div>
+        <div class="export-menu-item" onclick="printTab('current')"><i class="fas fa-print"></i> Current Page</div>
+        <div class="export-menu-item" onclick="printTab('all')"><i class="fas fa-print"></i> All Pages</div>
+      </div>
+    </div>
     <button id="editToggle" onclick="toggleEditMode()" class="hdr-btn" title="Toggle edit mode"><i class="fas fa-pen"></i> Edit</button>
     <button id="blurToggle" onclick="toggleBlur()" class="hdr-btn" title="Toggle number visibility"><i class="fas fa-eye"></i></button>
     <button id="darkToggle" onclick="toggleDarkMode()" class="hdr-btn" title="Toggle dark/light mode"><i class="fas fa-moon"></i></button>
@@ -742,7 +760,7 @@ body.edit-mode .edit-save-bar{display:flex}
     <div class="mnav-item" onclick="switchTab('investment')"><i class="fas fa-coins"></i>Invest</div>
     <div class="mnav-item" onclick="switchTab('cashflow')"><i class="fas fa-money-bill-wave"></i>Cash</div>
     <div class="mnav-item mnav-action" onclick="toggleBlur()" title="Toggle blur"><i class="fas fa-eye" id="mobileBlurIcon"></i></div>
-    <div class="mnav-item mnav-action" onclick="exportPDF()" title="Export PDF"><i class="fas fa-file-pdf"></i></div>
+    <div class="mnav-item mnav-action" onclick="mobileExportMenu()" title="Export/Print"><i class="fas fa-download"></i></div>
     <div class="mnav-item mnav-action" onclick="toggleEditMode()" title="Toggle edit mode"><i class="fas fa-pen" id="mobileEditIcon"></i></div>
     <div class="mnav-item mnav-dark" onclick="toggleDarkMode()" title="Toggle dark/light mode"><i class="fas fa-moon"></i></div>
   </div>
@@ -1366,32 +1384,40 @@ async function uploadExcel(input) {
   input.value = '';
 }
 
-async function exportPDF() {
-  const btn = document.getElementById('pdfBtn');
+async function exportPDF(mode) {
+  closeExportMenu();
+  const btn = document.getElementById('exportToggle');
   const origHTML = btn.innerHTML;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
   btn.disabled = true;
   try {
     const { jsPDF } = window.jspdf;
-    const activeTab = document.querySelector('.tab-content.active');
-    if (!activeTab) return;
-    const canvas = await html2canvas(activeTab, {
-      scale: 2,
-      useCORS: true,
-      logging: false,
-      backgroundColor: document.body.classList.contains('dark-mode') ? '#131A25' : '#ffffff',
-      windowWidth: activeTab.scrollWidth,
-      windowHeight: activeTab.scrollHeight
-    });
-    const imgData = canvas.toDataURL('image/png');
-    const pxW = canvas.width;
-    const pxH = canvas.height;
-    const pdfW = 297;
-    const pdfH = (pxH / pxW) * pdfW;
-    const pdf = new jsPDF({ orientation: pdfH > pdfW ? 'portrait' : 'landscape', unit: 'mm', format: [pdfW, pdfH] });
-    pdf.addImage(imgData, 'PNG', 0, 0, pdfW, pdfH);
-    const tabName = _currentTab || 'dashboard';
-    pdf.save('VIVA_1960_' + tabName + '_' + new Date().toISOString().slice(0,10) + '.pdf');
+    const tabs = mode === 'all' ? ['dashboard','pnl','sales','expenses','style','investment','cashflow'] : [_currentTab];
+    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    let first = true;
+    for (const tab of tabs) {
+      switchTab(tab);
+      await new Promise(r => setTimeout(r, 600));
+      const el = document.getElementById('tab-' + tab);
+      if (!el) continue;
+      const canvas = await html2canvas(el, {
+        scale: 2, useCORS: true, logging: false,
+        backgroundColor: document.body.classList.contains('dark-mode') ? '#131A25' : '#ffffff',
+        windowWidth: el.scrollWidth, windowHeight: el.scrollHeight
+      });
+      const imgData = canvas.toDataURL('image/png');
+      const pxW = canvas.width, pxH = canvas.height;
+      const pdfW = 297, pdfH = (pxH / pxW) * pdfW;
+      if (!first) pdf.addPage([pdfW, pdfH], pdfH > pdfW ? 'portrait' : 'landscape');
+      else {
+        pdf.setFontSize(8);
+        pdf.setTextColor(150);
+        pdf.setPage(1);
+      }
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfW, pdfH);
+      first = false;
+    }
+    pdf.save('VIVA_1960_' + (mode === 'all' ? 'All_Pages' : _currentTab) + '_' + new Date().toISOString().slice(0,10) + '.pdf');
   } catch(e) {
     console.error('PDF export error:', e);
     alert('Export failed: ' + e.message);
@@ -1400,6 +1426,47 @@ async function exportPDF() {
     btn.disabled = false;
   }
 }
+
+function mobileExportMenu() {
+  const choice = prompt('Type:\n  p = PDF current page\n  pa = PDF all pages\n  pr = Print current page\n  pra = Print all pages');
+  if (!choice) return;
+  const c = choice.toLowerCase().trim();
+  if (c === 'p') exportPDF('current');
+  else if (c === 'pa') exportPDF('all');
+  else if (c === 'pr') printTab('current');
+  else if (c === 'pra') printTab('all');
+}
+
+function printTab(mode) {
+  closeExportMenu();
+  const tabs = mode === 'all' ? ['dashboard','pnl','sales','expenses','style','investment','cashflow'] : [_currentTab];
+  let html = '<html><head><title>VIVA 1960 Dashboard</title>';
+  html += '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">';
+  html += '<style>@page{size:landscape;margin:10mm}body{font-family:Inter,system-ui,sans-serif;margin:0;padding:10px;background:#fff;color:#1C2434;font-size:11px}img{max-width:100%}.tab-content{display:block!important;page-break-after:always}.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}.kpi-card{border:1px solid #e2e8f0;border-radius:8px;padding:10px;text-align:center}.kpi-label{font-size:10px;color:#72839E}.kpi-value{font-size:14px;font-weight:700}.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}.chart-card{border:1px solid #e2e8f0;border-radius:8px;padding:8px;overflow:hidden}.chart-card.full{grid-column:1/-1}.pnl-body{font-size:10px}h2{font-size:14px;margin:0 0 8px;border-bottom:1px solid #e2e8f0;padding-bottom:4px}</style>';
+  html += '</head><body>';
+  for (const tab of tabs) {
+    const el = document.getElementById('tab-' + tab);
+    if (!el) continue;
+    html += '<div class="tab-content"><h2>' + tab.charAt(0).toUpperCase() + tab.slice(1) + '</h2>' + el.innerHTML + '</div>';
+  }
+  html += '</body></html>';
+  const w = window.open('', '_blank');
+  w.document.write(html);
+  w.document.close();
+  setTimeout(() => { w.print(); }, 500);
+}
+
+function toggleExportMenu() {
+  const m = document.getElementById('exportMenu');
+  m.style.display = m.style.display === 'none' ? 'block' : 'none';
+}
+function closeExportMenu() {
+  const m = document.getElementById('exportMenu');
+  if (m) m.style.display = 'none';
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.export-wrap')) closeExportMenu();
+});
 
 async function refreshData() {
   var btn = document.getElementById('refreshBtn');
