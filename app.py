@@ -464,16 +464,7 @@ body.edit-mode .edit-save-bar{display:flex}
     <div class="currency-selector">
       <label>Currency</label>
       <select id="currencySelect" onchange="changeCurrency(this.value)">
-        <option value="EGP">EGP — Egyptian Pound</option>
-        <option value="USD">USD — US Dollar</option>
-        <option value="EUR">EUR — Euro</option>
-        <option value="GBP">GBP — British Pound</option>
-        <option value="CHF">CHF — Swiss Franc</option>
-        <option value="KWD">KWD — Kuwaiti Dinar</option>
-        <option value="BHD">BHD — Bahraini Dinar</option>
-        <option value="OMR">OMR — Omani Rial</option>
-        <option value="JOD">JOD — Jordanian Dinar</option>
-        <option value="SAR">SAR — Saudi Riyal</option>
+        <option value="EGP">EGP — Egyptian Pound (1.00)</option>
       </select>
     </div>
     <button id="refreshBtn" onclick="refreshData()" class="hdr-btn"><i class="fas fa-sync-alt"></i> Refresh</button>
@@ -1742,9 +1733,24 @@ async function fetchRates() {
     if (rates && rates.USD) {
       var symbols = {EGP:'EGP',USD:'$',EUR:'\u20AC',GBP:'\u00A3',CHF:'CHF',KWD:'KWD',BHD:'BHD',OMR:'OMR',JOD:'JOD',SAR:'SAR',AED:'AED'};
       var locales = {EGP:'en-US',USD:'en-US',EUR:'de-DE',GBP:'en-GB',CHF:'de-CH',KWD:'ar-KW',BHD:'ar-BH',OMR:'ar-OM',JOD:'ar-JO',SAR:'ar-SA',AED:'ar-AE'};
+      var names = {EGP:'Egyptian Pound',USD:'US Dollar',EUR:'Euro',GBP:'British Pound',CHF:'Swiss Franc',KWD:'Kuwaiti Dinar',BHD:'Bahraini Dinar',OMR:'Omani Rial',JOD:'Jordanian Dinar',SAR:'Saudi Riyal',AED:'UAE Dirham'};
       for (var k in rates) {
         if (CURRENCIES[k]) { CURRENCIES[k].rate = rates[k]; }
         else { CURRENCIES[k] = {rate: rates[k], symbol: symbols[k]||k, locale: locales[k]||'en-US'}; }
+      }
+      var sel = document.getElementById('currencySelect');
+      if (sel) {
+        var val = sel.value;
+        var html = '';
+        var order = ['EGP','USD','EUR','GBP','CHF','KWD','BHD','OMR','JOD','SAR','AED'];
+        for (var i = 0; i < order.length; i++) {
+          var k = order[i];
+          var c = CURRENCIES[k];
+          if (!c) continue;
+          var rateStr = k === 'EGP' ? '1.00' : (1 / c.rate).toFixed(2);
+          html += '<option value="' + k + '"' + (k === val ? ' selected' : '') + '>' + k + ' — ' + (names[k]||k) + ' (' + rateStr + ')</option>';
+        }
+        sel.innerHTML = html;
       }
     }
   } catch(e) { console.warn('Live rates unavailable, using defaults'); }
