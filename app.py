@@ -1734,7 +1734,22 @@ loadOverrides();
   tick();
   setInterval(tick, 1000);
 })();
-loadData();
+
+async function fetchRates() {
+  try {
+    var r = await fetch('/api/rates');
+    var rates = await r.json();
+    if (rates && rates.USD) {
+      var symbols = {EGP:'EGP',USD:'$',EUR:'\u20AC',GBP:'\u00A3',CHF:'CHF',KWD:'KWD',BHD:'BHD',OMR:'OMR',JOD:'JOD',SAR:'SAR',AED:'AED'};
+      var locales = {EGP:'en-US',USD:'en-US',EUR:'de-DE',GBP:'en-GB',CHF:'de-CH',KWD:'ar-KW',BHD:'ar-BH',OMR:'ar-OM',JOD:'ar-JO',SAR:'ar-SA',AED:'ar-AE'};
+      for (var k in rates) {
+        if (CURRENCIES[k]) { CURRENCIES[k].rate = rates[k]; }
+        else { CURRENCIES[k] = {rate: rates[k], symbol: symbols[k]||k, locale: locales[k]||'en-US'}; }
+      }
+    }
+  } catch(e) { console.warn('Live rates unavailable, using defaults'); }
+}
+fetchRates().then(function() { loadData(); });
 
 // ---- Tab Switching ----
 let _currentTab = 'dashboard';
@@ -2498,11 +2513,10 @@ def index():
 _rates_cache = {"data": None, "ts": 0}
 
 @app.route("/api/rates")
-@auth.login_required
 def api_rates():
     import urllib.request as _urllib
     now = time.time()
-    if _rates_cache["data"] and (now - _rates_cache["ts"]) < 3600:
+    if _rates_cache["data"] and (now - _rates_cache["ts"]) < 86400:
         return jsonify(_rates_cache["data"])
     try:
         req = _urllib.Request("https://api.exchangerate-api.com/v4/latest/EGP", headers={"User-Agent": "Mozilla/5.0"})
