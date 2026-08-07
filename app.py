@@ -2513,6 +2513,10 @@ from flask import send_from_directory
 def serve_static(filename):
     return send_from_directory(os.path.join(DIR, "static"), filename)
 
+@app.route("/ping")
+def ping():
+    return "ok"
+
 @app.route("/")
 @auth.login_required
 def index():
