@@ -102,8 +102,8 @@ function _calmLayout(extra) {
     plot_bgcolor: dark ? '#1C2434' : 'rgba(0,0,0,0)',
     font:{family:'Inter, system-ui, sans-serif',size:12,color:dark?'#EDF2F7':'#2D3748'},
     hoverlabel:{bgcolor:dark?'#1C2434':'#ffffff',bordercolor:dark?'#3BD671':'#3BD671',font:{family:'Inter, system-ui, sans-serif',size:12,color:dark?'#EDF2F7':'#1e293b',weight:600},align:'left',namefont:{size:11,color:dark?'#A0AEC0':'#4A5568'}},
-    xaxis:{gridcolor:'transparent',linecolor:dark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.06)',zerolinecolor:dark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.06)',tickfont:{size:11,color:dark?'#A0AEC0':'#4A5568'}},
-    yaxis:{gridcolor:'transparent',linecolor:dark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.06)',zerolinecolor:dark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.06)',tickfont:{size:11,color:dark?'#A0AEC0':'#4A5568'}},
+    xaxis:{gridcolor:'transparent',linecolor:dark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.06)',zerolinecolor:dark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.06)',tickfont:{size:11,color:dark?'#A0AEC0':'#4A5568'},fixedrange:true},
+    yaxis:{gridcolor:'transparent',linecolor:dark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.06)',zerolinecolor:dark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.06)',tickfont:{size:11,color:dark?'#A0AEC0':'#4A5568'},fixedrange:true},
     margin:{t:30,b:50,l:60,r:20}
   }, extra||{});
 }
@@ -344,7 +344,7 @@ body.dark-mode .mobile-nav .mnav-action.active{background:rgba(255,255,255,0.2)}
   .chart-grid,.chart-grid-3{grid-template-columns:1fr;gap:8px}
   .chart-card{border-radius:10px}
   .chart-card .chart-header h5{font-size:11px}
-  .chart-body{min-height:220px}
+  .chart-body{height:220px}
   .pnl-card{font-size:10px}
   #pnlTable td,#pnlTable th{padding:4px 6px;font-size:10px}
   .footer{font-size:9px;padding:8px}
@@ -368,8 +368,10 @@ body.dark-mode .mobile-nav .mnav-action.active{background:rgba(255,255,255,0.2)}
 .chart-card:nth-child(1){animation-delay:.05s}.chart-card:nth-child(2){animation-delay:.1s}.chart-card:nth-child(3){animation-delay:.15s}.chart-card:nth-child(4){animation-delay:.2s}.chart-card:nth-child(5){animation-delay:.25s}.chart-card:nth-child(6){animation-delay:.3s}
 .chart-card .chart-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 0}
 .chart-card .chart-header h5{font-size:13px;font-weight:600;color:var(--text-primary);margin:0;letter-spacing:-.2px}
-.chart-card .chart-body{padding:4px 6px 6px;min-height:var(--chart-h);display:flex;align-items:stretch;touch-action:manipulation;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;overflow:visible}
-.chart-card .pnl-body{padding:0;min-height:var(--chart-h);display:flex;align-items:stretch;overflow:visible}
+.chart-card .chart-body{padding:4px 6px 6px;height:var(--chart-h);overflow:visible;touch-action:manipulation;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.chart-card .chart-body .js-plotly-plot,.chart-card .chart-body .plotly{overflow:visible!important}
+.chart-card .chart-body .js-plotly-plot .main-svg,.chart-card .chart-body .plotly .main-svg{overflow:visible!important}
+.chart-card .pnl-body{padding:0;height:var(--chart-h);overflow:visible}
 .chart-card.full{grid-column:1/-1}
 .chart-resize-handle{display:none;position:absolute;bottom:0;left:0;right:0;height:8px;cursor:ns-resize;background:linear-gradient(180deg,transparent,rgba(59,214,113,0.15));border-radius:0 0 var(--radius-md) var(--radius-md);z-index:10;transition:background .2s}
 .chart-resize-handle:hover{background:linear-gradient(180deg,transparent,rgba(59,214,113,0.4))}
@@ -2083,19 +2085,19 @@ async function loadSalesData() {
   ], {margin:{t:65,b:55,l:70,r:30},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#A0AEC0',size:11},barmode:'group',height:320,hovermode:'x unified',legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:11,color:'#4A5568'}},yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true},xaxis:{automargin:true},cliponaxis:false},{responsive:true,displayModeBar:false});
 
   const qtyV = dMonths.map(m => m.qty);
-  Plotly.newPlot('salesQtyChart',[{type:'bar',x:months,y:qtyV,marker:{color:'#3BD671',opacity:0.85},text:qtyV.map(v=>v.toLocaleString()),textposition:'outside',textfont:{size:11,color:'#4A5568',family:'Inter'},cliponaxis:false}],{margin:{t:65,b:55,l:70,r:30},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#A0AEC0',size:11},yaxis:{rangemode:'tozero',gridcolor:'transparent',automargin:true},xaxis:{automargin:true},height:320,hovermode:'x unified',showlegend:false,cliponaxis:false},{responsive:true,displayModeBar:false});
+  Plotly.newPlot('salesQtyChart',[{type:'bar',x:months,y:qtyV,marker:{color:'#3BD671',opacity:0.85},text:qtyV.map(v=>v.toLocaleString()),textposition:'outside',textfont:{size:11,color:'#4A5568',family:'Inter'},cliponaxis:false}],{margin:{t:70,b:60,l:80,r:40},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#A0AEC0',size:11},yaxis:{rangemode:'tozero',gridcolor:'transparent',automargin:true},xaxis:{automargin:true},height:320,hovermode:'x unified',showlegend:false,cliponaxis:false},{responsive:true,displayModeBar:false});
 
   const bu = d.business_units;
   Plotly.newPlot('salesBUChart',[{type:'pie',labels:bu.map(x=>x.name),values:bu.map(x=>x.sales_pct),text:bu.map(x=>x.name+'<br>'+x.sales_pct.toFixed(1)+'%'),textinfo:'text',textfont:{size:12,color:'#475569',family:'Inter'},marker:{colors:['#2DA356','#4A5568','#3BD671','#3BD671'].slice(0,bu.length),line:{color:'#fff',width:2}},hole:0.4,hovertemplate:'%{label}<br>%{value:.1f}%<extra></extra>'}],{margin:{t:10,b:10,l:10,r:10},paper_bgcolor:'rgba(0,0,0,0)',height:280,showlegend:true,legend:{orientation:'h',y:-0.05,font:{size:11,color:'#72839E'}}},{responsive:true,displayModeBar:false});
 
   const tc = d.top_customers;
-  Plotly.newPlot('salesTopChart',[{type:'bar',orientation:'h',x:tc.map(x=>x.sales*cr.rate),y:tc.map(x=>x.name),marker:{color:['#2DA356','#473FE0','#3BD671','#3BD671','#81E6D9'],opacity:0.9},text:tc.map(x=>fmtBig(x.sales*cr.rate)),textposition:'outside',textfont:{size:11,color:'#4A5568',family:'Inter'},cliponaxis:false}],{margin:{t:15,b:25,l:15,r:15},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#4A5568',size:11},height:Math.max(240,tc.length*45),hovermode:'y unified',showlegend:false,yaxis:{automargin:true,tickfont:{size:11,color:'#4A5568'}},xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true}},{responsive:true,displayModeBar:false});
+  Plotly.newPlot('salesTopChart',[{type:'bar',orientation:'h',x:tc.map(x=>x.sales*cr.rate),y:tc.map(x=>x.name),marker:{color:['#2DA356','#473FE0','#3BD671','#3BD671','#81E6D9'],opacity:0.9},text:tc.map(x=>fmtBig(x.sales*cr.rate)),textposition:'outside',textfont:{size:11,color:'#4A5568',family:'Inter'},cliponaxis:false}],{margin:{t:15,b:30,l:15,r:60},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#4A5568',size:11},height:Math.max(240,tc.length*45),hovermode:'y unified',showlegend:false,yaxis:{automargin:true,tickfont:{size:11,color:'#4A5568'}},xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true,fixedrange:true}},{responsive:true,displayModeBar:false});
 
   const tt = d.top_types;
-  Plotly.newPlot('salesTypeChart',[{type:'bar',orientation:'h',x:tt.map(x=>x.sales*cr.rate),y:tt.map(x=>x.name),marker:{color:'#3BD671',opacity:0.9},text:tt.map(x=>fmtBig(x.sales*cr.rate)),textposition:'outside',textfont:{size:11,color:'#4A5568',family:'Inter'},cliponaxis:false}],{margin:{t:15,b:25,l:15,r:15},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#4A5568',size:11},height:Math.max(240,tt.length*45),hovermode:'y unified',showlegend:false,yaxis:{automargin:true,tickfont:{size:11,color:'#4A5568'}},xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true}},{responsive:true,displayModeBar:false});
+  Plotly.newPlot('salesTypeChart',[{type:'bar',orientation:'h',x:tt.map(x=>x.sales*cr.rate),y:tt.map(x=>x.name),marker:{color:'#3BD671',opacity:0.9},text:tt.map(x=>fmtBig(x.sales*cr.rate)),textposition:'outside',textfont:{size:11,color:'#4A5568',family:'Inter'},cliponaxis:false}],{margin:{t:15,b:30,l:15,r:60},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#4A5568',size:11},height:Math.max(240,tt.length*45),hovermode:'y unified',showlegend:false,yaxis:{automargin:true,tickfont:{size:11,color:'#4A5568'}},xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true,fixedrange:true}},{responsive:true,displayModeBar:false});
 
   const tf = d.top_fabrics;
-  Plotly.newPlot('salesFabricChart',[{type:'bar',orientation:'h',x:tf.map(x=>x.sales*cr.rate),y:tf.map(x=>x.name),marker:{color:'#00B5D8',opacity:0.9},text:tf.map(x=>fmtBig(x.sales*cr.rate)),textposition:'outside',textfont:{size:11,color:'#4A5568',family:'Inter'},cliponaxis:false}],{margin:{t:15,b:25,l:15,r:15},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#4A5568',size:11},height:Math.max(240,tf.length*45),hovermode:'y unified',showlegend:false,yaxis:{automargin:true,tickfont:{size:11,color:'#4A5568'}},xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true}},{responsive:true,displayModeBar:false});
+  Plotly.newPlot('salesFabricChart',[{type:'bar',orientation:'h',x:tf.map(x=>x.sales*cr.rate),y:tf.map(x=>x.name),marker:{color:'#00B5D8',opacity:0.9},text:tf.map(x=>fmtBig(x.sales*cr.rate)),textposition:'outside',textfont:{size:11,color:'#4A5568',family:'Inter'},cliponaxis:false}],{margin:{t:15,b:30,l:15,r:60},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#4A5568',size:11},height:Math.max(240,tf.length*45),hovermode:'y unified',showlegend:false,yaxis:{automargin:true,tickfont:{size:11,color:'#4A5568'}},xaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true,fixedrange:true}},{responsive:true,displayModeBar:false});
 
   const convAct = sf.monthly.map(m=>m.gross_sales.actual > 0 ? ((m.net_sales.actual / m.gross_sales.actual) * 100) : 0);
   const convFct = sf.monthly.map(m=>m.gross_sales.forecast > 0 ? ((m.net_sales.forecast / m.gross_sales.forecast) * 100) : 0);
@@ -2176,11 +2178,11 @@ async function loadExpensesData() {
     openEditModal('value',expFmtShort(currentVal),null);
   });
 
-  Plotly.newPlot('expVarChart',[{type:'bar',x:months,y:varVals,marker:{color:varColors},text:varVals.map(v=>(v<=0?'':'+')+expFmtShort(v)),textposition:'outside',textfont:{size:11,color:'#4A5568',family:'Inter'},cliponaxis:false}],{margin:{t:65,b:55,l:70,r:30},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#A0AEC0',size:11},yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true},xaxis:{automargin:true},height:320,hovermode:'x unified',showlegend:false,cliponaxis:false},{responsive:true,displayModeBar:false});
+  Plotly.newPlot('expVarChart',[{type:'bar',x:months,y:varVals,marker:{color:varColors},text:varVals.map(v=>(v<=0?'':'+')+expFmtShort(v)),textposition:'outside',textfont:{size:11,color:'#4A5568',family:'Inter'},cliponaxis:false}],{margin:{t:70,b:60,l:80,r:40},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#A0AEC0',size:11},yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true},xaxis:{automargin:true,fixedrange:true},height:320,hovermode:'x unified',showlegend:false,cliponaxis:false},{responsive:true,displayModeBar:false});
 
   Plotly.newPlot('expPieChart',[{type:'pie',labels:depts,values:deptAct,text:deptAct.map(v=>expFmtShort(v)),textinfo:'label+text+percent',textposition:'inside',textfont:{size:11,color:'#ffffff',family:'Inter'},marker:{colors:pieColors.slice(0,depts.length),line:{color:'#ffffff',width:2}},hovertemplate:'%{label}<br>'+cr.symbol+': %{value:,.0f}<br>%{percent}<extra></extra>'}],{margin:{t:5,b:5,l:5,r:5},paper_bgcolor:'rgba(0,0,0,0)',height:320,showlegend:true,legend:{orientation:'h',y:-0.1,font:{size:11,color:'#4A5568'}}},{responsive:true,displayModeBar:false});
 
-  Plotly.newPlot('expTrendChart',trendTraces,{margin:{t:65,b:55,l:70,r:30},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#A0AEC0',size:11},yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true},xaxis:{automargin:true},height:320,hovermode:'x unified',legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:11,color:'#4A5568'}}},{responsive:true,displayModeBar:false});
+  Plotly.newPlot('expTrendChart',trendTraces,{margin:{t:70,b:60,l:80,r:40},paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#A0AEC0',size:11},yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true},xaxis:{automargin:true,fixedrange:true},height:320,hovermode:'x unified',legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:11,color:'#4A5568'}}},{responsive:true,displayModeBar:false});
 
   // 6. Department Detail Table
   const sortedDepts = depts.sort((a,b)=>p.dept_expenses[b].actual - p.dept_expenses[a].actual);
