@@ -558,9 +558,6 @@ body.edit-mode .edit-save-bar{display:flex}
     <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-cubes" style="color:#4A5568;margin-right:6px"></i>Monthly Quantity Sold</h5></div><div class="chart-body" id="qtyChart"></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-balance-scale" style="color:var(--accent);margin-right:6px"></i>Monthly Net Sales vs COGS</h5></div><div class="chart-body" id="cogsChart"></div></div>
-  </div>
-  <div class="chart-grid">
     <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-pie-chart" style="color:var(--accent);margin-right:6px"></i>BU Sales %</h5></div><div class="chart-body" id="buSalesChart"></div></div>
   </div>
 </div>
@@ -986,19 +983,6 @@ async function loadData() {
     _calmLayout({height:280, hovermode:'x unified', showlegend:false, bargap:0.3,
      yaxis:{rangemode:'tozero',gridcolor:'transparent',automargin:true}}),
     {responsive:true, displayModeBar:false});
-
-  // Monthly Net Sales vs COGS
-  const ncogsV = M.map(m => m.cogs * c.rate);
-  const nnsV = M.map(m => m.ns * c.rate);
-  const fmtBig = v => { const a=Math.abs(v); if(a>=1e6)return (a/1e6).toFixed(1)+'M'; if(a>=1e3)return (a/1e3).toFixed(0)+'K'; return Math.round(a).toString(); };
-  const nsLabels = nnsV.map(v => v > 0 ? fmtBig(v)+' '+c.symbol : '');
-  const cogsLabels = ncogsV.map(v => v > 0 ? fmtBig(v)+' '+c.symbol : '');
-  Plotly.newPlot('cogsChart', [
-    {type:'bar', name:'Net Sales', x:monthLabels, y:nnsV, marker:{color:_CALM.palette[0],opacity:0.85}, text:nsLabels, textposition:'outside', textfont:{size:11,color:'#4A5568',family:'Inter'}, cliponaxis:false},
-    {type:'bar', name:'COGS', x:monthLabels, y:ncogsV, marker:{color:_CALM.palette[1],opacity:0.85}, text:cogsLabels, textposition:'outside', textfont:{size:11,color:'#4A5568',family:'Inter'}, cliponaxis:false}
-  ], _calmLayout({barmode:'group', height:280, hovermode:'x unified', bargap:0.25, bargroupgap:0.1,
-      legend:{orientation:'h',y:1.12,x:.5,xanchor:'center',font:{size:11,color:'#4A5568'}},
-      yaxis:{ticksuffix:' '+c.symbol,gridcolor:'transparent',automargin:true}}), {responsive:true, displayModeBar:false});
   animateCharts();
   setTimeout(() => { updatePlotlyBlur(); markEditables(); }, 100);
   setTimeout(preloadTabs, 500);
