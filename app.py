@@ -43,7 +43,7 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
 <meta http-equiv="Expires" content="0">
 <link href="/static/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="/static/all.min.css">
-<script src="/static/plotly.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <script>
 Plotly.setPlotConfig({
   font:{family:'Inter, system-ui, sans-serif',size:12,color:'#72839E'},
@@ -1888,7 +1888,7 @@ async function loadPnlData() {
      text:nsAct.map(v=>fmtShort(v)), textposition:'outside',
      textfont:{size:11,color:'#4A5568',family:'Inter'}, cliponaxis:false},
     {type:'bar', name:'Forecast', x:activeMonths, y:nsFct,
-     marker:{color:'rgba(71,63,224,0.15)', line:{color:'#473FE0', width:2, dash:'dot'}},
+     marker:{color:'rgba(71,63,224,0.12)', line:{color:'#473FE0', width:2.5, dash:'dot'}},
      text:nsFct.map(v=>fmtShort(v)), textposition:'outside',
      textfont:{size:10,color:'#473FE0',family:'Inter'}, cliponaxis:false}
   ], {margin:{t:65,b:55,l:70,r:30}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
