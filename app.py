@@ -1879,7 +1879,7 @@ async function loadPnlData() {
   const colAct = '#2DA356';
   const colFct = '#A0AEC0';
 
-  // 1. Net Sales chart - Forecast: dotted pattern bar (dots only, no fill)
+  // 1. Net Sales chart - Forecast: colored bar with dotted border
   const nsAct = monthly.map(m => m.net_sales.actual * cr.rate);
   const nsFct = monthly.map(m => m.net_sales.forecast * cr.rate);
   Plotly.newPlot('pnlSalesChart', [
@@ -1888,7 +1888,7 @@ async function loadPnlData() {
      text:nsAct.map(v=>fmtShort(v)), textposition:'outside',
      textfont:{size:11,color:'#4A5568',family:'Inter'}, cliponaxis:false},
     {type:'bar', name:'Forecast', x:activeMonths, y:nsFct,
-     marker:{color:'#ffffff', pattern:{shape:'.', solidity:0.8, fgcolor:'#473FE0', size:6}},
+     marker:{color:'rgba(71,63,224,0.15)', line:{color:'#473FE0', width:2, dash:'dot'}},
      text:nsFct.map(v=>fmtShort(v)), textposition:'outside',
      textfont:{size:10,color:'#473FE0',family:'Inter'}, cliponaxis:false}
   ], {margin:{t:65,b:55,l:70,r:30}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
