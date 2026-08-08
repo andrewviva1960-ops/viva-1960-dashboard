@@ -925,10 +925,10 @@ async function loadData() {
   const nsV = M.map(m => m.ns * c.rate);
   const cogsV = M.map(m => m.cogs * c.rate);
   Plotly.newPlot('monthlyChart', [
-    {type:'bar', name:'Net Sales', x:monthLabels, y:nsV, marker:{color:_CALM.palette[0],opacity:0.85}, text:nsV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:11,color:'#4A5568',family:'Inter'}, cliponaxis:false},
-    {type:'bar', name:'Expenses', x:monthLabels, y:expV.map(v => -Math.abs(v)), marker:{color:_CALM.palette[3],opacity:0.85}, text:expV.map(v=>fmtShort(v)), textposition:'inside', textfont:{size:10,color:'#fff',family:'Inter'}, cliponaxis:false},
-    {type:'bar', name:'COGS', x:monthLabels, y:cogsV.map(v => -Math.abs(v)), marker:{color:_CALM.palette[1],opacity:0.85}, text:cogsV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:11,color:'#4A5568',family:'Inter'}, cliponaxis:false}
-  ], _calmLayout({barmode:'relative', height:300, hovermode:'x unified',
+    {type:'bar', name:'Net Sales', x:monthLabels, y:nsV, offsetgroup:'sales', marker:{color:_CALM.palette[0],opacity:0.85}, text:nsV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:11,color:'#4A5568',family:'Inter'}, cliponaxis:false},
+    {type:'bar', name:'Expenses', x:monthLabels, y:expV, offsetgroup:'costs', marker:{color:_CALM.palette[3],opacity:0.85}, text:expV.map(v=>fmtShort(v)), textposition:'inside', textfont:{size:10,color:'#fff',family:'Inter'}, cliponaxis:false},
+    {type:'bar', name:'COGS', x:monthLabels, y:cogsV, offsetgroup:'costs', base:expV, marker:{color:_CALM.palette[1],opacity:0.85}, text:cogsV.map(v=>fmtShort(v)), textposition:'outside', textfont:{size:11,color:'#4A5568',family:'Inter'}, cliponaxis:false}
+  ], _calmLayout({barmode:'group', bargap:0.3, bargroupgap:0.1, height:300, hovermode:'x unified',
       legend:{orientation:'h',y:1.18,x:.5,xanchor:'center',font:{size:11,color:'#4A5568'}},
       yaxis:{ticksuffix:' '+c.symbol,gridcolor:'transparent'}}), {responsive:true, displayModeBar:false});
 
