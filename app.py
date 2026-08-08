@@ -1879,13 +1879,23 @@ async function loadPnlData() {
   const colAct = '#2DA356';
   const colFct = '#A0AEC0';
 
-  // 1. Net Sales chart - use Sales Summary actuals from PNL Dashboard
+  // 1. Net Sales chart - Forecast as dotted outline inside Actual
   const nsAct = monthly.map(m => m.net_sales.actual * cr.rate);
   const nsFct = monthly.map(m => m.net_sales.forecast * cr.rate);
-  buildGroupedBar('pnlSalesChart', activeMonths, [
-    {name:'Actual', y:nsAct, color:colAct},
-    {name:'Forecast', y:nsFct, color:colFct}
-  ], 'Net Sales');
+  Plotly.newPlot('pnlSalesChart', [
+    {type:'bar', name:'Actual', x:activeMonths, y:nsAct, offsetgroup:'g',
+     marker:{color:colAct, opacity:0.85, line:{color:colAct, width:0}},
+     text:nsAct.map(v=>fmtShort(v)), textposition:'outside',
+     textfont:{size:11,color:'#4A5568',family:'Inter'}, cliponaxis:false},
+    {type:'bar', name:'Forecast', x:activeMonths, y:nsFct, offsetgroup:'g',
+     marker:{color:'rgba(0,0,0,0)', line:{color:colFct, width:2.5, dash:'dot'}},
+     text:nsFct.map(v=>fmtShort(v)), textposition:'outside',
+     textfont:{size:10,color:colFct,family:'Inter'}, cliponaxis:false}
+  ], {margin:{t:65,b:55,l:70,r:30}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+    font:{color:'#A0AEC0',size:11}, barmode:'group', bargap:0.25, height:320, hovermode:'x unified',
+    legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:11,color:'#4A5568'}},
+    yaxis:{ticksuffix:' '+cr.symbol,gridcolor:'transparent',automargin:true},
+    xaxis:{automargin:true}, cliponaxis:false}, {responsive:true, displayModeBar:false});
 
   // 2. Gross Profit chart
   const gpAct = monthly.map(m => m.gross_profit.actual * cr.rate);
