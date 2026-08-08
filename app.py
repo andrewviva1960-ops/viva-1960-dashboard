@@ -566,6 +566,9 @@ body.edit-mode .edit-save-bar{display:flex}
   <div class="page-title"><i class="fas fa-file-invoice-dollar" style="color:var(--accent);margin-right:8px"></i>P&amp;L Actuals vs Forecast</div>
   <div class="kpi-grid" id="pnlKpiGrid" style="grid-template-columns:repeat(5,1fr)"></div>
   <div class="chart-grid">
+    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-file-invoice-dollar" style="color:#334155;margin-right:6px"></i>P&amp;L Summary — Actual vs Forecast</h5></div><div class="pnl-body" id="pnlSummaryTable"></div></div>
+  </div>
+  <div class="chart-grid">
     <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-chart-bar" style="color:var(--accent);margin-right:6px"></i>Monthly Net Sales — Actual vs Forecast</h5></div><div class="chart-body" id="pnlSalesChart"></div></div>
   </div>
   <div class="chart-grid">
@@ -578,9 +581,6 @@ body.edit-mode .edit-save-bar{display:flex}
   </div>
     <div class="chart-grid">
     <div class="chart-card full" style="overflow:visible"><div class="chart-header"><h5><i class="fas fa-arrows-alt" style="color:#2DA356;margin-right:6px"></i>P&amp;L Waterfall — YTD Actual vs Forecast</h5></div><div class="chart-body" id="pnlWaterfallChart" style="min-height:var(--chart-h-lg);overflow:visible"></div></div>
-  </div>
-  <div class="chart-grid">
-    <div class="chart-card full"><div class="chart-header"><h5><i class="fas fa-file-invoice-dollar" style="color:#334155;margin-right:6px"></i>P&amp;L Summary — Actual vs Forecast</h5></div><div class="pnl-body" id="pnlSummaryTable"></div></div>
   </div>
 </div>
 
