@@ -1879,20 +1879,18 @@ async function loadPnlData() {
   const colAct = '#2DA356';
   const colFct = '#A0AEC0';
 
-  // 1. Net Sales chart - Forecast as dotted outline inside Actual
+  // 1. Net Sales chart - Forecast as dotted pattern inside Actual (same size)
   const nsAct = monthly.map(m => m.net_sales.actual * cr.rate);
   const nsFct = monthly.map(m => m.net_sales.forecast * cr.rate);
   Plotly.newPlot('pnlSalesChart', [
     {type:'bar', name:'Actual', x:activeMonths, y:nsAct,
      marker:{color:colAct, opacity:0.85},
      text:nsAct.map(v=>fmtShort(v)), textposition:'outside',
-     textfont:{size:11,color:'#4A5568',family:'Inter'}, cliponaxis:false,
-     width:0.5},
+     textfont:{size:11,color:'#4A5568',family:'Inter'}, cliponaxis:false},
     {type:'bar', name:'Forecast', x:activeMonths, y:nsFct,
-     marker:{color:'rgba(0,0,0,0)', line:{color:'#473FE0', width:2.5, dash:'dot'}},
+     marker:{color:'rgba(0,0,0,0)', pattern:{shape:'.', solidity:0.6, fgcolor:'#473FE0', size:8}},
      text:nsFct.map(v=>fmtShort(v)), textposition:'outside',
-     textfont:{size:10,color:'#473FE0',family:'Inter'}, cliponaxis:false,
-     width:0.3}
+     textfont:{size:10,color:'#473FE0',family:'Inter'}, cliponaxis:false}
   ], {margin:{t:65,b:55,l:70,r:30}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
     font:{color:'#A0AEC0',size:11}, barmode:'overlay', bargap:0.25, height:320, hovermode:'x unified',
     legend:{orientation:'h',y:1.15,x:.5,xanchor:'center',font:{size:11,color:'#4A5568'}},
