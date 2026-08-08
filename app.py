@@ -2280,7 +2280,12 @@ def get_data(period="ytd", bu="all", month="all"):
     total_disc = float(disc_raw.sum())
     total_ret = float(sales_raw["Return"].abs().sum())
     total_exp = float(exp.sum())
-    total_cogs = 31223509.0 * (total_gs / 105263158.0) if total_gs else 0
+    # Read actual COGS from PNL Dashboard sheet
+    try:
+        df_pnl = pd.read_excel(_EXCEL_PATH, sheet_name="PNL Dashboard ", header=None)
+        total_cogs = abs(float(df_pnl.iloc[46, 1])) if df_pnl.shape[0] > 46 and pd.notna(df_pnl.iloc[46, 1]) else 0
+    except:
+        total_cogs = 0
     total_ns = total_gs - total_ret - total_disc
     gp = total_ns - total_cogs
     ni = gp - total_exp
@@ -2288,6 +2293,17 @@ def get_data(period="ytd", bu="all", month="all"):
     raw_exp_total = float(exp.sum())
     monthly_qty_raw = sales_raw.groupby("Month")["QTY"].sum()
     month_end = max(filtered_months) if filtered_months else 6
+    # Read per-month COGS from PNL Dashboard sheet
+    pnl_sections = {"jan": 18, "feb": 27, "mar": 36, "apr": 54, "may": 63, "jun": 72, "jul": 81}
+    pnl_month_keys = ["jan", "feb", "mar", "apr", "may", "jun", "jul"]
+    monthly_cogs = {}
+    try:
+        for idx, mk in enumerate(pnl_month_keys):
+            col = pnl_sections[mk]
+            val = abs(float(df_pnl.iloc[46, col+1])) if df_pnl.shape[0] > 46 and col+1 < df_pnl.shape[1] and pd.notna(df_pnl.iloc[46, col+1]) else 0
+            monthly_cogs[idx+1] = val
+    except:
+        pass
     months_list = []
     for m in range(1, 13):
         if m in filtered_months:
@@ -2295,7 +2311,7 @@ def get_data(period="ytd", bu="all", month="all"):
             m_ret = float(ret_raw.get(m, 0))
             m_disc = float(disc_raw.get(m, 0))
             m_exp = float(exp.get(m, 0))
-            m_cogs = total_cogs * (m_gs / total_gs) if total_gs > 0 else 0
+            m_cogs = monthly_cogs.get(m, 0)
             m_qty = int(monthly_qty_raw.get(m, 0))
         else:
             m_gs = 0; m_ret = 0; m_disc = 0; m_exp = 0; m_cogs = 0; m_qty = 0
